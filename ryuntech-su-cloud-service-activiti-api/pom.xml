@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ryuntech-su-cloud-service-workflow-api</artifactId>
+    <artifactId>ryuntech-su-cloud-service-activiti-api</artifactId>
 
 
 </project>
