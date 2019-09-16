@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.SysRoleMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.SysRole">
+        <id column="rid" property="rid" />
+        <result column="rname" property="rname" />
+        <result column="rdesc" property="rdesc" />
+        <result column="rval" property="rval" />
+        <result column="created" property="created" />
+        <result column="updated" property="updated" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        rid, rname, rdesc, rval, created, updated
+    </sql>
+
+
+
+    <select id="getRoleIdsByUserId" resultType="java.lang.String">
+        SELECT r.rid FROM sys_role r, sys_user_role ur
+        WHERE r.rid = ur.role_id AND ur.user_id = #{userId}
+    </select>
+
+    <!--关联查询-->
+    <select id="selectRoleById" resultType="com.ryuntech.saas.api.model.SysRole">
+        select
+            *
+        from sys_role
+            left join sys_user_role on sys_role.rid = sys_user_role.role_id
+        where sys_user_role.user_id =#{id}
+    </select>
+
+
+    <select id="checkUidContainRval" resultType="java.lang.Boolean">
+        SELECT
+        CONCAT(',',GROUP_CONCAT(r.rval SEPARATOR ','),',')
+        REGEXP CONCAT(',',#{rval},',{1}') AS result FROM sys_role r, sys_user_role ur
+        WHERE ur.role_id = r.rid AND ur.user_id = #{uid}
+    </select>
+
+    <select id="checkRidsContainRval" resultType="java.lang.Boolean">
+        SELECT
+        CONCAT(',',GROUP_CONCAT(rval SEPARATOR ','),',')
+        REGEXP CONCAT(',',#{rval},',{1}') AS result FROM sys_role
+        WHERE rid IN
+        <foreach collection="rids" item="rid" separator="," open="(" close=")">
+            #{rid}
+        </foreach>
+    </select>
+
+</mapper>
