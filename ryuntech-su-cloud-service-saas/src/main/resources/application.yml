@@ -72,4 +72,4 @@ pagehelper:
 # 打印sql
 logging:
   level:
-    com.ryuntech.admin.biz.mapper: DEBUG
+    com.ryuntech.saas.api.mapper: DEBUG

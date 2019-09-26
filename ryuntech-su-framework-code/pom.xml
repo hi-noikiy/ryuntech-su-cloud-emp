@@ -37,6 +37,22 @@
             <artifactId>aliyun-java-sdk-core</artifactId>
             <version>4.0.3</version>
         </dependency>
+
+
+
+        <!-- groovy-all -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+        </dependency>
+
+        <!-- commons-exec -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-exec</artifactId>
+            <version>${commons-exec.version}</version>
+        </dependency>
     </dependencies>
 
 </project>
