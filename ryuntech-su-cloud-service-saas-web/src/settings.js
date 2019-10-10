@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '睿推客',
+  title: '睿应收',
 
   /**
    * @type {boolean} true | false

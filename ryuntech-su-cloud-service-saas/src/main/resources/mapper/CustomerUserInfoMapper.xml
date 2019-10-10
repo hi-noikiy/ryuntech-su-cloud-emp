@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.CustomerUserInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.CustomerUserInfo">
+        <id column="CUSTOMER_ID" property="customerId" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="CONTACTS" property="contacts" />
+        <result column="CONTACTS_PHONE" property="contactsPhone" />
+        <result column="STAFF_ID" property="staffId" />
+        <result column="STAFF_NAME" property="staffName" />
+        <result column="DEPARTMENT" property="department" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        CUSTOMER_ID, CUSTOMER_NAME, CONTACTS, CONTACTS_PHONE, STAFF_ID, STAFF_NAME, DEPARTMENT
+    </sql>
+
+</mapper>

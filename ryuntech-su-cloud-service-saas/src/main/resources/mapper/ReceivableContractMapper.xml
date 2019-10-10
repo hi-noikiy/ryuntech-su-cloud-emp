@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.ReceivableContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.ReceivableContract">
+        <id column="CONTRACT_ID" property="contractId" />
+        <result column="CONTRACT_NAME" property="contractName" />
+        <result column="CUSTOMER_ID" property="customerId" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="CONTRACT_TIME" property="contractTime" />
+        <result column="CONTRACT_AMOUNT" property="contractAmount" />
+        <result column="BALANCE_AMOUNT" property="balanceAmount" />
+        <result column="COLLECTION_AMOUNT" property="collectionAmount" />
+        <result column="STATUS" property="status" />
+        <result column="STAFF_ID" property="staffId" />
+        <result column="STAFF_NAME" property="staffName" />
+        <result column="DEPARTMENT" property="department" />
+        <result column="COLLECTION_ID" property="collectionId" />
+        <result column="CONTRACT_CODE" property="contractCode" />
+        <result column="CONTACTS" property="contacts" />
+        <result column="CONTACTS_PHONE" property="contactsPhone" />
+        <result column="ANNEX_TYPE" property="annexType" />
+        <result column="URL" property="url" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        CONTRACT_ID, CONTRACT_NAME, CUSTOMER_ID, CUSTOMER_NAME, CONTRACT_TIME, CONTRACT_AMOUNT,
+        BALANCE_AMOUNT, COLLECTION_AMOUNT, STATUS,  DEPARTMENT, COLLECTION_ID,
+        CONTRACT_CODE,CONTACTS,CONTACTS_PHONE,STAFF_ID,STAFF_NAME,ANNEX_TYPE,URL
+    </sql>
+
+
+    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableContract">
+        select *
+        from ryn_receivable_contract
+        <where>
+            <if test="receivableContract.contractId!=null and receivableContract.contractId!=''">
+                contract_id like concat('%',#{receivableContract.contractId},'%')
+            </if>
+            <if test="receivableContract.contractName!=null and receivableContract.contractName!=''">
+                and contract_name like concat('%',#{receivableContract.contractName},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

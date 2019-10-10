@@ -6,8 +6,8 @@
           {{ date }}
         </div>
         <div style="text-align: center">
-          <h1>XSCloud</h1>
-          <h3>XSCloud</h3>
+          <h1>睿应收</h1>
+          <h3>睿应收</h3>
           <!--<h3>By <a href="https://github.com/TyCoding/cloud-template">TyCoding</a></h3>-->
         </div>
       </el-card>

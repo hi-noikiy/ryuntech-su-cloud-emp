@@ -46,7 +46,7 @@ public class Result<T> implements Serializable {
     public Result(CommonEnums enums,String msg) {
         super();
         this.tcode = enums.getCode();
-        this.msg = msg+enums.getMsg();
+        this.msg = msg+":"+enums.getMsg();
     }
 
     public Result(T data, CommonEnums enums) {

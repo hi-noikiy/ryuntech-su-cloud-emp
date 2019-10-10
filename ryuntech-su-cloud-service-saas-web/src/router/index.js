@@ -50,11 +50,11 @@ export const constantRoutes = [
       path: 'dashboard',
       name: 'Dashboard',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
 
-  {
+  /* {
     path: '公司官网',
     component: Layout,
     children: [
@@ -63,7 +63,7 @@ export const constantRoutes = [
         meta: { title: '公司官网', icon: 'github' }
       }
     ]
-  },
+  },*/
 
   {
     path: '/saas',
@@ -100,6 +100,67 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/contract',
+    component: Layout,
+    redirect: '/operation/business',
+    name: '应收合同',
+    meta: { title: '应收合同', icon: 'setting' },
+    children: [
+      {
+        path: 'list',
+        name: '应收合同',
+        component: () => import('@/views/contract/index'),
+        meta: { title: '应收合同', icon: 'documentation' }
+      }
+    ]
+  },
+  {
+    path: '/collection',
+    component: Layout,
+    redirect: '/operation/business',
+    name: '回款管理',
+    meta: { title: '回款管理', icon: 'setting' },
+    children: [
+      {
+        path: 'list',
+        name: '回款管理',
+        component: () => import('@/views/collection/index'),
+        meta: { title: '回款管理', icon: 'documentation' }
+      }
+    ]
+  },
+  {
+    path: '/customer',
+    component: Layout,
+    redirect: '/operation/business',
+    name: '客户管理',
+    meta: { title: '客户管理', icon: 'setting' },
+    children: [
+      {
+        path: 'list',
+        name: '客户管理',
+        component: () => import('@/views/customer/index'),
+        meta: { title: '客户管理', icon: 'documentation' }
+      }
+    ]
+  },
+  {
+    path: '/reportforms',
+    component: Layout,
+    redirect: '/operation/business',
+    name: '数据报表',
+    meta: { title: '数据报表', icon: 'setting' },
+    children: [
+      {
+        path: 'reportforms',
+        name: '数据报表',
+        component: () => import('@/views/reportforms/index'),
+        meta: { title: '数据报表', icon: 'documentation' }
+      }
+    ]
+  },
+
+  /* {
     path: '/business',
     component: Layout,
     redirect: '/operation/business',
@@ -118,13 +179,13 @@ export const constantRoutes = [
         component: () => import('@/views/business/finmanager/index'),
         meta: { title: '财务管理', icon: 'documentation' }
       }
-      /*,
+      /!*,
       {
         path: 'operatelog',
         name: '操作日志管理',
         component: () => import('@/views/business/operatelog/index'),
         meta: { title: '操作日志管理', icon: 'peoples' }
-      },*/
+      },*!/
     ]
   },
   {
@@ -167,7 +228,7 @@ export const constantRoutes = [
         component: () => import('@/views/doc/swagger'),
         meta: { title: '接口文档', icon: 'documentation' }
       }
-      /* ,
+      /!* ,
       {
         path: 'zipkin',
         name: '链路监控',
@@ -179,9 +240,9 @@ export const constantRoutes = [
         name: '注册中心',
         component: () => import('@/views/monitor/eureka'),
         meta: { title: '注册中心', icon: 'service-center' }
-      },*/
+      },*!/
     ]
-  },
+  },*/
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true },
   { path: '/401', redirect: '/404', hidden: true }

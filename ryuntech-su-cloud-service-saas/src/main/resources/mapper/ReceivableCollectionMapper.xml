@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.ReceivableCollectionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.ReceivableCollection">
+        <id column="COLLECTION_ID" property="collectionId" />
+        <result column="CUSTOMER_ID" property="customerId" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="AMOUNT" property="amount" />
+        <result column="CARD_NO" property="cardNo" />
+        <result column="TYPE" property="type" />
+        <result column="TIME" property="time" />
+        <result column="VOUCHER_TYPE" property="voucherType" />
+        <result column="URL" property="url" />
+        <result column="CREATE_BY" property="createBy" />
+        <result column="CREATE_TIME" property="createTime" />
+        <result column="STATUS" property="status" />
+        <result column="REMARKS" property="remarks" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, URL, CREATE_BY, CREATE_TIME, STATUS, REMARKS
+    </sql>
+
+</mapper>
