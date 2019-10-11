@@ -2,7 +2,7 @@ import request from '@/utils/request'
 
 export function getList(query, data) {
   return request({
-    url: '/saas/contract/list?pageCode=' + query.page + '&pageSize=' + query.limit,
+    url: '/saas/customer/list?pageCode=' + query.page + '&pageSize=' + query.limit,
     method: 'post',
     data
   })
@@ -10,7 +10,7 @@ export function getList(query, data) {
 
 export function save(data) {
   return request({
-    url: '/saas/contract',
+    url: '/saas/customer',
     method: 'post',
     data
   })
@@ -18,22 +18,22 @@ export function save(data) {
 
 export function edit(data) {
   return request({
-    url: '/saas/contract/edit',
+    url: '/saas/customer/edit',
     method: 'put',
     data
   })
 }
 
-export function findById(contractId) {
+export function findById(customerId) {
   return request({
-    url: '/saas/contract/' + contractId,
+    url: '/saas/customer/' + customerId,
     method: 'get'
   })
 }
 
-export function del(contractId) {
+export function del(customerId) {
   return request({
-    url: '/saas/contract/' + contractId,
+    url: '/saas/customer/' + customerId,
     method: 'delete'
   })
 }

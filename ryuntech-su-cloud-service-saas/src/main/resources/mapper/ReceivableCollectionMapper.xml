@@ -24,4 +24,18 @@
         COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, URL, CREATE_BY, CREATE_TIME, STATUS, REMARKS
     </sql>
 
+
+
+    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollection">
+        select *
+        from ryn_receivable_collection
+        <where>
+            <if test="receivableCollection.collectionId!=null and receivableCollection.collectionId!=''">
+                collection_id like concat('%',#{receivableCollection.collectionId},'%')
+            </if>
+            <if test="receivableCollection.customerName!=null and receivableCollection.customerName!=''">
+                and customer_name like concat('%',#{receivableCollection.customerName},'%')
+            </if>
+        </where>
+    </select>
 </mapper>

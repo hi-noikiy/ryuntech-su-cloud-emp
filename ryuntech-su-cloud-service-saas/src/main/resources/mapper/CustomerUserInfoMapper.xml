@@ -18,4 +18,17 @@
         CUSTOMER_ID, CUSTOMER_NAME, CONTACTS, CONTACTS_PHONE, STAFF_ID, STAFF_NAME, DEPARTMENT
     </sql>
 
+    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.CustomerUserInfo">
+        select *
+        from ryn_customer_user_info
+        <where>
+            <if test="customerUserInfo.customerId!=null and customerUserInfo.customerId!=''">
+                customer_id like concat('%',#{customerUserInfo.customerId},'%')
+            </if>
+            <if test="customerUserInfo.customerName!=null and customerUserInfo.customerName!=''">
+                and customer_name like concat('%',#{customerUserInfo.customerName},'%')
+            </if>
+        </where>
+    </select>
+
 </mapper>

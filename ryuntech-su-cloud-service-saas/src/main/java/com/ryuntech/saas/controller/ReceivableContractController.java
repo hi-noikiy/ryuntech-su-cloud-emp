@@ -122,4 +122,6 @@ public class ReceivableContractController extends ModuleBaseController {
         iReceivableContractService.removeById(contractId);
         return new Result();
     }
+
+
 }

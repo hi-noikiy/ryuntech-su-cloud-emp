@@ -4,9 +4,9 @@
       <div>
         <el-select v-model="search.paymentStatus" placeholder="全部客户">
           <!-- 合同状态(0已逾期,1已完成，2执行中)-->
-          <el-option label="已逾期" value="0" />
-          <el-option label="已完成" value="1" />
-          <el-option label="执行中" value="2" />
+          <el-option label="销售一部" value="0" />
+          <el-option label="销售二部" value="1" />
+          <el-option label="销售三部" value="2" />
         </el-select>
 
         <el-input v-model="search.customerName" style="width: 200px;" placeholder="请输入客户名称" />
@@ -17,12 +17,12 @@
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
         <el-table-column align="center" label="客户编号" width="220">
           <template slot-scope="scope">
-            {{ scope.row.contractId }}
+            {{ scope.row.customerId }}
           </template>
         </el-table-column>
         <el-table-column align="center" label="客户名称" width="150">
           <template slot-scope="scope">
-            {{ scope.row.contractName }}
+            {{ scope.row.customerName }}
           </template>
         </el-table-column>
 
@@ -39,24 +39,22 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="contractAmount" label="负责人" width="200">
+        <el-table-column align="center" prop="staffName" label="负责人" width="200">
           <template slot-scope="scope">
-            <i class="el-icon-time" />
             <span>{{ scope.row.staffName }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="balanceAmount" label="部门" width="200">
+        <el-table-column align="center" prop="department" label="部门" width="200">
           <template slot-scope="scope">
-            <i class="el-icon-time" />
             <span>{{ scope.row.department }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.contractId)">编辑</el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.contractId)">删除</el-button>
+            <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.customerId)">编辑</el-button>
+            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.customerId)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -75,7 +73,7 @@
 </template>
 
 <script>
-import { getList, findById, del } from '@/api/contract'
+import { getList, findById, del } from '@/api/customer'
 import Pagination from '@/components/Pagination'
 import Save from './save'
 import { parseTime } from '@/utils/index'
@@ -122,7 +120,7 @@ export default {
       })
     },
     handleSave() {
-      this.form = { id: null, createTime: parseTime(new Date()) }
+      this.form = { contractId: null, createTime: parseTime(new Date()) }
       this.dialogVisible = true
     },
     handleEdit(id) {

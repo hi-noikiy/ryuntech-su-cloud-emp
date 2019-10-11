@@ -152,7 +152,7 @@ export const constantRoutes = [
     meta: { title: '数据报表', icon: 'setting' },
     children: [
       {
-        path: 'reportforms',
+        path: 'list',
         name: '数据报表',
         component: () => import('@/views/reportforms/index'),
         meta: { title: '数据报表', icon: 'documentation' }

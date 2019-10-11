@@ -12,6 +12,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import echarts from 'echarts'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -28,6 +29,7 @@ import '@/permission' // permission control
 // set ElementUI lang to EN
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
 Vue.use(ElementUI)
+Vue.use(echarts)
 Vue.use(ElementUI, { locale })
 
 axios.defaults.headers.post['Authorization'] = 'Basic Y2xpZW50OnNlY3JldA=='

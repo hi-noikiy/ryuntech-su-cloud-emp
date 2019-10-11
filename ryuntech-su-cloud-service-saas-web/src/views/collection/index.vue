@@ -14,18 +14,18 @@
       </div>
       <br>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-        <el-table-column align="center" label="回款编号" width="95">
+        <el-table-column align="center" label="回款编号" width="220">
           <template slot-scope="scope">
             {{ scope.row.collectionId }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="客户名称" width="95">
+        <el-table-column align="center" label="客户名称" width="150">
           <template slot-scope="scope">
             {{ scope.row.customerName }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="回款金额" width="150">
+        <el-table-column align="center" label="回款金额" width="95">
           <template slot-scope="scope">
             {{ scope.row.amount }}
           </template>
@@ -56,13 +56,13 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="collectionAmount" label="创建人" width="200">
+        <el-table-column align="center" prop="collectionAmount" label="创建人" width="150">
           <template slot-scope="scope">
             <span>{{ scope.row.collectionAmount }}</span>
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="collectionAmount" label="状态" width="200">
+        <el-table-column align="center" prop="collectionAmount" label="状态" width="150">
           <template slot-scope="scope">
             <span>{{ scope.row.status }}</span>
           </template>
@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { getList, findById, del } from '@/api/contract'
+import { getList, findById, del } from '@/api/collection'
 import Pagination from '@/components/Pagination'
 import Save from './save'
 import { parseTime } from '@/utils/index'

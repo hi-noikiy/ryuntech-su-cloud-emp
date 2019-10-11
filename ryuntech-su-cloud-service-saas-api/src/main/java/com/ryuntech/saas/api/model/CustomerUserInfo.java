@@ -67,5 +67,17 @@ import java.io.Serializable;
         @TableField("DEPARTMENT")
     private String department;
 
+        /**
+            * 详细地址
+            */
+        @TableField("ADDRESS")
+    private String address;
+
+
+    /**
+     * 详细地址
+     */
+    @TableField("CITY")
+    private String city;
 
 }
