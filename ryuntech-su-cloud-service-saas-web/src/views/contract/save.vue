@@ -129,9 +129,9 @@ export default {
         url: ''
       },
       rules: {
-        contractId: [{ required: true, trigger: 'blur', message: '请输入合同编号' }],
+        contractId: [{ required: false, trigger: 'blur', message: '请输入合同编号' }],
         contractName: [{ required: true, trigger: 'blur', message: '请输入合同名' }],
-        contractCode: [{ required: true, trigger: 'blur', message: '请输入合同编码' }],
+        contractCode: [{ required: false, trigger: 'blur', message: '请输入合同编码' }],
         contractAmount: [{ required: true, trigger: 'blur', message: '请输入合同金额' }],
         contractTime: [{ required: true, trigger: 'blur', message: '请输入签订日期' }],
         contacts: [{ required: true, trigger: 'blur', message: '请输入联系人' }],
@@ -176,6 +176,7 @@ export default {
     },
     handleClose() {
       this.clearForm()
+      this.$refs.form.clearValidate()
       this.dialogVisible = false
     },
     onSubmit(form) {

@@ -2,6 +2,7 @@ package com.ryuntech.saas.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.Order;
@@ -71,6 +72,17 @@ public class ReceivableContractController extends ModuleBaseController {
             return new Result(PARAM_ERROR,"合同附件不能为空");
         }
         receivableContract.setContractId(String.valueOf(generateId()));
+        receivableContract.setBalanceAmount(receivableContract.getContractAmount());
+        receivableContract.setCollectionAmount("0");
+
+        // todo: 根据ID查姓名
+        String customerName = "客户姓名";
+        String staffName = "员工姓名";
+        receivableContract.setCustomerName(customerName);
+        receivableContract.setStaffName(staffName);
+
+        receivableContract.setStatus("2");
+
         boolean b = iReceivableContractService.saveOrUpdate(receivableContract);
         if (b){
             //更新成功
@@ -91,15 +103,26 @@ public class ReceivableContractController extends ModuleBaseController {
     @ApiOperation(value = "更新合同")
     @ApiImplicitParam(name = "receivableContract", value = "合同信息", required = true, dataType = "ReceivableContract", paramType = "body")
     public Result edit(@RequestBody ReceivableContract receivableContract) {
-        if (StringUtils.isBlank(receivableContract.getCollectionId())){
+        if (StringUtils.isBlank(receivableContract.getContractId())){
             return new Result(PARAM_ERROR,"合同编号不能为空");
         }
         if (StringUtils.isBlank(receivableContract.getContractName())){
             return new Result(PARAM_ERROR,"合同名不能为空");
         }
+        if (StringUtils.isBlank(receivableContract.getCustomerId())) {
+            return new Result(PARAM_ERROR,"签约客户不能为空");
+        }
+        if (StringUtils.isBlank(receivableContract.getStaffId())) {
+            return new Result(PARAM_ERROR,"负责员工不能为空");
+        }
         if (StringUtils.isBlank(receivableContract.getUrl())){
             return new Result(PARAM_ERROR,"合同附件不能为空");
         }
+        // todo 根据客户ID和员工ID查询名称并更新
+        String customerName = "客户姓名";
+        String staffName = "员工姓名";
+        receivableContract.setCustomerName(customerName);
+        receivableContract.setStaffName(staffName);
         boolean b = iReceivableContractService.saveOrUpdate(receivableContract);
         if (b){
             //更新成功
@@ -123,5 +146,18 @@ public class ReceivableContractController extends ModuleBaseController {
         return new Result();
     }
 
+    /**
+     * 根据合同ID获取合同详情
+     * @param contractId
+     * @return
+     */
+    @GetMapping("/{contractId}")
+    public Result get(@PathVariable String contractId) {
+        if (StringUtils.isBlank(contractId)){
+            return new Result(CommonEnums.PARAM_ERROR,"参数错误");
+        }
+        ReceivableContract contract_info = iReceivableContractService.getById(contractId);
+        return new Result(contract_info);
+    }
 
 }

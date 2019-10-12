@@ -22,7 +22,7 @@
             {{ scope.row.contractId }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同名称" min-width="100">
+        <el-table-column align="center" label="合同名称" min-width="150">
           <template slot-scope="scope">
             {{ scope.row.contractName }}
           </template>
@@ -61,7 +61,7 @@
 
         <el-table-column align="center" prop="collectionAmount" label="合同状态" width="120">
           <template slot-scope="scope">
-            <span>{{ scope.row.status || contractStatusOptions[scope.row.status] }}</span>
+            <span>{{ scope.row.status && contractStatusOptions[scope.row.status] }}</span>
           </template>
         </el-table-column>
 
