@@ -23,13 +23,102 @@
         />
 
         <el-button style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
-        <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新建回款</el-button>
       </div>
       <br>
-      <div>
-        <div id="report" style="width: 100%;height: 400px;margin: 10px;" />
-      </div>
+    </el-card>
+    <el-card>
+      <el-row>
+        <div style="display: block; text-align: center;">
+          <el-col :span="8">
+            <div class="grid-content bg-purple" style="margin: 20px;">
+              <p>计划回款金额</p>
+              <p><strong style="font-size: xx-large;">¥&#32;728,558.00</strong></p>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content bg-purple-light" style="margin: 20px">
+              <p>实际回款金额</p>
+              <p><strong style="font-size: xx-large;">¥&#32;6,000.00</strong></p>
+            </div>
+          </el-col>
+          <el-col :span="8">
+            <div class="grid-content bg-purple" style="margin: 20px">
+              <p>未回款金额</p>
+              <p><strong style="font-size: xx-large;">¥&#32;78,888.00</strong></p>
+            </div>
+          </el-col>
+        </div>
 
+      </el-row>
+    </el-card>
+
+    <el-card style="margin-top: 20px">
+      <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
+        <el-table-column align="center" label="合同名称" width="300">
+          <template slot-scope="scope">
+            {{ scope.row.id }}
+          </template>
+        </el-table-column>
+        <el-table-column align="center" label="客户名称" width="300">
+          <template slot-scope="scope">
+            {{ scope.row.username }}
+          </template>
+        </el-table-column>
+        <el-table-column label="计划回款日期" width="200" align="center">
+          <template slot-scope="scope">
+            {{ scope.row.phone }}
+          </template>
+        </el-table-column>
+        <el-table-column label="计划回款金额" width="200" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="实际回款金额" width="200" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="未回款金额" width="200" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="状态" width="100" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="回款期数" width="150" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="更进员工" width="150" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column label="部门" align="center">
+          <template slot-scope="scope">
+            <el-tag v-for="role in scope.row.roleList" :key="role.rid" style="margin: 2px;">{{ role.rname }}</el-tag>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="listQuery.page"
+        :limit.sync="listQuery.limit"
+        @pagination="fetchData"
+      />
     </el-card>
   </div>
 </template>
