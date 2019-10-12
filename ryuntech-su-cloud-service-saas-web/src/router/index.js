@@ -145,17 +145,23 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/reportforms',
+    path: '/report',
     component: Layout,
     redirect: '/operation/business',
     name: '数据报表',
     meta: { title: '数据报表', icon: 'setting' },
     children: [
       {
-        path: 'list',
+        path: 'datalist',
         name: '数据报表',
-        component: () => import('@/views/reportforms/index'),
+        component: () => import('@/views/report/reportdata/index'),
         meta: { title: '数据报表', icon: 'documentation' }
+      },
+      {
+        path: 'backlist',
+        name: '回款计划报表',
+        component: () => import('@/views/report/reportback/index'),
+        meta: { title: '回款计划报表', icon: 'documentation' }
       }
     ]
   },
