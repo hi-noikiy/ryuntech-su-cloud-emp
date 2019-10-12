@@ -1,44 +1,40 @@
 <template>
   <div class="app-container">
     <el-card>
-      <div>
-        <el-select v-model="search.paymentStatus" placeholder="全部合同">
-          <!-- 合同状态(0已逾期,1已完成，2执行中)-->
-          <el-option label="已逾期" value="0" />
-          <el-option label="已完成" value="1" />
-          <el-option label="执行中" value="2" />
+      <div style="margin-bottom: 10px">
+        <el-select v-model="search.belong_type" clearable size="small">
+          <el-option label="全部合同" :value="0" />
+          <el-option label="我负责的" :value="1" />
         </el-select>
 
-        <el-select v-model="search.status" placeholder="全部状态">
-          <!-- 合同状态(0已逾期,1已完成，2执行中)-->
-          <el-option label="已逾期" value="0" />
-          <el-option label="已完成" value="1" />
-          <el-option label="执行中" value="2" />
+        <el-select v-model="search.status" clearable size="small" placeholder="全部状态">
+          <el-option v-for="(value,key) in contractStatusOptions" :label="value" :value="key" />
         </el-select>
-        <el-input v-model="search.contractId" style="width: 200px;" placeholder="请输入合同号查询" />
-        <el-button style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
-        <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新增合同</el-button>
+
+        <el-input v-model="search.contractId" clearable size="small" style="width: 200px;" placeholder="请输入合同号查询" />
+        <el-button size="mini" style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
+        <el-button size="mini" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新增合同</el-button>
       </div>
-      <br>
+
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
-        <el-table-column align="center" label="合同编号" width="220">
+        <el-table-column align="center" label="合同编号" width="180">
           <template slot-scope="scope">
             {{ scope.row.contractId }}
           </template>
         </el-table-column>
-        <el-table-column align="center" label="合同名称" width="200">
+        <el-table-column align="center" label="合同名称" min-width="100">
           <template slot-scope="scope">
             {{ scope.row.contractName }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="客户名称" width="200">
+        <el-table-column align="center" label="客户名称" min-width="100">
           <template slot-scope="scope">
             {{ scope.row.customerName }}
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="contractTime" label="签订日期" width="230">
+        <el-table-column align="center" prop="contractTime" label="签订日期" width="160">
           <template slot-scope="scope">
             <i class="el-icon-time" />
             <span>{{ scope.row.contractTime }}</span>
@@ -65,7 +61,7 @@
 
         <el-table-column align="center" prop="collectionAmount" label="合同状态" width="120">
           <template slot-scope="scope">
-            <span>{{ scope.row.status }}</span>
+            <span>{{ scope.row.status || contractStatusOptions[scope.row.status] }}</span>
           </template>
         </el-table-column>
 
@@ -81,7 +77,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="操作">
+        <el-table-column align="center" label="操作" width="200">
           <template slot-scope="scope">
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.contractId)">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.contractId)">删除</el-button>
@@ -107,13 +103,18 @@ import { getList, findById, del } from '@/api/contract'
 import Pagination from '@/components/Pagination'
 import Save from './save'
 import { parseTime } from '@/utils/index'
+import { contractStatusOptions } from './contract'
 
 export default {
   components: { Pagination, Save },
   data() {
     return {
+      contractStatusOptions: contractStatusOptions,
       list: null,
-      search: {},
+      search: {
+        belong_type: 0,
+        status: undefined
+      },
       listLoading: true,
       listQuery: {
         page: 1,
@@ -129,7 +130,6 @@ export default {
     }
   },
   created() {
-    console.info('this.fetchData()')
     this.fetchData()
   },
   methods: {
@@ -141,7 +141,6 @@ export default {
     },
     fetchData() {
       this.listLoading = true
-      console.info('fetchData')
       getList(this.listQuery, this.search).then(response => {
         console.info(response)
         this.list = response.data.records

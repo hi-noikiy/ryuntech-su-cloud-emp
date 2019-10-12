@@ -1,93 +1,75 @@
 <template>
-  <el-dialog :title="dialogTitle" :before-close="handleClose" :visible.sync="dialogVisible" width="40%">
-    <el-form ref="form" :rules="rules" :model="form" status-icon label-position="right" label-width="150px">
-      <el-form-item v-if="form.contractId != null" label="合同编号" prop="contractId" label-width="120px">
+  <el-dialog :title="dialogTitle" :before-close="handleClose" :visible.sync="dialogVisible" width="70%">
+    <el-form ref="form" class="d-contract-edit-form" :rules="rules" :model="form" status-icon label-position="right" label-width="120px">
+
+      <el-form-item v-if="form.contractId != null" label="合同编号" prop="contractId">
         <el-input v-model="form.contractId" :disabled="true" />
       </el-form-item>
-      <div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="合同名称" prop="contractName" label-width="120px">
-            <el-input v-model="form.contractName" placeholder="请输入合同名称" />
-          </el-form-item>
-        </div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="合同编码" prop="contractCode" label-width="120px">
-            <el-input v-model="form.contractCode" placeholder="未设置系统自动生成" />
-          </el-form-item>
-        </div>
-      </div>
 
-      <div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="合同金额" prop="contractAmount" label-width="120px">
-            <el-input v-model="form.contractAmount" placeholder="请输入合同金额" />
-          </el-form-item>
-        </div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="合同签订日期" prop="contractTime" label-width="120px">
-            <el-date-picker
-              v-model="form.contractTime"
-              type="datetime"
-              placeholder="选择签订日期"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              format="yyyy-MM-dd HH:mm:ss"
-            />
-          </el-form-item>
-        </div>
-      </div>
-      <div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="联系人" prop="contacts" label-width="120px">
-            <el-input v-model="form.contacts" placeholder="请输入联系人" />
-          </el-form-item>
-        </div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="联系电话" prop="contactsPhone" label-width="120px">
-            <el-input v-model="form.contactsPhone" placeholder="请输入联系电话" />
-          </el-form-item>
-        </div>
-      </div>
+      <el-form-item label="合同名称" prop="contractName">
+        <el-input v-model="form.contractName" placeholder="请输入合同名称" />
+      </el-form-item>
 
-      <div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="签约客户" prop="customerName" label-width="120px">
-            <el-input v-model="form.customerName" placeholder="请选择签约客户" />
-          </el-form-item>
-        </div>
-        <div style="display:inline;float: left;">
-          <el-form-item label="负责员工" prop="staffName" label-width="120px">
-            <el-input v-model="form.staffName" placeholder="请输入或选择员工" />
-          </el-form-item>
-        </div>
-      </div>
+      <el-form-item label="合同编码" prop="contractCode">
+        <el-input v-model="form.contractCode" placeholder="未设置系统自动生成" />
+      </el-form-item>
 
-      <div style="display:inline-block;">
-        <el-form-item label="合同附件" prop="url" label-width="120px">
-          <el-upload
-            class="avatar-uploader"
-            :action="localUpload"
-            :show-file-list="false"
-            :on-success="handleAvatarSuccess"
-            :before-upload="beforeAvatarUpload"
-          >
-            <img v-if="imgURL" :src="imgURL" class="avatar">
-            <i v-else class="el-icon-plus avatar-uploader-icon" />
-            <div v-if="!imgURL" class="el-upload__text">点我上传合同附件</div>
-          </el-upload>
-        </el-form-item>
-      </div>
+      <el-form-item label="合同金额" prop="contractAmount">
+        <el-input v-model="form.contractAmount" placeholder="请输入合同金额" />
+      </el-form-item>
 
-      <!--<el-form-item label="合同附件" prop="url" label-width="120px">
-        <el-input v-model="form.url" placeholder="请选择合同附件" />
-      </el-form-item>-->
+      <el-form-item label="合同签订日期" prop="contractTime">
+        <el-date-picker
+          v-model="form.contractTime"
+          style="width: 100%"
+          type="datetime"
+          placeholder="选择签订日期"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          format="yyyy-MM-dd HH:mm:ss"
+        />
+      </el-form-item>
 
-      <div style="display:inline-block;width: 100%">
-        <div style="display:inline;float: left;width: 50%">
-          <strong>回款计划</strong>
-        </div>
-        <div style="display:inline;float: right;width: 50%">
-          <a style="display:inline;float: right;color: #20a0ff;" href="#">添加回款计划</a>
-        </div>
+      <el-form-item label="联系人" prop="contacts">
+        <el-input v-model="form.contacts" placeholder="请输入联系人" />
+      </el-form-item>
+
+      <el-form-item label="联系电话" prop="contactsPhone">
+        <el-input v-model="form.contactsPhone" placeholder="请输入联系电话" />
+      </el-form-item>
+
+      <el-form-item label="签约客户" prop="customerName">
+        <el-select v-model="form.customerId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索客户">
+          <el-option v-for="(value,key) in customerMap" :label="value" :value="key" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="负责员工" prop="staffName">
+        <el-select v-model="form.staffId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索员工">
+          <el-option v-for="(value,key) in staffMap" :label="value" :value="key" />
+        </el-select>
+      </el-form-item>
+
+      <el-form-item style="width: 100%" label="合同附件" prop="url">
+        <el-upload
+          class="avatar-uploader"
+          :action="localUpload"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload"
+        >
+          <img v-if="imgURL" :src="imgURL" class="avatar">
+          <template v-else>
+            <i class="el-icon-plus avatar-uploader-icon" />
+            <div class="el-upload__text">点我上传合同附件</div>
+          </template>
+        </el-upload>
+      </el-form-item>
+
+      <el-form-item style="width: 100%" label="回款计划">
+        <el-button type="text">添加回款计划</el-button>
+      </el-form-item>
+
+      <div v-if="false" style="display:inline-block;width: 100%">
         <!--<el-table
           :data="tableData"
           style="width: 100%">
@@ -109,13 +91,9 @@
       </div>
 
     </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button @click="handleClose">
-        退出
-      </el-button>
-      <el-button type="primary" @click="onSubmit('form')">
-        提交
-      </el-button>
+    <div slot="footer" class="dialog-footer" style="margin-right: 30px">
+      <el-button @click="handleClose">　退 出　</el-button>
+      <el-button type="primary" @click="onSubmit('form')">　提 交　</el-button>
     </div>
   </el-dialog>
 </template>
@@ -136,6 +114,8 @@ export default {
       dialogTitle: '合同详细信息',
       localUpload: upload,
       imgURL: '',
+      customerMap: {},
+      staffMap: {},
       form: {
         contractId: '',
         contractName: '',
@@ -144,6 +124,7 @@ export default {
         contractTime: '',
         contacts: '',
         contactsPhone: '',
+        customerId: '',
         staffId: '',
         url: ''
       },
@@ -155,7 +136,8 @@ export default {
         contractTime: [{ required: true, trigger: 'blur', message: '请输入签订日期' }],
         contacts: [{ required: true, trigger: 'blur', message: '请输入联系人' }],
         contactsPhone: [{ required: true, trigger: 'blur', message: '请输入联系电话' }],
-        staffId: [{ required: true, trigger: 'blur', message: '请输入负责员工' }],
+        customerId: [{ required: true, trigger: 'blur', message: '请选择客户' }],
+        staffId: [{ required: true, trigger: 'blur', message: '请选择负责员工' }],
         url: [{ required: true, trigger: 'blur', message: '请上传合同附件' }]
       }
     }
@@ -187,6 +169,7 @@ export default {
       this.form.contractTime = null
       this.form.contacts = null
       this.form.contactsPhone = null
+      this.form.customerId = null
       this.form.staffId = null
       this.form.url = null
       this.form.createTime = parseTime(new Date(), '')
@@ -255,7 +238,7 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss">
   .line {
     text-align: center;
   }
@@ -285,6 +268,24 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+
+  .d-contract-edit-form {
+    display: flex;
+    flex-wrap: wrap;
+    @media screen and (max-width: 1024px) {
+      .el-form-item{
+        width: 100%;
+      }
+    }
+    @media screen and (min-width: 1024px){
+      .el-form-item{
+        width: 48%;
+        &:nth-of-type(2n+1) {
+          margin-right: 2%;
+        }
+      }
+    }
   }
 </style>
 
