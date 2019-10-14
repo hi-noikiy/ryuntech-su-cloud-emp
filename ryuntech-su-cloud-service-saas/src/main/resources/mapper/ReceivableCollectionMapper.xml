@@ -27,7 +27,8 @@
 
 
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollection">
-        select *
+        select
+            *
         from ryn_receivable_collection
         <where>
             <if test="receivableCollection.collectionId!=null and receivableCollection.collectionId!=''">

@@ -10,13 +10,16 @@
 
         <div>
           <el-date-picker
-            v-model="value"
+            v-model="value2"
             type="daterange"
+            align="right"
+            unlink-panels
+            range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :default-time="['00:00:00', '23:59:59']"
+            :picker-options="pickerOptions"
           />
-          <el-select v-model="value" placeholder="请选择">
+          <el-select v-model="indexDTO.companyName" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -33,19 +36,19 @@
           <el-col :span="8">
             <div class="grid-content bg-purple" style="border:solid 1px #000;margin: 20px;">
               <p>应收未回款</p>
-              <p><strong style="font-size: x-large;">728,558.00</strong></p>
+              <p><strong style="font-size: x-large;">{{ nRMoney }}</strong></p>
             </div>
           </el-col>
           <el-col :span="8">
             <div class="grid-content bg-purple-light" style="border:solid 1px #000;margin: 20px">
               <p>本月回款</p>
-              <p><strong style="font-size: x-large;">6,000.00</strong></p>
+              <p><strong style="font-size: x-large;">{{ rMoney }}</strong></p>
             </div>
           </el-col>
           <el-col :span="8">
             <div class="grid-content bg-purple" style="border:solid 1px #000;margin: 20px">
               <p>本月销售额</p>
-              <p><strong style="font-size: x-large;">78,888.00</strong></p>
+              <p><strong style="font-size: x-large;">{{ saleMoney }}</strong></p>
             </div>
           </el-col>
         </div>
@@ -128,20 +131,33 @@
 <script>
 import echarts from 'echarts'
 
+import { reportdata } from '@/api/dashboard'
+
 export default {
   name: 'Dashboard',
   data() {
     return {
+      //  未回款
+      nRMoney: '0',
+      // 本月回款
+      rMoney: '0',
+      // 销售额
+      saleMoney: '0',
       activeNames: ['1', '2', '3', '4', '5'],
+      indexDTO: {
+        companyName: '',
+        startDate: '',
+        endDate: ''
+      },
       charts: '',
       chart1: '',
       score: '100',
       source: [
-        ['题型', '总分', '成绩'],
-        ['单选题', 45, 12],
-        ['多选题', 30, 15],
-        ['判断题', 45, 8],
-        ['填空题', 10, 2]
+        ['回款对比', '实际回款', '计划回款'],
+        ['2019-02-25', 45, 12],
+        ['2019-03-04', 30, 15],
+        ['2019-03-18', 45, 8],
+        ['2019-03-26', 10, 2]
       ],
       options: [{
         value: '选项1',
@@ -151,33 +167,37 @@ export default {
         label: '深圳橙势科技有限公司'
       }],
       pickerOptions: {
-        disabledDate(time) {
-          return time.getTime() > Date.now()
-        },
         shortcuts: [{
-          text: '今天',
+          text: '最近一周',
           onClick(picker) {
-            picker.$emit('pick', new Date())
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
           }
         }, {
-          text: '昨天',
+          text: '最近一个月',
           onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24)
-            picker.$emit('pick', date)
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+
+            picker.$emit('pick', [start, end])
           }
         }, {
-          text: '一周前',
+          text: '最近三个月',
           onClick(picker) {
-            const date = new Date()
-            date.setTime(date.getTime() - 3600 * 1000 * 24 * 7)
-            picker.$emit('pick', date)
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
           }
         }]
       },
       value1: '',
-      value: '',
-      value2: ''
+      // 开始结束时间
+      value2: '',
+      value: ''
 
     }
   },
@@ -187,6 +207,7 @@ export default {
       this.drawLine()
       // this.draw("report2");
     })
+    this.initData()
     /* let that = this;
         that.initData();
         window.addEventListener("resize", () => {
@@ -194,6 +215,15 @@ export default {
         });*/
   },
   methods: {
+
+    initData() {
+      // 开始调用
+      console.info(this.value2)
+      reportdata(this.indexDTO).then(response => {
+        console.info('response:' + response)
+      })
+    },
+
     draw(id) {
       this.charts = echarts.init(document.getElementById(id))
       this.charts.setOption({

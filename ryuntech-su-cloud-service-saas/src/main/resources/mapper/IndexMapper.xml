@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.IndexMapper">
+
+    <resultMap id="BaseResultMap"  type="com.ryuntech.saas.api.model.Index">
+        <result column="AMOUNTS" property="amounts" />
+        <result column="BALANCE_AMOUNTS" property="balanceAmounts" />
+        <result column="CONTRACT_ID" property="contractId" />
+
+    </resultMap>
+
+
+    <!--统计数据简报信息-->
+    <select id="selectBulletin" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.Index">
+        select
+            --         本月回款
+            sum(ryn_receivable_collection.amount) amounts,
+            --             应收未回款(应收余额)
+            ryn_receivable_contract.balance_amount as balance_amounts,
+            ryn_receivable_collection.contract_id
+        from ryn_receivable_collection left join ryn_receivable_contract on ryn_receivable_collection.contract_id=ryn_receivable_contract.contract_id
+        <where>
+            <if test="indexDTO.contractIdList!=null and indexDTO.contractIdList.size()>0">
+                ryn_receivable_collection.contract_id in
+                <foreach collection="indexDTO.contractIdList" item="contractId" index="index" open="(" close=")" separator=",">
+                    #{contractId}
+                </foreach>
+            </if>
+            <if test="indexDTO.startDate!=null and indexDTO.startDate!=''">
+                <![CDATA[
+                    ryn_receivable_collection.time >= #{indexDTO.startDate}
+                ]]>
+            </if>
+            <if test="indexDTO.endDate!=null and indexDTO.endDate!=''">
+                <![CDATA[
+                        and ryn_receivable_collection.time <= #{indexDTO.endDate}
+                ]]>
+            </if>
+        </where>
+        group by contract_id
+    </select>
+
+
+</mapper>

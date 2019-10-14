@@ -7,6 +7,8 @@ import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.PaymentResult;
 import com.ryuntech.saas.api.model.ReceivableContract;
 
+import java.util.List;
+
 /**
  * <p>
  * 应收合同表 服务类
@@ -27,4 +29,11 @@ public interface IReceivableContractService extends IBaseService<ReceivableContr
     Result<IPage<ReceivableContract>> pageList(ReceivableContract receivableContract, QueryPage queryPage);
 
     Result<IPage<ReceivableContract>> selectPageList(ReceivableContract receivableContract, QueryPage queryPage);
+
+    /**
+     * 根据条件查询
+     * @param receivableContract
+     * @return
+     */
+    List<ReceivableContract> receivableContractList(ReceivableContract receivableContract);
 }

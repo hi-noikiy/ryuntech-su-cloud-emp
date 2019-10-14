@@ -5,7 +5,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.model.ReceivableCollection;
+import com.ryuntech.saas.api.model.SysRole;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -25,5 +28,13 @@ public interface ReceivableCollectionMapper extends IBaseMapper<ReceivableCollec
      * @return
      */
     IPage<ReceivableCollection> selectPageList(@Param("pg") Page<ReceivableCollection> page, @Param("receivableCollection") ReceivableCollection receivableCollection);
+
+
+    /**
+     * 根据contractId查询角色
+     * @param contractId
+     * @return
+     */
+    List<ReceivableCollection> selectReceivableCollectionById(@Param("contractId") String contractId);
 
 }

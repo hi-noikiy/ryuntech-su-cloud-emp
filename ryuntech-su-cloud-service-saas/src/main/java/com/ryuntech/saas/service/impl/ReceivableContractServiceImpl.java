@@ -10,7 +10,10 @@ import com.ryuntech.saas.api.mapper.ReceivableContractMapper;
 import com.ryuntech.saas.api.model.PaymentResult;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IReceivableContractService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -26,7 +29,7 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
     @Override
     public Result<IPage<ReceivableContract>> pageList(ReceivableContract receivableContract, QueryPage queryPage) {
         Page<ReceivableContract> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        if (receivableContract.getCollectionId()!=null) {
+        if (StringUtils.isNotBlank(receivableContract.getCollectionId())) {
             queryWrapper.eq("collection_id", receivableContract.getCollectionId());
         }
         return super.pageList(queryWrapper,page);
@@ -36,5 +39,18 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
     public Result<IPage<ReceivableContract>> selectPageList(ReceivableContract receivableContract, QueryPage queryPage) {
         Page<ReceivableContract> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
         return new Result(m.selectPageList(page,receivableContract));
+    }
+
+    @Override
+    public List<ReceivableContract> receivableContractList(ReceivableContract receivableContract) {
+        if (StringUtils.isNotBlank(receivableContract.getContractId())){
+            queryWrapper.eq("contract_id", receivableContract.getContractId());
+        }
+
+        if (StringUtils.isNotBlank(receivableContract.getStaffId())){
+            queryWrapper.eq("staff_id", receivableContract.getStaffId());
+        }
+
+        return m.selectList(queryWrapper);
     }
 }
