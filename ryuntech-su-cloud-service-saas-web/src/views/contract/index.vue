@@ -102,13 +102,12 @@
 import { getList, findById, del } from '@/api/contract'
 import { getUserMap } from '@/api/user'
 import { getCustomerMap } from '@/api/customer'
-import Pagination from '@/components/Pagination'
 import Save from './save'
 import { parseTime } from '@/utils/index'
 import { contractStatusOptions } from './contract'
 
 export default {
-  components: { Pagination, Save },
+  components: { Save },
   data() {
     return {
       contractStatusOptions: contractStatusOptions,
@@ -139,12 +138,6 @@ export default {
     this.fetchData()
   },
   methods: {
-    _notify(message, type) {
-      this.$message({
-        message: message,
-        type: type
-      })
-    },
     getUserMap() {
       getUserMap('').then(res => {
         this.staffMap = res.data

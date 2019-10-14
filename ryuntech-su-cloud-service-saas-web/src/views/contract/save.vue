@@ -131,12 +131,6 @@ export default {
     }
   },
   methods: {
-    _notify(message, type) {
-      this.$message({
-        message: message,
-        type: type
-      })
-    },
     clearForm() {
       this.form.contractId = null
       this.form.contractName = null

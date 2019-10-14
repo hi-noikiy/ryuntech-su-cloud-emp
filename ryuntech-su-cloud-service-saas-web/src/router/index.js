@@ -126,6 +126,13 @@ export const constantRoutes = [
         name: '回款管理',
         component: () => import('@/views/collection/index'),
         meta: { title: '回款管理', icon: 'documentation' }
+      },
+      {
+        path: 'add',
+        hidden: true,
+        name: '添加回款',
+        component: () => import('@/views/collection/add'),
+        meta: { title: '添加回款', icon: 'documentation' }
       }
     ]
   },

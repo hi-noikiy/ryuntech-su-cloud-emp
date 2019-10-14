@@ -3,14 +3,11 @@
     <el-card>
       <div>
         <el-select v-model="search.paymentStatus" placeholder="全部账户">
-          <!-- 合同状态(0已逾期,1已完成，2执行中)-->
-          <el-option label="现金" value="0" />
-          <el-option label="工商银行" value="1" />
-          <el-option label="微信支付" value="2" />
+          <el-option v-for="(value,key) in collectionTypeOptions" :key="key" :label="value" :value="key" />
         </el-select>
         <el-input v-model="search.customerName" style="width: 200px;" placeholder="请输入客户名称" />
-        <el-button style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
-        <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新建回款</el-button>
+        <el-button size="mini" style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
+        <el-button size="mini" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="$router.push('/collection/add')">添加回款</el-button>
       </div>
       <br>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -76,8 +73,6 @@
         </el-table-column>
       </el-table>
 
-      <save :son-data="form" @sonStatus="status" />
-
       <pagination
         v-show="total>0"
         :total="total"
@@ -91,14 +86,13 @@
 
 <script>
 import { getList, findById, del } from '@/api/collection'
-import Pagination from '@/components/Pagination'
-import Save from './save'
 import { parseTime } from '@/utils/index'
+import { collectionTypeOptions } from './collection'
 
 export default {
-  components: { Pagination, Save },
   data() {
     return {
+      collectionTypeOptions: collectionTypeOptions,
       list: null,
       search: {},
       listLoading: true,
@@ -116,16 +110,9 @@ export default {
     }
   },
   created() {
-    console.info('this.fetchData()')
     this.fetchData()
   },
   methods: {
-    _notify(message, type) {
-      this.$message({
-        message: message,
-        type: type
-      })
-    },
     fetchData() {
       this.listLoading = true
       console.info('fetchData')
@@ -144,14 +131,6 @@ export default {
       findById(id).then(response => {
         this.form = response.data
       })
-    },
-
-    // 子组件的状态Flag，子组件通过`this.$emit('sonStatus', val)`给父组件传值
-    // 父组件通过`@sonStatus`的方法`status`监听到子组件传递的值
-    status(data) {
-      if (data) {
-        this.fetchData()
-      }
     },
 
     handleDel(id) {
