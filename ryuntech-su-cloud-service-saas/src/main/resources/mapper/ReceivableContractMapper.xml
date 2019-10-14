@@ -42,6 +42,9 @@
             <if test="receivableContract.contractName!=null and receivableContract.contractName!=''">
                 and contract_name like concat('%',#{receivableContract.contractName},'%')
             </if>
+            <if test="receivableContract.status!=null and receivableContract.status!=''">
+                and status = #{receivableContract.status}
+            </if>
         </where>
     </select>
 

@@ -17,20 +17,10 @@ import echarts from 'echarts'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online! ! !
- */
-
 // set ElementUI lang to EN
 import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n
-Vue.use(ElementUI)
 Vue.use(echarts)
-Vue.use(ElementUI, { locale })
+Vue.use(ElementUI, { locale, size: 'small' })
 
 axios.defaults.headers.post['Authorization'] = 'Basic Y2xpZW50OnNlY3JldA=='
 

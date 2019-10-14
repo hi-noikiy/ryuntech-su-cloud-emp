@@ -51,6 +51,15 @@
         </where>
     </select>
 
+    <select id="selectUserMap" resultType="com.ryuntech.saas.api.model.SysUser">
+        select id,username from sys_user
+        <where>
+            <if test="user.username!=null and user.username!=''">
+                username like concat('%',#{user.username},'%')
+            </if>
+        </where>
+    </select>
+
    <!-- &lt;!&ndash; 一对多：user、role &ndash;&gt;
     <resultMap id="userIncludeRolesMap" extends="userMap" type="com.ryuntech.saas.api.model.SysUser">
         <collection property="roleList" columnPrefix="role_" resultMap="com.ryuntech.saas.api.mapper.SysRoleMapper.BaseResultMap">
