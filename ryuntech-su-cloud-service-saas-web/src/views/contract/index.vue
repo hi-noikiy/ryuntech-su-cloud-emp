@@ -85,7 +85,7 @@
         </el-table-column>
       </el-table>
 
-      <save :son-data="form" @sonStatus="status" />
+      <save :son-data="form" :staff-map="staffMap" @sonStatus="status" />
 
       <pagination
         v-show="total>0"
@@ -100,6 +100,7 @@
 
 <script>
 import { getList, findById, del } from '@/api/contract'
+import { getUserMap } from '@/api/user'
 import Pagination from '@/components/Pagination'
 import Save from './save'
 import { parseTime } from '@/utils/index'
@@ -110,6 +111,7 @@ export default {
   data() {
     return {
       contractStatusOptions: contractStatusOptions,
+      staffMap: [],
       list: null,
       search: {
         belong_type: 0,
@@ -130,6 +132,7 @@ export default {
     }
   },
   created() {
+    this.getUserMap()
     this.fetchData()
   },
   methods: {
@@ -138,6 +141,11 @@ export default {
         message: message,
         type: type
       })
+    },
+    getUserMap() {
+      getUserMap('').then(res => {
+        this.staffMap = res.data
+      }).catch(er => { console.log(er) })
     },
     fetchData() {
       this.listLoading = true

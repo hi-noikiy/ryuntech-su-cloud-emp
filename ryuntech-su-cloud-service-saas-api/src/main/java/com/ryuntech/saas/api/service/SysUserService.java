@@ -65,4 +65,11 @@ public interface SysUserService  extends IService<SysUser> {
      * @return
      */
     IPage<SysUser> selectUsersRoleById(SysUser user, QueryPage queryPage);
+
+    /**
+     * 获取用户ID和用户名的列表，用于搜索选择
+     * @param user
+     * @return
+     */
+    List<SysUser> selectUserMap(SysUser user);
 }

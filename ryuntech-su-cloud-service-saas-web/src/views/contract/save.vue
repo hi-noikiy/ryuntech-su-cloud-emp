@@ -45,11 +45,11 @@
 
       <el-form-item label="负责员工" prop="staffName">
         <el-select v-model="form.staffId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索员工">
-          <el-option v-for="(value,key) in staffMap" :label="value" :value="key" />
+          <el-option v-for="item in staffMap" :label="item.username" :value="item.id" />
         </el-select>
       </el-form-item>
 
-      <el-form-item style="width: 100%" label="合同附件" prop="url">
+      <el-form-item style="width: 100%" label="合同附件">
         <el-upload
           class="avatar-uploader"
           :action="localUpload"
@@ -69,27 +69,6 @@
         <el-button type="text">添加回款计划</el-button>
       </el-form-item>
 
-      <div v-if="false" style="display:inline-block;width: 100%">
-        <!--<el-table
-          :data="tableData"
-          style="width: 100%">
-          <el-table-column
-            prop="date"
-            label="日期"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="name"
-            label="金额"
-            width="180">
-          </el-table-column>
-          <el-table-column
-            prop="address"
-            label="备注">
-          </el-table-column>
-        </el-table>-->
-      </div>
-
     </el-form>
     <div slot="footer" class="dialog-footer" style="margin-right: 30px">
       <el-button @click="handleClose">　退 出　</el-button>
@@ -106,7 +85,7 @@ export default {
   // 父组件向子组件传值，通过props获取。
   // 一旦父组件改变了`sonData`对应的值，子组件的`sonData`会立即改变，通过watch函数可以实时监听到值的变化
   // `props`不属于data，但是`props`中的参数可以像data中的参数一样直接使用
-  props: ['sonData'],
+  props: ['sonData', 'staffMap'],
 
   data() {
     return {
@@ -115,7 +94,6 @@ export default {
       localUpload: upload,
       imgURL: '',
       customerMap: {},
-      staffMap: {},
       form: {
         contractId: '',
         contractName: '',
@@ -137,8 +115,7 @@ export default {
         contacts: [{ required: true, trigger: 'blur', message: '请输入联系人' }],
         contactsPhone: [{ required: true, trigger: 'blur', message: '请输入联系电话' }],
         customerId: [{ required: true, trigger: 'blur', message: '请选择客户' }],
-        staffId: [{ required: true, trigger: 'blur', message: '请选择负责员工' }],
-        url: [{ required: true, trigger: 'blur', message: '请上传合同附件' }]
+        staffId: [{ required: true, trigger: 'blur', message: '请选择负责员工' }]
       }
     }
   },

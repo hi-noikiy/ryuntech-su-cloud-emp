@@ -85,4 +85,9 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         }
         return sysUserMapper.selectUsersRoleById(page,user);
     }
+
+    @Override
+    public List<SysUser> selectUserMap(SysUser user) {
+        return sysUserMapper.selectUserMap(user);
+    }
 }

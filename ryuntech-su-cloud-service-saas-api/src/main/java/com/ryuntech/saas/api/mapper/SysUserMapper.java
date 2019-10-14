@@ -1,10 +1,8 @@
 package com.ryuntech.saas.api.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
-import com.ryuntech.saas.api.model.Order;
 import com.ryuntech.saas.api.model.SysUser;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,4 +31,11 @@ public interface SysUserMapper  extends IBaseMapper<SysUser> {
      * @return
      */
     IPage<SysUser> selectUsersRoleById(@Param("pg") Page<SysUser> page, @Param("user") SysUser user);
+
+    /**
+     * 获取用户id和用户名列表，用于搜索选择
+     * @param user
+     * @return
+     */
+    List<SysUser> selectUserMap(@Param("user") SysUser user);
 }

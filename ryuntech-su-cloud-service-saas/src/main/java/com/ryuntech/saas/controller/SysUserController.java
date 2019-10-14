@@ -263,4 +263,22 @@ public class SysUserController extends ModuleBaseController {
         return new Result<>();
     }
 
+    /**
+     * 获取用户id和用户名列表，用于搜索选择
+     * @param user
+     * @return
+     */
+    @PostMapping("/getUserMap")
+    public Result selectUserMap(@RequestBody SysUser user) {
+        List<SysUser> list = sysUserService.selectUserMap(user);
+        List<Map<String,String>> res = new ArrayList<>();
+        for (SysUser sysUser : list) {
+            Map<String,String> item = new HashMap<>();
+            item.put("id",sysUser.getId());
+            item.put("username",sysUser.getUsername());
+            res.add(item);
+        }
+        return new Result(res);
+    }
+
 }

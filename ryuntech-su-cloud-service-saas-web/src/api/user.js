@@ -73,4 +73,12 @@ export function changePass(data) {
   })
 }
 
+export function getUserMap(username) {
+  return request({
+    url: '/saas/user/getUserMap',
+    method: 'post',
+    data: { username: username }
+  })
+}
+
 export const upload = process.env.VUE_APP_BASE_API + '/saas/storage/local/upload'
