@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.model.Order;
-import com.ryuntech.saas.api.model.PaymentResult;
-import com.ryuntech.saas.api.model.ReceivableContract;
-import com.ryuntech.saas.api.model.SysUser;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
 import com.ryuntech.saas.api.service.IPartnerService;
 import com.ryuntech.saas.api.service.IReceivableContractService;
@@ -91,10 +88,8 @@ public class ReceivableContractController extends ModuleBaseController {
         receivableContract.setStaffName(sysUser.getUsername());
 
         String customerId = receivableContract.getCustomerId();
-
-        // todo
-        String customerName = "客户名称";
-        receivableContract.setCustomerName(customerName);
+        CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
+        receivableContract.setCustomerName(customerUserInfo.getCustomerName());
 
         receivableContract.setStatus("2");
 
@@ -138,9 +133,10 @@ public class ReceivableContractController extends ModuleBaseController {
         SysUser sysUser = sysUserService.getById(staffId);
         receivableContract.setStaffName(sysUser.getUsername());
 
-        // todo 根据客户Id查询名称并更新
-        String customerName = "客户姓名";
-        receivableContract.setCustomerName(customerName);
+        String customerId = receivableContract.getCustomerId();
+        CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
+        receivableContract.setCustomerName(customerUserInfo.getCustomerName());
+
         boolean b = iReceivableContractService.saveOrUpdate(receivableContract);
         if (b){
             //更新成功

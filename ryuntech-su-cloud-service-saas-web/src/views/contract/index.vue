@@ -71,7 +71,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" label="部门" width="150">
+        <el-table-column v-if="false" align="center" label="部门" width="150">
           <template slot-scope="scope">
             <span>{{ scope.row.department }}</span>
           </template>
@@ -85,7 +85,7 @@
         </el-table-column>
       </el-table>
 
-      <save :son-data="form" :staff-map="staffMap" @sonStatus="status" />
+      <save :son-data="form" :staff-map="staffMap" :customer-map="customerMap" @sonStatus="status" />
 
       <pagination
         v-show="total>0"
@@ -101,6 +101,7 @@
 <script>
 import { getList, findById, del } from '@/api/contract'
 import { getUserMap } from '@/api/user'
+import { getCustomerMap } from '@/api/customer'
 import Pagination from '@/components/Pagination'
 import Save from './save'
 import { parseTime } from '@/utils/index'
@@ -112,6 +113,7 @@ export default {
     return {
       contractStatusOptions: contractStatusOptions,
       staffMap: [],
+      customerMap: [],
       list: null,
       search: {
         belong_type: 0,
@@ -133,6 +135,7 @@ export default {
   },
   created() {
     this.getUserMap()
+    this.getCustomerMap()
     this.fetchData()
   },
   methods: {
@@ -145,6 +148,11 @@ export default {
     getUserMap() {
       getUserMap('').then(res => {
         this.staffMap = res.data
+      }).catch(er => { console.log(er) })
+    },
+    getCustomerMap() {
+      getCustomerMap('').then(res => {
+        this.customerMap = res.data
       }).catch(er => { console.log(er) })
     },
     fetchData() {

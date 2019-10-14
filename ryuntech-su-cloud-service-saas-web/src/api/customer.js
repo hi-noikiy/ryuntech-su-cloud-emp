@@ -38,4 +38,12 @@ export function del(customerId) {
   })
 }
 
+export function getCustomerMap(name) {
+  return request({
+    url: '/saas/customer/getCustomerMap',
+    method: 'post',
+    data: { customerName: name }
+  })
+}
+
 export const upload = process.env.VUE_APP_BASE_API + '/saas/storage/local/upload'
