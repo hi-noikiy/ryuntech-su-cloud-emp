@@ -117,11 +117,14 @@ public class ReceivableContractController extends ModuleBaseController {
      */
     @DeleteMapping("/{contractId}")
     @ApiOperation(value = "删除合同")
-    @ApiImplicitParam(name = "contractId", value = "合同编号", required = true, dataType = "Long")
-    public Result delete(@PathVariable Long contractId) {
-        iReceivableContractService.removeById(contractId);
-        return new Result();
+    @ApiImplicitParam(name = "contractId", value = "合同编号", required = true, dataType = "String")
+    public Result delete(@PathVariable String contractId) {
+        boolean b = iReceivableContractService.removeById(contractId);
+        if (b){
+            return new Result();
+        } else {
+            return new Result(OPERATE_ERROR);
+        }
     }
-
 
 }
