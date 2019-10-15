@@ -8,7 +8,10 @@ import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.mapper.CustomerUserInfoMapper;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -21,6 +24,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInfoMapper, CustomerUserInfo> implements ICustomerUserInfoService {
 
+    @Autowired
+    CustomerUserInfoMapper customerUserInfoMapper;
     @Override
     public Result<IPage<CustomerUserInfo>> pageList(CustomerUserInfo customerUserInfo, QueryPage queryPage) {
         Page<CustomerUserInfo> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
@@ -36,5 +41,8 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         return new Result(m.selectPageList(page,customerUserInfo));
     }
 
-
+    @Override
+    public List<CustomerUserInfo> selectCustomerMap(CustomerUserInfo customerUserInfo) {
+        return customerUserInfoMapper.selectCustomerMap(customerUserInfo);
+    }
 }

@@ -12,9 +12,15 @@ import com.ryuntech.saas.api.service.IReceivableContractService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 import static com.ryuntech.common.constant.enums.CommonEnums.PARAM_ERROR;
@@ -27,6 +33,7 @@ import static com.ryuntech.common.constant.enums.CommonEnums.PARAM_ERROR;
  * @author antu
  * @since 2019-09-29
  */
+@Slf4j
 @RestController
 @RequestMapping("/customer")
 public class CustomerUserInfoController extends ModuleBaseController {
@@ -144,6 +151,24 @@ public class CustomerUserInfoController extends ModuleBaseController {
         }else {
             return new Result(OPERATE_ERROR);
         }
+    }
+
+    /**
+     * 获取用户id和用户名列表，用于搜索选择
+     * @param customerUserInfo
+     * @return
+     */
+    @PostMapping("/getCustomerMap")
+    public Result selectUserMap(@RequestBody CustomerUserInfo customerUserInfo) {
+        List<CustomerUserInfo> list = iCustomerUserInfoService.selectCustomerMap(customerUserInfo);
+        List<Map<String,String>> res = new ArrayList<>();
+        for (CustomerUserInfo customerUserInfo1 : list) {
+            Map<String,String> item = new HashMap<>();
+            item.put("customer_id",customerUserInfo1.getCustomerId());
+            item.put("customer_name",customerUserInfo1.getCustomerName());
+            res.add(item);
+        }
+        return new Result(res);
     }
 
 }

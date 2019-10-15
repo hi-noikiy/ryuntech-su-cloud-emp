@@ -13,6 +13,7 @@ import App from './App'
 import store from './store'
 import router from './router'
 import echarts from 'echarts'
+import MyMinxins from './layout/mixin/MyMixins'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -25,6 +26,8 @@ Vue.use(ElementUI, { locale, size: 'small' })
 axios.defaults.headers.post['Authorization'] = 'Basic Y2xpZW50OnNlY3JldA=='
 
 Vue.config.productionTip = false
+
+Vue.mixin(MyMinxins)
 
 new Vue({
   el: '#app',

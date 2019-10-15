@@ -39,7 +39,7 @@
 
       <el-form-item label="签约客户" prop="customerName">
         <el-select v-model="form.customerId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索客户">
-          <el-option v-for="(value,key) in customerMap" :label="value" :value="key" />
+          <el-option v-for="cus in customerMap" :label="cus.customer_name" :value="cus.customer_id" />
         </el-select>
       </el-form-item>
 
@@ -85,7 +85,7 @@ export default {
   // 父组件向子组件传值，通过props获取。
   // 一旦父组件改变了`sonData`对应的值，子组件的`sonData`会立即改变，通过watch函数可以实时监听到值的变化
   // `props`不属于data，但是`props`中的参数可以像data中的参数一样直接使用
-  props: ['sonData', 'staffMap'],
+  props: ['sonData', 'staffMap', 'customerMap'],
 
   data() {
     return {
@@ -93,7 +93,6 @@ export default {
       dialogTitle: '合同详细信息',
       localUpload: upload,
       imgURL: '',
-      customerMap: {},
       form: {
         contractId: '',
         contractName: '',
@@ -132,12 +131,6 @@ export default {
     }
   },
   methods: {
-    _notify(message, type) {
-      this.$message({
-        message: message,
-        type: type
-      })
-    },
     clearForm() {
       this.form.contractId = null
       this.form.contractName = null

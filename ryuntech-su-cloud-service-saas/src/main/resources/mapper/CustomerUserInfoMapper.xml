@@ -31,4 +31,13 @@
         </where>
     </select>
 
+    <select id="selectCustomerMap" resultType="com.ryuntech.saas.api.model.CustomerUserInfo">
+        select CUSTOMER_ID,CUSTOMER_NAME from ryn_customer_user_info
+        <where>
+            <if test="customerUserInfo.customerName!=null and customerUserInfo.customerName!=''">
+                customer_name like concat('%',#{customerUserInfo.customerName},'%')
+            </if>
+        </where>
+    </select>
+
 </mapper>

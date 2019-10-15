@@ -1,11 +1,11 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
-import com.ryuntech.saas.api.model.ReceivableContract;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +32,11 @@ public interface ICustomerUserInfoService extends IBaseService<CustomerUserInfo>
      * @return
      */
     Result<IPage<CustomerUserInfo>> selectPageList(CustomerUserInfo customerUserInfo, QueryPage queryPage);
+
+    /**
+     * 获取用户id和用户名列表，用于搜索选择
+     * @param customerUserInfo
+     * @return
+     */
+    List<CustomerUserInfo> selectCustomerMap(CustomerUserInfo customerUserInfo);
 }
