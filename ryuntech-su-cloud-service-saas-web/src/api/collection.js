@@ -14,3 +14,11 @@ export function del(collectionId) {
     method: 'delete'
   })
 }
+
+export function save(data) {
+  return request({
+    url: '/saas/collection',
+    method: 'post',
+    data
+  })
+}

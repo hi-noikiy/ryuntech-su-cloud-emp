@@ -40,12 +40,25 @@
             </el-form-item>
 
             <el-form-item style="width: 100%" label="附件">
+                <el-upload
+                        class="avatar-uploader"
+                        :action="localUpload"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload"
+                >
+                    <img v-if="form.url" :src="form.url" class="avatar">
+                    <template v-else>
+                        <i class="el-icon-plus avatar-uploader-icon" />
+                        <div class="el-upload__text">点我上传合同附件</div>
+                    </template>
+                </el-upload>
             </el-form-item>
 
         </el-form>
 
         <div class="operate-btn-group">
-            <el-button type="primary">　提　交　</el-button>
+            <el-button type="primary" @click="submitAddCollection">　提　交　</el-button>
             <el-button @click="$router.push('/collection/list')">　取　消　</el-button>
         </div>
 
@@ -133,12 +146,10 @@
 </template>
 
 <script>
-  import { del } from '@/api/collection'
-  import { getList as getContractList } from '@/api/contract'
+  import { del, save } from '@/api/collection'
+  import { getList as getContractList, upload as uploadUrl } from '@/api/contract'
   import { collectionTypeOptions } from './collection'
   import { contractStatusOptions } from '../contract/contract'
-
-  import { parseTime } from '@/utils/index'
 
   export default {
     data() {
@@ -147,12 +158,14 @@
         showSelectContract: false,
         collectionTypeOptions: collectionTypeOptions,
         contractStatusOptions: contractStatusOptions,
+        localUpload: uploadUrl,
         form: {
           contractId: undefined,
           amount: undefined,
           type: undefined,
           time: new Date(),
-          remarks: undefined
+          remarks: undefined,
+          url: undefined
         },
         listQuery: {
           page: 1,
@@ -191,6 +204,35 @@
         this.form.contractId = this.checkedContract.contractId
         this.contractName = this.checkedContract.contractId + ' : ' + this.checkedContract.contractName
         this.showSelectContract = false
+      },
+      // 文件上传成功的钩子函数
+      handleAvatarSuccess(res, file, fileList) {
+        if (res.tcode == 200) {
+          this._notify('图片上传成功', 'success')
+          this.form.url = res.data.url
+        }
+      },
+      // 文件上传前的前的钩子函数
+      beforeAvatarUpload(file) {
+        const isJPG = file.type === 'image/jpeg'
+        const isGIF = file.type === 'image/gif'
+        const isPNG = file.type === 'image/png'
+        const isBMP = file.type === 'image/bmp'
+        const isLt2M = file.size / 1024 / 1024 < 2
+        if (!isJPG && !isGIF && !isPNG && !isBMP) { this.$message.error('上传图片必须是JPG/GIF/PNG/BMP 格式!') }
+        if (!isLt2M) { this.$message.error('上传图片大小不能超过 2MB!') }
+        return (isJPG || isBMP || isGIF || isPNG) && isLt2M
+      },
+      submitAddCollection() {
+        if (!this.form.contractId) { return this.$message.error('请选择应收合同！') }
+        if (!this.form.amount || !/\d[\d\.]+/.test(this.form.amount)) { return this.$message.error('请输入回款金额！') }
+        if (!this.form.type) { return this.$message.error('请选择收款方式！') }
+        if (!this.form.time) { return this.$message.error('请选择收款时间！') }
+        save(this.form).then( res => {
+          console.log(res)
+          this.$message.success('添加成功')
+//          this.$router.push('/collection/list')
+        }).catch( er => console.log(er) )
       }
     }
   }
@@ -229,5 +271,34 @@
         .el-button + .el-button {
             margin-left: 30px;
         }
+    }
+</style>
+
+<style lang="scss">
+    .avatar-uploader .el-upload {
+        border: 1px dashed #d9d9d9;
+        border-radius: 6px;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .avatar-uploader .el-upload:hover {
+        border-color: #409EFF;
+    }
+
+    .avatar-uploader-icon {
+        font-size: 28px;
+        color: #8c939d;
+        width: 178px;
+        height: 178px;
+        line-height: 178px;
+        text-align: center;
+    }
+
+    .avatar {
+        width: 178px;
+        height: 178px;
+        display: block;
     }
 </style>

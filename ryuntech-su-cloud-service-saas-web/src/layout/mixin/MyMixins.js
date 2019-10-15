@@ -16,5 +16,4 @@ const MyMixins = {
     }
   }
 }
-
 export default MyMixins
