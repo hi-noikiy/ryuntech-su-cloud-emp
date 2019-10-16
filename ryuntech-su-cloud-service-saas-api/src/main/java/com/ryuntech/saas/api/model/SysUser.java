@@ -77,6 +77,9 @@ public class SysUser extends BaseModel implements UserDetails {
     @TableField(exist = false)
     private List<? extends GrantedAuthority> authorities;
 
+    @TableField(exist = false)
+    private List<Employee> employees;
+
 
     public void setGrantedAuthorities(List<? extends GrantedAuthority> authorities) {
         this.authorities = authorities;

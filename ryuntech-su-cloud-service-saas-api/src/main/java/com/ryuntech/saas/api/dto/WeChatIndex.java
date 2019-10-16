@@ -1,24 +1,24 @@
 package com.ryuntech.saas.api.dto;
 
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
-import java.util.List;
+
 
 /**
+ *
  * @author EDZ
  */
 @Data
 @Accessors(chain = true)
-public class IndexDTO {
-
-    private List<String> contractIdList;
-    private String companyName;
-
+public class WeChatIndex extends BaseModel {
     private String employeeId;
+    private String status;
 
     private Date startDate;
 
     private Date endDate;
+
 }

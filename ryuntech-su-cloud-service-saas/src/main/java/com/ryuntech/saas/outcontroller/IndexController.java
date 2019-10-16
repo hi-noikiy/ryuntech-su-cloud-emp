@@ -58,22 +58,6 @@ public class IndexController extends ModuleBaseController{
              //获取openid,查询用户数据
             UserWechat user1 = userWeChatService.selectByUserWeChat(userWechat);
 
-            String userId = user1.getUserId();
-
-            Employee employee = new Employee();
-            employee.setUserId(userId);
-            //获取员工
-            Employee employee1 = employeeService.selectByEmployee(employee);
-            String employeeId = employee1.getEmployeeId();
-            //获取部门
-//            employeeDepartmentService.selectByEmployeeDepartment()
-
-            //获取部门，获取部门下所有的员工数据，获取员工相关的合同待收金额
-
-//            SysUser sysUser = sysUserService.selectByUser(new SysUser().setId(userId));
-
-
-            //统计待收
 
 
             return new Result();

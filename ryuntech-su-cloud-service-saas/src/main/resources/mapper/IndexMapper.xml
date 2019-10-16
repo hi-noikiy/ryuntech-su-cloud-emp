@@ -28,7 +28,7 @@
             </if>
             <if test="indexDTO.startDate!=null and indexDTO.startDate!=''">
                 <![CDATA[
-                    ryn_receivable_collection.time >= #{indexDTO.startDate}
+                   and  ryn_receivable_collection.time >= #{indexDTO.startDate}
                 ]]>
             </if>
             <if test="indexDTO.endDate!=null and indexDTO.endDate!=''">
@@ -40,7 +40,170 @@
         group by contract_id
     </select>
 
-  <!--  SELECT
+    <!--总待收金额-->
+    <select id="selectBalanceAmounts" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.WeChatIndex">
+        select
+	        sum(balance_amount) as balance_amounts
+        from
+            ryn_receivable_contract
+        <where>
+            staff_id in (
+                select
+                    employee_id
+                from
+                    ryn_employee_department
+                <where>
+                        department_id in (
+                            select
+                                department_id
+                            from
+                                ryn_employee_department
+                            <where>
+                                <if test="weChatIndex.employeeId!=null">
+                                    employee_id = #{weChatIndex.employeeId}
+                                </if>
+                            </where>
+                        )
+                </where>
+            )
+            <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+                <![CDATA[
+                   and time >= #{weChatIndex.startDate}
+                ]]>
+            </if>
+            <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+                <![CDATA[
+                        and time <= #{weChatIndex.endDate}
+                ]]>
+            </if>
+        </where>
+    </select>
+
+    <!--本月新增应收-->
+    <select id="selectBalanceAmounts" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.WeChatIndex">
+        select
+            sum(contract_amount) as contract_amounts
+        from
+        ryn_receivable_contract
+        <where>
+            staff_id in (
+            select
+            employee_id
+            from
+            ryn_employee_department
+            <where>
+                department_id in (
+                select
+                department_id
+                from
+                ryn_employee_department
+                <where>
+                    <if test="weChatIndex.employeeId!=null">
+                        employee_id = #{weChatIndex.employeeId}
+                    </if>
+                </where>
+                )
+            </where>
+            )
+            <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+                <![CDATA[
+                   and time >= #{weChatIndex.startDate}
+                ]]>
+            </if>
+            <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+                <![CDATA[
+                        and time <= #{weChatIndex.endDate}
+                ]]>
+            </if>
+        </where>
+    </select>
+
+    <!--本月新增应收-->
+    <select id="selectContractAmount" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.IndexDTO">
+        select
+            sum(contract_amount) as contract_amounts
+        from
+            ryn_receivable_contract
+        <where>
+            staff_id in (
+            select
+                employee_id
+            from
+                ryn_employee_department
+            <where>
+                department_id in (
+                select
+                    department_id
+                from
+                    ryn_employee_department
+                <where>
+                    <if test="weChatIndex.employeeId!=null">
+                        employee_id = #{weChatIndex.employeeId}
+                    </if>
+                </where>
+                )
+                </where>
+            )
+            <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+                <![CDATA[
+                   and time >= #{weChatIndex.startDate}
+                ]]>
+            </if>
+            <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+                <![CDATA[
+                        and time <= #{weChatIndex.endDate}
+                ]]>
+            </if>
+        </where>
+    </select>
+
+    <!--指定日期内的回款-->
+    <select id="selectContractAmount" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.IndexDTO">
+        select
+            sum(amount) as amounts
+        from
+            ryn_receivable_collection
+        where contract_id in(
+            select
+                contract_id
+            from
+                ryn_receivable_contract
+            <where>
+                staff_id in (
+                select
+                employee_id
+                from
+                ryn_employee_department
+                <where>
+                    department_id in (
+                    select
+                    department_id
+                    from
+                    ryn_employee_department
+                    <where>
+                        <if test="weChatIndex.employeeId!=null">
+                            employee_id = #{weChatIndex.employeeId}
+                        </if>
+                    </where>
+                    )
+                </where>
+                )
+                <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+                    <![CDATA[
+                       and time >= #{weChatIndex.startDate}
+                    ]]>
+                </if>
+                <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+                    <![CDATA[
+                            and time <= #{weChatIndex.endDate}
+                    ]]>
+                </if>
+            </where>
+        )
+    </select>
+
+  <!--
+    SELECT
     EMPLOYEE_ID
     FROM
     ryn_employee_department
@@ -53,6 +216,5 @@
     WHERE
     EMPLOYEE_ID IN ( SELECT EMPLOYEE_ID FROM ryn_employee WHERE user_id = ( SELECT id FROM sys_user WHERE OPEN_ID = '1' ) )
     )-->
-
 
 </mapper>
