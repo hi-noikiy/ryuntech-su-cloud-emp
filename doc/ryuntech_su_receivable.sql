@@ -159,7 +159,10 @@ CREATE TABLE `ryn_customer_user_info`  (
   `STAFF_NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '负责员工姓名',
   `DEPARTMENT` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '部门',
   `ADDRESS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
-  `CITY` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL,
+  `PROVINCE_ID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '省份ID',
+  `CITY_ID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '城主ID',
+  `DISTRICT_ID` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '区ID',
+  `ADDRESS` varchar(200) NOT NULL DEFAULT '' COMMENT '详细地址',
   PRIMARY KEY (`CUSTOMER_ID`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '客户信息表' ROW_FORMAT = Dynamic;
 
@@ -169,11 +172,13 @@ CREATE TABLE `ryn_customer_user_info`  (
 DROP TABLE IF EXISTS `ryn_department`;
 CREATE TABLE `ryn_department`  (
   `DEPARTMENT_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `COMPANY_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `DEPARTMENT_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `LEVEL` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `PID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+  `COMPANY_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '所属公司ID',
+  `DEPARTMENT_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部门名称',,
+  `LEVEL` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '部门级别',
+  `PID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '父级ID',
+  `UPDATED_AT` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `CREATED_AT` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公司部门表';
 
 -- ----------------------------
 -- Table structure for ryn_employee
@@ -184,251 +189,23 @@ CREATE TABLE `ryn_employee`  (
   `USER_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户编号',
   `NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '职工姓名',
   `COMPANY_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司编号',
+  `DEPARTMENT_ID` varchar(64) UNSIGNED NOT NULL DEFAULT '0' COMMENT '所属部门ID',
+  `MOBILE` varchar(20) NOT NULL DEFAULT '' COMMENT '手机号（和登录手机号相同？）',
+  `EMAIL` varchar(100) NOT NULL DEFAULT '' COMMENT '邮箱',
+  `STATUS` tinyint(4) NOT NULL DEFAULT '0' COMMENT '帐号状态 0-正常 1-禁用',
   `COMPANY_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司姓名',
+  `UPDATED_AT` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `CREATED_AT` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`EMPLOYEE_ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公司职员表';
 
--- ----------------------------
--- Table structure for ryn_employee_department
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_employee_department`;
-CREATE TABLE `ryn_employee_department`  (
-  `ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `DEPARTMENT_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `EMPLOYEE_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_finance_user_info
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_finance_user_info`;
-CREATE TABLE `ryn_finance_user_info`  (
-  `USERID` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键，融资客户编号',
-  `USER_LOGO` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '头像',
-  `USER_TYPE` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `CREATE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '类型',
-  `MEMBER_BIRTHDAY` datetime(0) NULL DEFAULT NULL COMMENT '注册时间',
-  `REAL_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '生日(出生年月日)',
-  `EMAIL` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '真实姓名',
-  `SEX` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `MOBILE` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '性别',
-  `ADDRESS` varchar(215) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机',
-  `ID_TYPE_CODE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '地址',
-  `ID_NUMBER` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '证件类型',
-  `PROVINCE` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '身份证号',
-  `CITY` varchar(8) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '省',
-  `IS_VISITED_MEMBER` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '市',
-  `REGISTER_CHANNELS` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否邀请 0非1是',
-  `REGISTER_WAY` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申请渠道 1-PC 2-h5 3-小程序 ',
-  `REGISTER_AREA_NUMBER` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '申请方式',
-  `DETAIL_ADDRESS` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册地区',
-  `NICKNAME` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '详细地址',
-  `MODIFY_TIME` datetime(0) NULL DEFAULT NULL COMMENT '昵称',
-  `REFEREE` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '修改时间',
-  `OCCUPATION` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '推荐人编号',
-  `IS_PARTENER_WORKER` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '职业',
-  `COMPANY_ADDRESS` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否睿云员工 1是 0否',
-  `COMPANY_NAME` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司地址',
-  `BUSSINESS_REGISTER` datetime(0) NULL DEFAULT NULL COMMENT '公司名称',
-  `BUSSINESS_LICENSE` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '营业执照注册时间',
-  `PAY_TAXES` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '营业执照编号',
-  `ANNUAL_INVOICE` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '纳税额度(每年)',
-  `HOUSE_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '开发票(每年)',
-  `HOUSE_ADDRESS_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '00 按揭房 01全款 ',
-  `CAR_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '00 本地 01外地 ',
-  `CAR_ADDRESS_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '00 按揭车 01全款 ',
-  PRIMARY KEY (`USERID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_order
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_order`;
-CREATE TABLE `ryn_order`  (
-  `ORDER_ID` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键，订单编号',
-  `MEMBER_ID` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '融资客户Id',
-  `COMPANY_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
-  `MEMBER_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '',
-  `ORDER_CHENEL` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '下单渠道 0-小程序 1-PC 2-手机 4-微信',
-  `ORDER_TIME` datetime(0) NULL DEFAULT NULL COMMENT '申请时间',
-  `IS_ROY` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' COMMENT '是否产生佣金(0 无佣金 1有佣金)',
-  `PAYMENT_STATUS` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '佣金结算状态(00-未结算，01已结算，02结算中，03可结算)',
-  `ORDER_STATUS` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '\"订单状态:01=待处理(合伙人推荐成功),02=资质不符合(橙势审核不符),03=资金方审核(提交银行渠道) 04=已放款(银行渠道已放款，交易完成) 05=已拒款(交易失败) 06=已删除\"',
-  `ORDER_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '00' COMMENT '订单类型  01-普通订单',
-  `ORDER_CLOSE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '订单关闭时间',
-  `ORDER_INVALID_TIME` datetime(0) NULL DEFAULT NULL COMMENT '订单失效时间',
-  `PARTNER_ID` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '合伙人编号',
-  `ORDER_MERCHANT_MEMO` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '合伙人备注',
-  `ORDER_MEMO` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '推荐人编号',
-  `PAYMENT_FEE` decimal(10, 2) NULL DEFAULT NULL COMMENT '佣金提成金额',
-  `MODIFY_TIME` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
-  `IS_DELETE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单删除状态 0:订单标记为未删除  1：订单标记为已删除',
-  `ORDER_FACT_PAY_AMOUNT` decimal(10, 2) NULL DEFAULT 0.00 COMMENT '订单实际到账金额',
-  `ORDER_PAY_AMOUNT` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0.00' COMMENT '订单申请金额',
-  `ORDER_PAY_TIME` datetime(0) NULL DEFAULT NULL COMMENT '到账时间',
-  `ORDER_CREATE_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '00' COMMENT '订单生成方式 00=直接申请',
-  `REFERRAL_CODE` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '推荐码(6位)',
-  `CITY` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '城市',
-  PRIMARY KEY (`ORDER_ID`, `CITY`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_partner
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_partner`;
-CREATE TABLE `ryn_partner`  (
-  `PARTNERID` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '主键，合伙人ID',
-  `PARTNER_NAME` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '合伙人名称',
-  `COMPANY_ADDRESS` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司地址',
-  `COMPANY_NAME` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司名称',
-  `CONTACT_PERSON` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系人姓名',
-  `CONTACT_TYPE` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '联系方式',
-  `SEX` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '性别',
-  `IDCART_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '证件类型(00 身份证 01营业执照)',
-  `IDCART_NUMBER` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '证件号码',
-  `ADDRESS` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '合伙人详细地址',
-  `EMAIL` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `CREATE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `STATUS` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态',
-  `REGISTER_MOBILE` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册手机',
-  `MERCHANT_PAYMENT_PATTERN` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '支持的支付方式（对公，对私）',
-  `ACCNO` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '出金账户',
-  `ACCNO_BANK` varchar(200) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '出金账户开户行',
-  `PROVINCE_NO` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '省份编号',
-  `CITY_NO` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '市编号',
-  `MERCHANT_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '合伙人类型 0 普通类型',
-  `MEMBER_ORIGIN` float NULL DEFAULT NULL COMMENT '客户来源,注册0,DEFAULT=0  H5 1 PC',
-  `LEGAL_PERSON` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '英文名称',
-  `NICKNAME` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `AVATAR` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `RECOMMEND` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '推荐码',
-  `REVIEWER_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '审核人编号',
-  `REVIEWER_NAME` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '审核人名称',
-  `OPEN_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT '小程序编号',
-  PRIMARY KEY (`PARTNERID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_payment_result
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_payment_result`;
-CREATE TABLE `ryn_payment_result`  (
-  `PAYMENT_SYSTEM_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '结算系统编号',
-  `ORDER_ID` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '订单编号',
-  `PAYMENT_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '结算付款方式 01 微信 02 银行卡',
-  `PAYMENT_TIME` datetime(0) NULL DEFAULT NULL COMMENT '结算时间',
-  `PAYMENT_STATUS` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '结算状态(03-可结算，01已结算，02结算中)',
-  `PAYMENT_FEE` decimal(10, 2) NULL DEFAULT NULL COMMENT '手续费',
-  `PAYED_BANK` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '结算银行',
-  `PAY_CARD_NO` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '结算卡号',
-  `PAY_CARD_TYPE` varchar(30) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '结算类型',
-  `PAYED_TIME` datetime(0) NULL DEFAULT NULL COMMENT '结算完成时间',
-  `CHANNEL_TYPE` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '渠道 01-PC 02-小程序 ',
-  `PAY_AMT` decimal(10, 2) NULL DEFAULT NULL COMMENT '结算金额',
-  PRIMARY KEY (`PAYMENT_SYSTEM_ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_receivable_collection
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_receivable_collection`;
-CREATE TABLE `ryn_receivable_collection`  (
-  `COLLECTION_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户编号',
-  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户名称',
-  `CUSTOMER_NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户名称',
-  `AMOUNT` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款金额',
-  `CARD_NO` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款账户',
-  `TYPE` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款方式',
-  `TIME` datetime(0) NULL DEFAULT NULL COMMENT '回款时间',
-  `VOUCHER_TYPE` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '凭证类型',
-  `URL` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '凭证附件地址',
-  `CREATE_BY` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '创建人',
-  `CREATE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款状态(0已作废，1已收款)',
-  `REMARKS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '备注',
-  `COLLECTION_DATE` datetime(0) NULL DEFAULT NULL COMMENT '回款日期',
-  `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同编号',
-  PRIMARY KEY (`COLLECTION_ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '回款表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_receivable_collection_plan
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_receivable_collection_plan`;
-CREATE TABLE `ryn_receivable_collection_plan`  (
-  `PLAN_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '主键',
-  `PLAN_AMOUNT` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划金额',
-  `REMAKES` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '备注',
-  `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划状态',
-  `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同编号',
-  PRIMARY KEY (`PLAN_ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_receivable_contract
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_receivable_contract`;
-CREATE TABLE `ryn_receivable_contract`  (
-  `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '合同编号',
-  `CONTRACT_NAME` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同名称',
-  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户编号',
-  `CUSTOMER_NAME` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户名称',
-  `CONTRACT_TIME` datetime(0) NULL DEFAULT NULL COMMENT '合同日期',
-  `CONTRACT_AMOUNT` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同金额',
-  `BALANCE_AMOUNT` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '应收余额',
-  `COLLECTION_AMOUNT` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款余额',
-  `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同状态(0已逾期,1已完成，2执行中)\r\n',
-  `DEPARTMENT` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '部门',
-  `COLLECTION_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款订单编号',
-  `CONTRACT_CODE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同编码',
-  `CONTACTS` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '联系人',
-  `CONTACTS_PHONE` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '联系电话',
-  `STAFF_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '负责人员工编号',
-  `STAFF_NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '负责人员工姓名',
-  `URL` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同附件地址',
-  `ANNEX_TYPE` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同附件类型',
-  PRIMARY KEY (`CONTRACT_ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '应收合同表' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of ryn_receivable_contract
--- ----------------------------
-INSERT INTO `ryn_receivable_contract` VALUES ('726016414963466240', '测试', NULL, '冲冲冲', '2019-09-29 17:04:33', '40', NULL, NULL, NULL, NULL, NULL, '43222', '参数', '18518215586', NULL, '123', 'http://wx.ryuntech.com/upload/135302172.jpg', NULL);
-
--- ----------------------------
--- Table structure for ryn_sys_params
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_sys_params`;
-CREATE TABLE `ryn_sys_params`  (
-  `INNER_NAME` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '内部名key',
-  `OUTER_NAME` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '外部名',
-  `VALUE` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '参数值',
-  `TYPE` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '参数类型1=第一次登录,0=非第一次登录',
-  `STATUS` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态 1=是；0=否',
-  `MEMO` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
-  `INSTANCE_ID` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '流程实例编号',
-  PRIMARY KEY (`INNER_NAME`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Table structure for ryn_user_wechat
--- ----------------------------
-DROP TABLE IF EXISTS `ryn_user_wechat`;
-CREATE TABLE `ryn_user_wechat`  (
-  `USER_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `OPEN_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `IMG_URL` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `SESSION_KEY` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `NICKNAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`OPEN_ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_perm
 -- ----------------------------
 DROP TABLE IF EXISTS `sys_perm`;
 CREATE TABLE `sys_perm`  (
-  `pval` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '权限值，shiro的权限控制表达式',
+  `pval` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '权限值，shiro的权限控制表达式(路由)',
   `parent` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '父权限id',
   `pname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '权限名称',
   `ptype` int(3) NULL DEFAULT NULL COMMENT '权限类型：1.菜单 2.按钮 3.接口 4.特殊',
@@ -437,7 +214,97 @@ CREATE TABLE `sys_perm`  (
   `updated` timestamp(0) NULL DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`pval`) USING BTREE,
   UNIQUE INDEX `pval`(`pval`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限' ROW_FORMAT = Dynamic;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='权限表';
+
+-- ----------------------------
+-- Table structure for sys_role
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role`;
+CREATE TABLE `sys_role`  (
+  `rid` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色id',
+  `rname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色名，用于显示',
+  `rdesc` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色描述',
+  `rval` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色值，用于权限判断',
+  `company_id` varchar(64) unsigned NOT NULL DEFAULT '0' COMMENT '所属公司ID',
+  `created` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `updated` timestamp(0) NULL DEFAULT NULL COMMENT '修改时间',
+  PRIMARY KEY (`rid`) USING BTREE,
+  UNIQUE INDEX `rval`(`rval`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色表';
+
+
+
+DROP TABLE IF EXISTS `ryn_employee_role`;
+CREATE TABLE `ryn_employee_role` (
+  `id` varchar(64) unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID，自动增长',
+  `employee_id` varchar(64) NOT NULL DEFAULT '0' COMMENT '职员ID',
+  `role_id` varchar(25) NOT NULL DEFAULT '0' COMMENT '角色ID',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`id`),
+  KEY `employee_id` (`employee_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='职员-角色关联表';
+
+
+-- ----------------------------
+-- Table structure for sys_role_perm
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_role_perm`;
+CREATE TABLE `sys_role_perm`  (
+  `role_id` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `perm_val` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `perm_type` int(5) NULL DEFAULT NULL,
+  PRIMARY KEY (`role_id`, `perm_val`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='角色权限关联表';
+
+
+-- ----------------------------
+-- Table structure for sys_user
+-- ----------------------------
+DROP TABLE IF EXISTS `sys_user`;
+CREATE TABLE `sys_user`  (
+  `id` bigint(64) NOT NULL AUTO_INCREMENT COMMENT '用户主键',
+  `username` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '登陆名称',
+  `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '密码',
+  `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机',
+  `vcode` varchar(10) NOT NULL DEFAULT '' COMMENT '手机验证码',
+  `avatar` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户头像',
+  `create_time` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `union_id` varchar(64) NOT NULL DEFAULT '' COMMENT '微信union_id（如果绑定了微信）',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户表';
+
+-- ----------------------------
+-- Table structure for ryn_user_wechat
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_user_wechat`;
+CREATE TABLE `ryn_user_wechat` (
+  `id` int(64) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` varchar(64) NOT NULL DEFAULT '' COMMENT '关联用户表主键',
+  `union_id` varchar(64) NOT NULL DEFAULT '' COMMENT '微信Union_id',
+  `miniprogram_openid` varchar(64) NOT NULL DEFAULT '' COMMENT '小程序openid',
+  `gongzhonghao_openid` varchar(64) NOT NULL DEFAULT '' COMMENT '公众号openid',
+  `subscribe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '用户是否关注公众号 0-未关注 1-已关注',
+  `nickname` varchar(30) NOT NULL DEFAULT '' COMMENT '昵称',
+  `sex` tinyint(1) NOT NULL DEFAULT '0' COMMENT '性别 1 男，2女，0未知',
+  `province` varchar(20) NOT NULL DEFAULT '' COMMENT '省',
+  `city` varchar(20) NOT NULL DEFAULT '' COMMENT '城市',
+  `country` varchar(20) NOT NULL DEFAULT '' COMMENT '国家',
+  `headimgurl` varchar(200) NOT NULL DEFAULT '' COMMENT '头像',
+  `language` varchar(30) NOT NULL DEFAULT '' COMMENT '用户的语言，简体中文为zh_CN',
+  `subscribe_time` int(11) NOT NULL DEFAULT '0' COMMENT '用户关注时间，为时间戳。如果用户曾多次关注，则取最后关注时间',
+  `remark` varchar(200) NOT NULL DEFAULT '' COMMENT '公众号运营者对粉丝的备注',
+  `groupid` int(11) NOT NULL DEFAULT '0' COMMENT '用户所在分组',
+  `subscribe_scene` varchar(20) NOT NULL DEFAULT '' COMMENT '用户关注的渠道来源',
+  `tagid_list` varchar(30) NOT NULL DEFAULT '' COMMENT '用户被打上的标签ID列表',
+  `qr_scene` varchar(30) NOT NULL DEFAULT '' COMMENT '二维码扫码场景',
+  `qr_scene_str` varchar(50) NOT NULL DEFAULT '' COMMENT '二维码扫码场景描述',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC COMMENT='用户微信信息表';
+
 
 -- ----------------------------
 -- Records of sys_perm
@@ -471,21 +338,6 @@ INSERT INTO `sys_perm` VALUES ('m:menu4:1:c', 'm:menu4:1', '菜单4-1-c', 1, 1, 
 INSERT INTO `sys_perm` VALUES ('m:menu4:2', 'm:menu4', '菜单4-2', 1, 1, NULL, NULL);
 
 -- ----------------------------
--- Table structure for sys_role
--- ----------------------------
-DROP TABLE IF EXISTS `sys_role`;
-CREATE TABLE `sys_role`  (
-  `rid` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色id',
-  `rname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色名，用于显示',
-  `rdesc` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色描述',
-  `rval` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色值，用于权限判断',
-  `created` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
-  `updated` timestamp(0) NULL DEFAULT NULL COMMENT '修改时间',
-  PRIMARY KEY (`rid`) USING BTREE,
-  UNIQUE INDEX `rval`(`rval`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
-
--- ----------------------------
 -- Records of sys_role
 -- ----------------------------
 INSERT INTO `sys_role` VALUES ('1002748319131680769', '普通用户', '具有一般的权限，不具备系统菜单权限', 'common', '2018-06-02 11:06:44', '2019-09-13 16:09:45');
@@ -495,16 +347,6 @@ INSERT INTO `sys_role` VALUES ('1002806266750803970', '销售', '拥有财务相
 INSERT INTO `sys_role` VALUES ('1002807171923550210', '文员', '拥有文员相关的权限', 'stuff', '2018-06-02 15:00:36', NULL);
 INSERT INTO `sys_role` VALUES ('999999888888777777', '超级管理员', '具有本系统中最高权限', 'root', '2018-04-19 17:34:33', NULL);
 
--- ----------------------------
--- Table structure for sys_role_perm
--- ----------------------------
-DROP TABLE IF EXISTS `sys_role_perm`;
-CREATE TABLE `sys_role_perm`  (
-  `role_id` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `perm_val` varchar(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `perm_type` int(5) NULL DEFAULT NULL,
-  PRIMARY KEY (`role_id`, `perm_val`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_role_perm
@@ -560,5 +402,102 @@ CREATE TABLE `sys_user_role`  (
 -- ----------------------------
 INSERT INTO `sys_user_role` VALUES ('1002748017179541505', '1002748319131680769');
 INSERT INTO `sys_user_role` VALUES ('986177923098808322', '999999888888777777');
+
+
+
+-- ----------------------------
+-- Table structure for ryn_receivable_collection
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_receivable_collection`;
+CREATE TABLE `ryn_receivable_collection`  (
+  `COLLECTION_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户编号',
+  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户名称',
+  `CUSTOMER_NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户名称',
+  `AMOUNT` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款金额',
+  `CARD_NO` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款账户',
+  `TYPE` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款方式',
+  `TIME` datetime(0) NULL DEFAULT NULL COMMENT '回款时间',
+  `VOUCHER_TYPE` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '凭证类型',
+  `ATTACHMENT_CODE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '凭证附件编码',
+  `CREATE_BY` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '创建人',
+  `CREATE_TIME` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款状态(0已作废，1已收款)',
+  `REMARKS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '备注',
+  `COLLECTION_DATE` datetime(0) NULL DEFAULT NULL COMMENT '回款日期',
+  `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同编号',
+  `PLAN_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划编号',
+  PRIMARY KEY (`COLLECTION_ID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '回款表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for ryn_receivable_collection_plan
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_receivable_collection_plan`;
+CREATE TABLE `ryn_receivable_collection_plan`  (
+  `PLAN_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '主键',
+  `PLAN_AMOUNT` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划金额',
+  `REMAKES` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '备注',
+  `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款状态(0逾期1已还款2未开始)',
+  `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同编号',
+  `PLAN_TIME` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '计划回款时间',
+  PRIMARY KEY (`PLAN_ID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for ryn_receivable_contract
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_receivable_contract`;
+CREATE TABLE `ryn_receivable_contract`  (
+  `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '合同编号',
+  `CONTRACT_NAME` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同名称',
+  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户编号',
+  `CUSTOMER_NAME` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户名称',
+  `CONTRACT_TIME` datetime(0) NULL DEFAULT NULL COMMENT '合同日期',
+  `CONTRACT_AMOUNT` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同金额',
+  `BALANCE_AMOUNT` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '应收余额',
+  `COLLECTION_AMOUNT` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '回款余额',
+  `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同状态(0已逾期,1已完成，2执行中)',
+  `DEPARTMENT` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '部门',
+  `CONTRACT_CODE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同编码',
+  `CONTACTS` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '联系人',
+  `CONTACTS_PHONE` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '联系电话',
+  `STAFF_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '负责人员工编号',
+  `STAFF_NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '负责人员工姓名',
+  `ATTACHMENT_CODE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '附件编码',
+  PRIMARY KEY (`CONTRACT_ID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '应收合同表' ROW_FORMAT = Dynamic;
+
+DROP TABLE IF EXISTS `ryn_attachment`;
+CREATE TABLE `ryn_attachment`  (
+ `ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '附件主键',
+ `ATTACHMENT_CODE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '附件编码',
+ `ATTACHMENT_URL` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '附件地址',
+ `ATTACHMENT_TYPE` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '附件类型',
+ `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '附件类型',
+ `UPDATED_AT` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+ `CREATED_AT` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  PRIMARY KEY (`ID`) USING BTREE
+)ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '附件表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of ryn_receivable_contract
+-- ----------------------------
+INSERT INTO `ryn_receivable_contract` VALUES ('726016414963466240', '测试', NULL, '冲冲冲', '2019-09-29 17:04:33', '40', NULL, NULL, NULL, NULL, NULL, '43222', '参数', '18518215586', NULL, '123', 'http://wx.ryuntech.com/upload/135302172.jpg', NULL);
+
+-- ----------------------------
+-- Table structure for ryn_sys_params
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_sys_params`;
+CREATE TABLE `ryn_sys_params`  (
+  `INNER_NAME` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '内部名key',
+  `OUTER_NAME` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '外部名',
+  `VALUE` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '参数值',
+  `TYPE` varchar(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '参数类型1=第一次登录,0=非第一次登录',
+  `STATUS` varchar(2) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '状态 1=是；0=否',
+  `MEMO` varchar(510) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '备注',
+  `INSTANCE_ID` varchar(40) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '流程实例编号',
+  PRIMARY KEY (`INNER_NAME`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
 
 SET FOREIGN_KEY_CHECKS = 1;
