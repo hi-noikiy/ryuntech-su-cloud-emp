@@ -72,4 +72,11 @@ public interface SysUserService  extends IService<SysUser> {
      * @return
      */
     List<SysUser> selectUserMap(SysUser user);
+
+    /**
+     * 通过指定用户查询
+     * @param user
+     * @return
+     */
+    SysUser selectByUser(SysUser user);
 }

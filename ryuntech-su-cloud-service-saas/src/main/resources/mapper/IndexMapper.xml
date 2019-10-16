@@ -40,5 +40,19 @@
         group by contract_id
     </select>
 
+  <!--  SELECT
+    EMPLOYEE_ID
+    FROM
+    ryn_employee_department
+    WHERE
+    DEPARTMENT_ID IN (
+    SELECT
+    DEPARTMENT_ID
+    FROM
+    ryn_employee_department
+    WHERE
+    EMPLOYEE_ID IN ( SELECT EMPLOYEE_ID FROM ryn_employee WHERE user_id = ( SELECT id FROM sys_user WHERE OPEN_ID = '1' ) )
+    )-->
+
 
 </mapper>

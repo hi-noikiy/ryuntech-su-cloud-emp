@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.DepartmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.Department">
+        <result column="DEPARTMENT_ID" property="departmentId" />
+        <result column="COMPANY_ID" property="companyId" />
+        <result column="DEPARTMENT_NAME" property="departmentName" />
+        <result column="LEVEL" property="level" />
+        <result column="PID" property="pid" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        DEPARTMENT_ID, COMPANY_ID, DEPARTMENT_NAME, LEVEL, PID
+    </sql>
+
+</mapper>

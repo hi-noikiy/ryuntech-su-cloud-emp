@@ -11,6 +11,7 @@ import com.ryuntech.saas.api.mapper.SysUserMapper;
 import com.ryuntech.saas.api.model.Order;
 import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.service.SysUserService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -89,5 +90,16 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
     @Override
     public List<SysUser> selectUserMap(SysUser user) {
         return sysUserMapper.selectUserMap(user);
+    }
+
+    @Override
+    public SysUser selectByUser(SysUser user) {
+        if (StringUtils.isNotBlank(user.getId())){
+            queryWrapper.eq("id", user.getId());
+        }
+        if (user.getUsername()!=null) {
+            queryWrapper.eq("username", user.getUsername());
+        }
+        return sysUserMapper.selectOne(queryWrapper);
     }
 }

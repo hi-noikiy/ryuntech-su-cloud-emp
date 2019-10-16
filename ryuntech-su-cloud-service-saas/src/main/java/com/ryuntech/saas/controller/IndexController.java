@@ -71,4 +71,6 @@ public class IndexController extends ModuleBaseController {
         index.setContractId("66666666");
         return new Result(index);
     }
+
+
 }
