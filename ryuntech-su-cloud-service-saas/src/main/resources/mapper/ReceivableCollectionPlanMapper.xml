@@ -9,6 +9,7 @@
         <result column="REMAKES" property="remakes" />
         <result column="STATUS" property="status" />
         <result column="CONTRACT_ID" property="contractId" />
+        <result column="PLAN_TIME" property="planTime" />
     </resultMap>
 
     <!-- 通用查询结果列 -->

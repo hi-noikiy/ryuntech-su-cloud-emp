@@ -11,11 +11,15 @@
         <result column="STAFF_ID" property="staffId" />
         <result column="STAFF_NAME" property="staffName" />
         <result column="DEPARTMENT" property="department" />
+        <result column="ADDRESS" property="address" />
+        <result column="PROVINCE_ID" property="provinceId" />
+        <result column="CITY_ID" property="cityId" />
+        <result column="DISTRICT_ID" property="districtId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        CUSTOMER_ID, CUSTOMER_NAME, CONTACTS, CONTACTS_PHONE, STAFF_ID, STAFF_NAME, DEPARTMENT
+        CUSTOMER_ID, CUSTOMER_NAME, CONTACTS, CONTACTS_PHONE, STAFF_ID, STAFF_NAME, DEPARTMENT, ADDRESS, PROVINCE_ID, CITY_ID, DISTRICT_ID
     </sql>
 
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.CustomerUserInfo">

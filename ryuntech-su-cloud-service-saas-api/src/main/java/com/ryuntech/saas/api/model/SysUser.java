@@ -63,6 +63,26 @@ public class SysUser extends BaseModel implements UserDetails {
     private Date createTime;
 
 
+    /**
+     * 创建时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @Column(name = "updated_at")
+    private Date updatedAt;
+
+    /**
+     * 微信union_id（如果绑定了微信）
+     */
+    private String unionId;
+
+
+    /**
+     * 手机验证码
+     */
+    private String vcode;
+
+
     @TableField(exist = false)
     /**用户所有角色值，在管理后台显示用户的角色*/
     private List<SysRole> roleList = new ArrayList<>();

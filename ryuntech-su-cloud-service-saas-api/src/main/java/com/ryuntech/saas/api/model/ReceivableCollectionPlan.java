@@ -8,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * <p>
@@ -25,20 +26,41 @@ import java.io.Serializable;
 
     private static final long serialVersionUID = 1L;
 
-            @TableId("PLAN_ID")
+    /**
+     * 主键
+     */
+    @TableId("PLAN_ID")
     private String planId;
 
-        @TableField("PLAN_AMOUNT")
+    /**
+     * 计划金额
+     */
+    @TableField("PLAN_AMOUNT")
     private String planAmount;
 
-        @TableField("REMAKES")
+    /**
+     * 备注
+     */
+    @TableField("REMAKES")
     private String remakes;
 
-        @TableField("STATUS")
+    /**
+     * 回款状态(0逾期1已还款2未开始)
+     */
+    @TableField("STATUS")
     private String status;
 
-        @TableField("CONTRACT_ID")
+    /**
+     * 合同编号
+     */
+    @TableField("CONTRACT_ID")
     private String contractId;
+
+    /**
+     * 计划回款时间
+     */
+    @TableField("PLAN_TIME")
+    private LocalDateTime planTime;
 
 
 }

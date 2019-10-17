@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.AttachmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.entity.Attachment">
+        <id column="ID" property="id" />
+        <result column="ATTACHMENT_CODE" property="attachmentCode" />
+        <result column="ATTACHMENT_URL" property="attachmentUrl" />
+        <result column="ATTACHMENT_TYPE" property="attachmentType" />
+        <result column="STATUS" property="status" />
+        <result column="UPDATED_AT" property="updatedAt" />
+        <result column="CREATED_AT" property="createdAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        ID, ATTACHMENT_CODE, ATTACHMENT_URL, ATTACHMENT_TYPE, STATUS, UPDATED_AT, CREATED_AT
+    </sql>
+
+</mapper>

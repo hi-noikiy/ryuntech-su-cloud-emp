@@ -3,6 +3,7 @@ package com.ryuntech.saas.api.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -21,7 +22,7 @@ import java.io.Serializable;
         @EqualsAndHashCode(callSuper = false)
     @Accessors(chain = true)
     @TableName("ryn_customer_user_info")
-    public class CustomerUserInfo implements Serializable {
+    public class CustomerUserInfo extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 

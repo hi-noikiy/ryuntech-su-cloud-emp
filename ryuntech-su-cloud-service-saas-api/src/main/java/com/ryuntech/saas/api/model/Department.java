@@ -1,12 +1,15 @@
 package com.ryuntech.saas.api.model;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
 * <p>
@@ -20,24 +23,42 @@ import java.io.Serializable;
         @EqualsAndHashCode(callSuper = false)
     @Accessors(chain = true)
     @TableName("ryn_department")
-    public class Department implements Serializable {
+    public class Department extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
-        @TableField("DEPARTMENT_ID")
+    @TableId("DEPARTMENT_ID")
     private String departmentId;
 
-        @TableField("COMPANY_ID")
+    /**
+     * 所属公司ID
+     */
+    @TableField("COMPANY_ID")
     private String companyId;
 
-        @TableField("DEPARTMENT_NAME")
+    /**
+     * 部门名称
+     */
+    @TableField("DEPARTMENT_NAME")
     private String departmentName;
 
-        @TableField("LEVEL")
+    /**
+     * 部门级别
+     */
+    @TableField("LEVEL")
     private String level;
 
-        @TableField("PID")
+    /**
+     * 父级ID
+     */
+    @TableField("PID")
     private String pid;
+
+    @TableField("UPDATED_AT")
+    private LocalDateTime updatedAt;
+
+    @TableField("CREATED_AT")
+    private LocalDateTime createdAt;
 
 
 }

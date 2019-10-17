@@ -5,18 +5,12 @@ import com.ryuntech.saas.api.model.UserWechat;
 
 /**
  * <p>
- *  服务类
+ * 用户微信信息表 服务类
  * </p>
  *
  * @author antu
- * @since 2019-10-15
+ * @since 2019-10-17
  */
-public interface IUserWechatService extends IService<UserWechat> {
+public interface IUserWechatService extends IBaseService<UserWechat> {
 
-    /**
-     * 查询指定数据
-     * @param userWechat
-     * @return
-     */
-    UserWechat selectByUserWeChat(UserWechat userWechat);
 }

@@ -41,7 +41,7 @@
     </select>
 
     <!--总待收金额-->
-    <select id="selectBalanceAmounts" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.WeChatIndex">
+    <select id="selectBalanceAmounts" resultType="String">
         select
 	        sum(balance_amount) as balance_amounts
         from
@@ -59,67 +59,28 @@
                             from
                                 ryn_employee_department
                             <where>
-                                <if test="weChatIndex.employeeId!=null">
-                                    employee_id = #{weChatIndex.employeeId}
+                                <if test="weChatIndexDTO.employeeId!=null">
+                                    employee_id = #{weChatIndexDTO.employeeId}
                                 </if>
                             </where>
                         )
                 </where>
             )
-            <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+            <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                 <![CDATA[
-                   and time >= #{weChatIndex.startDate}
+                   and time >= #{weChatIndexDTO.startDate}
                 ]]>
             </if>
-            <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+            <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                 <![CDATA[
-                        and time <= #{weChatIndex.endDate}
-                ]]>
-            </if>
-        </where>
-    </select>
-
-    <!--本月新增应收-->
-    <select id="selectBalanceAmounts" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.WeChatIndex">
-        select
-            sum(contract_amount) as contract_amounts
-        from
-        ryn_receivable_contract
-        <where>
-            staff_id in (
-            select
-            employee_id
-            from
-            ryn_employee_department
-            <where>
-                department_id in (
-                select
-                department_id
-                from
-                ryn_employee_department
-                <where>
-                    <if test="weChatIndex.employeeId!=null">
-                        employee_id = #{weChatIndex.employeeId}
-                    </if>
-                </where>
-                )
-            </where>
-            )
-            <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
-                <![CDATA[
-                   and time >= #{weChatIndex.startDate}
-                ]]>
-            </if>
-            <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
-                <![CDATA[
-                        and time <= #{weChatIndex.endDate}
+                        and time <= #{weChatIndexDTO.endDate}
                 ]]>
             </if>
         </where>
     </select>
 
     <!--本月新增应收-->
-    <select id="selectContractAmount" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.IndexDTO">
+    <select id="selectContractAmounts" resultType="String">
         select
             sum(contract_amount) as contract_amounts
         from
@@ -137,28 +98,28 @@
                 from
                     ryn_employee_department
                 <where>
-                    <if test="weChatIndex.employeeId!=null">
-                        employee_id = #{weChatIndex.employeeId}
+                    <if test="weChatIndexDTO.employeeId!=null">
+                        employee_id = #{weChatIndexDTO.employeeId}
                     </if>
                 </where>
                 )
                 </where>
             )
-            <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+            <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                 <![CDATA[
-                   and time >= #{weChatIndex.startDate}
+                   and time >= #{weChatIndexDTO.startDate}
                 ]]>
             </if>
-            <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+            <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                 <![CDATA[
-                        and time <= #{weChatIndex.endDate}
+                        and time <= #{weChatIndexDTO.endDate}
                 ]]>
             </if>
         </where>
     </select>
 
     <!--指定日期内的回款-->
-    <select id="selectContractAmount" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.IndexDTO">
+    <select id="selectCollectionAmounts" resultType="String">
         select
             sum(amount) as amounts
         from
@@ -181,40 +142,357 @@
                     from
                     ryn_employee_department
                     <where>
-                        <if test="weChatIndex.employeeId!=null">
-                            employee_id = #{weChatIndex.employeeId}
+                        <if test="weChatIndexDTO.employeeId!=null">
+                            employee_id = #{weChatIndexDTO.employeeId}
                         </if>
                     </where>
                     )
                 </where>
                 )
-                <if test="weChatIndex.startDate!=null and weChatIndex.startDate!=''">
+                <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                     <![CDATA[
-                       and time >= #{weChatIndex.startDate}
+                       and time >= #{weChatIndexDTO.startDate}
                     ]]>
                 </if>
-                <if test="weChatIndex.endDate!=null and weChatIndex.endDate!=''">
+                <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                     <![CDATA[
-                            and time <= #{weChatIndex.endDate}
+                            and time <= #{weChatIndexDTO.endDate}
                     ]]>
                 </if>
             </where>
         )
     </select>
 
-  <!--
-    SELECT
-    EMPLOYEE_ID
-    FROM
-    ryn_employee_department
-    WHERE
-    DEPARTMENT_ID IN (
-    SELECT
-    DEPARTMENT_ID
-    FROM
-    ryn_employee_department
-    WHERE
-    EMPLOYEE_ID IN ( SELECT EMPLOYEE_ID FROM ryn_employee WHERE user_id = ( SELECT id FROM sys_user WHERE OPEN_ID = '1' ) )
-    )-->
+<!--    已逾期未收款数量-->
+    <select id="selectOverdueNumber" resultType="Integer">
+        select count(*) from ryn_receivable_collection_plan
+        <where>
+                contract_id in(
+                    select
+                        contract_id
+                    from
+                        ryn_receivable_collection
+                    where contract_id in(
+
+                    select
+                        contract_id
+                    from
+                        ryn_receivable_contract
+                    <where>
+                        staff_id in (
+                        select
+                            employee_id
+                        from
+                            ryn_employee_department
+                        <where>
+                            department_id in (
+                            select
+                                department_id
+                            from
+                                ryn_employee_department
+                            <where>
+                                <if test="weChatIndexDTO.employeeId!=null">
+                                    employee_id = #{weChatIndexDTO.employeeId}
+                                </if>
+                            </where>
+                            )
+                        </where>
+                        )
+                        <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
+                            <![CDATA[
+                                   and time >= #{weChatIndexDTO.startDate}
+                                ]]>
+                        </if>
+                        <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
+                            <![CDATA[
+                                        and time <= #{weChatIndexDTO.endDate}
+                                ]]>
+                        </if>
+                    </where>
+                    )
+                )
+
+            <if test="weChatIndexDTO.status!=null and weChatIndexDTO.status!=''">
+                <![CDATA[
+                            and status = #{weChatIndexDTO.status}
+                    ]]>
+            </if>
+
+        </where>
+    </select>
+
+<!--已逾期未收款金额 expire-->
+    <select id="selectOverdueSum" resultType="String">
+        select
+            sum(plan_amount) as plan_amounts
+        from
+            ryn_receivable_collection_plan
+        <where>
+            contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_collection
+            where contract_id in(
+
+            select
+            contract_id
+            from
+            ryn_receivable_contract
+            <where>
+                staff_id in (
+                select
+                employee_id
+                from
+                ryn_employee_department
+                <where>
+                    department_id in (
+                    select
+                    department_id
+                    from
+                    ryn_employee_department
+                    <where>
+                        <if test="weChatIndexDTO.employeeId!=null">
+                            employee_id = #{weChatIndexDTO.employeeId}
+                        </if>
+                    </where>
+                    )
+                </where>
+                )
+                <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
+                    <![CDATA[
+                                   and time >= #{weChatIndexDTO.startDate}
+                                ]]>
+                </if>
+                <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
+                    <![CDATA[
+                                        and time <= #{weChatIndexDTO.endDate}
+                                ]]>
+                </if>
+            </where>
+            )
+            )
+
+            <if test="weChatIndexDTO.status!=null and weChatIndexDTO.status!=''">
+                <![CDATA[
+                            and status = #{weChatIndexDTO.status}
+                    ]]>
+            </if>
+
+        </where>
+
+    </select>
+
+    <!--指定时间内计划的数目 expire-->
+    <select id="selectExpireNumber" resultType="Integer">
+        select count(*) from ryn_receivable_collection_plan
+        <where>
+            contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_collection
+            where contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_contract
+            <where>
+                staff_id in (
+                select
+                employee_id
+                from
+                ryn_employee_department
+                <where>
+                    department_id in (
+                    select
+                    department_id
+                    from
+                    ryn_employee_department
+                    <where>
+                        <if test="weChatIndexDTO.employeeId!=null">
+                            employee_id = #{weChatIndexDTO.employeeId}
+                        </if>
+                    </where>
+                    )
+                </where>
+                )
+                <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
+                    <![CDATA[
+                                   and time >= #{weChatIndexDTO.startDate}
+                                ]]>
+                </if>
+                <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
+                    <![CDATA[
+                                        and time <= #{weChatIndexDTO.endDate}
+                                ]]>
+                </if>
+            </where>
+            )
+            )
+
+            <if test="weChatIndexDTO.status!=null and weChatIndexDTO.status!=''">
+                <![CDATA[
+                            and status = #{weChatIndexDTO.status}
+                    ]]>
+            </if>
+
+
+            <if test="weChatIndexDTO.planStartDate!=null and weChatIndexDTO.planStartDate!=''">
+                <![CDATA[
+                                   and plan_time >= #{weChatIndexDTO.planStartDate}
+                                ]]>
+            </if>
+            <if test="weChatIndexDTO.planEndDate!=null and weChatIndexDTO.planEndDate!=''">
+                <![CDATA[
+                                        and plan_time <= #{weChatIndexDTO.planEndDate}
+                                ]]>
+            </if>
+
+
+        </where>
+    </select>
+
+    <!--指定时间内计划的金额 expire-->
+    <select id="selectExpireSum" resultType="Integer">
+        select sum(plan_amount) as plan_amounts from ryn_receivable_collection_plan
+        <where>
+            contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_collection
+            where contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_contract
+            <where>
+                staff_id in (
+                select
+                employee_id
+                from
+                ryn_employee_department
+                <where>
+                    department_id in (
+                    select
+                    department_id
+                    from
+                    ryn_employee_department
+                    <where>
+                        <if test="weChatIndexDTO.employeeId!=null">
+                            employee_id = #{weChatIndexDTO.employeeId}
+                        </if>
+                    </where>
+                    )
+                </where>
+                )
+                <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
+                    <![CDATA[
+                                   and time >= #{weChatIndexDTO.startDate}
+                                ]]>
+                </if>
+                <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
+                    <![CDATA[
+                                        and time <= #{weChatIndexDTO.endDate}
+                                ]]>
+                </if>
+            </where>
+            )
+            )
+
+            <if test="weChatIndexDTO.status!=null and weChatIndexDTO.status!=''">
+                <![CDATA[
+                            and status = #{weChatIndexDTO.status}
+                    ]]>
+            </if>
+
+
+            <if test="weChatIndexDTO.planStartDate!=null and weChatIndexDTO.planStartDate!=''">
+                <![CDATA[
+                                   and plan_time >= #{weChatIndexDTO.planStartDate}
+                                ]]>
+            </if>
+            <if test="weChatIndexDTO.planEndDate!=null and weChatIndexDTO.planEndDate!=''">
+                <![CDATA[
+                                        and plan_time <= #{weChatIndexDTO.planEndDate}
+                                ]]>
+            </if>
+
+
+        </where>
+    </select>
+
+
+    <!--    指定时间内预计回款-->
+<!--
+    &lt;!&ndash;指定时间内的到期数目 expire&ndash;&gt;
+    <select id="selectExpireNumber" resultType="Integer">
+        select count(*) from ryn_receivable_collection_plan
+        <where>
+            contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_collection
+            where contract_id in(
+            select
+            contract_id
+            from
+            ryn_receivable_contract
+            <where>
+                staff_id in (
+                select
+                employee_id
+                from
+                ryn_employee_department
+                <where>
+                    department_id in (
+                    select
+                    department_id
+                    from
+                    ryn_employee_department
+                    <where>
+                        <if test="weChatIndexDTO.employeeId!=null">
+                            employee_id = #{weChatIndexDTO.employeeId}
+                        </if>
+                    </where>
+                    )
+                </where>
+                )
+                <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
+                    <![CDATA[
+                                   and time >= #{weChatIndexDTO.startDate}
+                                ]]>
+                </if>
+                <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
+                    <![CDATA[
+                                        and time <= #{weChatIndexDTO.endDate}
+                                ]]>
+                </if>
+            </where>
+            )
+            )
+
+            <if test="weChatIndexDTO.status!=null and weChatIndexDTO.status!=''">
+                <![CDATA[
+                            and status = #{weChatIndexDTO.status}
+                    ]]>
+            </if>
+
+            <if test="weChatIndexDTO.planStartDate!=null and weChatIndexDTO.planStartDate!=''">
+                <![CDATA[
+                                   and plan_time >= #{weChatIndexDTO.planStartDate}
+                                ]]>
+            </if>
+            <if test="weChatIndexDTO.planEndDate!=null and weChatIndexDTO.planEndDate!=''">
+                <![CDATA[
+                                        and plan_time <= #{weChatIndexDTO.planEndDate}
+                                ]]>
+            </if>
+
+
+        </where>
+    </select>-->
 
 </mapper>

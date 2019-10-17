@@ -8,13 +8,14 @@
         <result column="rname" property="rname" />
         <result column="rdesc" property="rdesc" />
         <result column="rval" property="rval" />
+        <result column="company_id" property="companyId" />
         <result column="created" property="created" />
         <result column="updated" property="updated" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        rid, rname, rdesc, rval, created, updated
+        rid, rname, rdesc, rval, company_id, created, updated
     </sql>
 
 

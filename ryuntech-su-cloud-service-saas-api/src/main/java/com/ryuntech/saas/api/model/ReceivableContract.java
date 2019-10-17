@@ -27,100 +27,103 @@ import java.util.Date;
     @Accessors(chain = true)
     @TableName("ryn_receivable_contract")
     public class ReceivableContract implements Serializable {
-
     private static final long serialVersionUID = 1L;
 
-            /**
-            * 合同编号
-            */
-            @TableId("CONTRACT_ID")
+    /**
+     * 合同编号
+     */
+    @TableId("CONTRACT_ID")
     private String contractId;
 
-            /**
-            * 合同名称
-            */
-        @TableField("CONTRACT_NAME")
+    /**
+     * 合同名称
+     */
+    @TableField("CONTRACT_NAME")
     private String contractName;
 
-            /**
-            * 客户编号
-            */
-        @TableField("CUSTOMER_ID")
+    /**
+     * 客户编号
+     */
+    @TableField("CUSTOMER_ID")
     private String customerId;
 
-            /**
-            * 客户名称
-            */
-        @TableField("CUSTOMER_NAME")
+    /**
+     * 客户名称
+     */
+    @TableField("CUSTOMER_NAME")
     private String customerName;
 
-            /**
-            * 合同日期
-            */
-        @TableField("CONTRACT_TIME")
-        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date contractTime;
+    /**
+     * 合同日期
+     */
+    @TableField("CONTRACT_TIME")
+    private LocalDateTime contractTime;
 
-            /**
-            * 合同金额
-            */
-        @TableField("CONTRACT_AMOUNT")
+    /**
+     * 合同金额
+     */
+    @TableField("CONTRACT_AMOUNT")
     private String contractAmount;
 
-            /**
-            * 应收余额
-            */
-        @TableField("BALANCE_AMOUNT")
+    /**
+     * 应收余额
+     */
+    @TableField("BALANCE_AMOUNT")
     private String balanceAmount;
 
-            /**
-            * 回款余额
-            */
-        @TableField("COLLECTION_AMOUNT")
+    /**
+     * 回款余额
+     */
+    @TableField("COLLECTION_AMOUNT")
     private String collectionAmount;
 
-            /**
-            * 合同状态(0已逾期,1已完成，2执行中)
-
-            */
-        @TableField("STATUS")
+    /**
+     * 合同状态(0已逾期,1已完成，2执行中)
+     */
+    @TableField("STATUS")
     private String status;
 
-
-            /**
-            * 部门
-            */
-        @TableField("DEPARTMENT")
+    /**
+     * 部门
+     */
+    @TableField("DEPARTMENT")
     private String department;
 
-            /**
-            * 回款订单编号
-            */
-        @TableField("COLLECTION_ID")
-    private String collectionId;
-
-
-        @TableField("CONTACTS")
-    private String contacts;
-
-        @TableField("CONTRACT_CODE")
+    /**
+     * 合同编码
+     */
+    @TableField("CONTRACT_CODE")
     private String contractCode;
 
-        @TableField("CONTACTS_PHONE")
+    /**
+     * 联系人
+     */
+    @TableField("CONTACTS")
+    private String contacts;
+
+    /**
+     * 联系电话
+     */
+    @TableField("CONTACTS_PHONE")
     private String contactsPhone;
 
-        @TableField("STAFF_NAME")
-    private String staffName;
-
-        @TableField("STAFF_ID")
+    /**
+     * 负责人员工编号
+     */
+    @TableField("STAFF_ID")
     private String staffId;
 
-        @TableField("ANNEX_TYPE")
-    private String annexType;
+    /**
+     * 负责人员工姓名
+     */
+    @TableField("STAFF_NAME")
+    private String staffName;
 
-        @TableField("URL")
-    private String url;
+    /**
+     * 附件编码
+     */
+    @TableField("ATTACHMENT_CODE")
+    private String attachmentCode;
 
 
 }

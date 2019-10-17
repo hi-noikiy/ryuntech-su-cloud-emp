@@ -12,16 +12,19 @@
         <result column="TYPE" property="type" />
         <result column="TIME" property="time" />
         <result column="VOUCHER_TYPE" property="voucherType" />
-        <result column="URL" property="url" />
+        <result column="ATTACHMENT_CODE" property="attachmentCode" />
         <result column="CREATE_BY" property="createBy" />
         <result column="CREATE_TIME" property="createTime" />
         <result column="STATUS" property="status" />
         <result column="REMARKS" property="remarks" />
+        <result column="COLLECTION_DATE" property="collectionDate" />
+        <result column="CONTRACT_ID" property="contractId" />
+        <result column="PLAN_ID" property="planId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, URL, CREATE_BY, CREATE_TIME, STATUS, REMARKS
+        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, ATTACHMENT_CODE, CREATE_BY, CREATE_TIME, STATUS, REMARKS, COLLECTION_DATE, CONTRACT_ID, PLAN_ID
     </sql>
 
 

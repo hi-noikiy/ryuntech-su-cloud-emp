@@ -12,6 +12,6 @@ import com.ryuntech.saas.api.model.SysUserRole;
  * @author antu
  * @since 2019-09-12
  */
-public interface SysUserRoleMapper extends BaseMapper<SysUserRole>, IBaseMapper<SysUserRole> {
+public interface SysUserRoleMapper extends IBaseMapper<SysUserRole> {
 
 }

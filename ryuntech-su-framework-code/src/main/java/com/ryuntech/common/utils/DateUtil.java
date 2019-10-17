@@ -145,4 +145,30 @@ public class DateUtil {
         return c.getTime();
     }
 
+    /**
+     * 获取本月的第一天
+     * @return
+     */
+    public static String firstDay(){
+        Calendar cale =  Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        cale = Calendar.getInstance();
+        cale.add(Calendar.MONTH, 0);
+        cale.set(Calendar.DAY_OF_MONTH, 1);
+        return format.format(cale.getTime());
+    }
+
+    /**
+     * 获取本月的最后一天
+     * @return
+     */
+    public static String lastDay(){
+        Calendar cale =  Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        cale = Calendar.getInstance();
+        cale.add(Calendar.MONTH, 1);
+        cale.set(Calendar.DAY_OF_MONTH, 0);
+        return format.format(cale.getTime());
+    }
+
 }

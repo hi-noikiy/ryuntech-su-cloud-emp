@@ -4,16 +4,34 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.UserWechat">
-        <id column="OPEN_ID" property="openId" />
-        <result column="USER_ID" property="userId" />
-        <result column="IMG_URL" property="imgUrl" />
-        <result column="SESSION_KEY" property="sessionKey" />
-        <result column="NICKNAME" property="nickname" />
+        <result column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="union_id" property="unionId" />
+        <result column="miniprogram_openid" property="miniprogramOpenid" />
+        <result column="gongzhonghao_openid" property="gongzhonghaoOpenid" />
+        <result column="subscribe" property="subscribe" />
+        <result column="nickname" property="nickname" />
+        <result column="sex" property="sex" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="country" property="country" />
+        <result column="headimgurl" property="headimgurl" />
+        <result column="language" property="language" />
+        <result column="subscribe_time" property="subscribeTime" />
+        <result column="remark" property="remark" />
+        <result column="groupid" property="groupid" />
+        <result column="subscribe_scene" property="subscribeScene" />
+        <result column="tagid_list" property="tagidList" />
+        <result column="qr_scene" property="qrScene" />
+        <result column="qr_scene_str" property="qrSceneStr" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_at" property="createdAt" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        USER_ID, OPEN_ID, IMG_URL, SESSION_KEY, NICKNAME
+        id,
+        user_id, union_id, miniprogram_openid, gongzhonghao_openid, subscribe, nickname, sex, province, city, country, headimgurl, language, subscribe_time, remark, groupid, subscribe_scene, tagid_list, qr_scene, qr_scene_str, updated_at, created_at
     </sql>
 
 </mapper>
