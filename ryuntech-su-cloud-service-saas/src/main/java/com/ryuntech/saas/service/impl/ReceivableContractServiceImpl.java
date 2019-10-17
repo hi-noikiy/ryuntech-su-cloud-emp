@@ -29,8 +29,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
     @Override
     public Result<IPage<ReceivableContract>> pageList(ReceivableContract receivableContract, QueryPage queryPage) {
         Page<ReceivableContract> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        if (StringUtils.isNotBlank(receivableContract.getCollectionId())) {
-            queryWrapper.eq("collection_id", receivableContract.getCollectionId());
+        if (StringUtils.isNotBlank(receivableContract.getContractId())) {
+            queryWrapper.eq("contract_id", receivableContract.getContractId());
         }
         return super.pageList(queryWrapper,page);
     }

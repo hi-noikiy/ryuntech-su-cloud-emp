@@ -125,7 +125,7 @@ public class ReceivableContractController extends ModuleBaseController {
         if (StringUtils.isBlank(receivableContract.getStaffId())) {
             return new Result(PARAM_ERROR,"负责员工不能为空");
         }
-        if (StringUtils.isBlank(receivableContract.getUrl())){
+        if (StringUtils.isBlank(receivableContract.getAttachmentCode())){
             return new Result(PARAM_ERROR,"合同附件不能为空");
         }
 

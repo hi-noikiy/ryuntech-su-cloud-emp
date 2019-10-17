@@ -45,8 +45,6 @@ public class IndexController extends ModuleBaseController{
     @Autowired
     IEmployeeService employeeService;
 
-    @Autowired
-    IEmployeeDepartmentService employeeDepartmentService;
 
     @Autowired
     IndexService indexService;
