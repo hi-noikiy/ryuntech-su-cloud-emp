@@ -48,6 +48,12 @@ public class SysUser extends BaseModel implements UserDetails {
     private String phone;
 
     /**
+     * 公司名
+     */
+    @TableField(exist = false)
+    private String companyName;
+
+    /**
      * 头像
      */
     private String avatar;

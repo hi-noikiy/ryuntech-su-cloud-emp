@@ -8,11 +8,10 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
 * <p>
-    * 职员-角色关联表
+    * 公司系统设置表
     * </p>
 *
 * @author antu
@@ -21,30 +20,35 @@ import java.util.Date;
     @Data
         @EqualsAndHashCode(callSuper = false)
     @Accessors(chain = true)
-    @TableName("ryn_employee_role")
-    public class EmployeeRole extends BaseModel {
+    @TableName("ryn_company_config")
+    public class CompanyConfig extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
             /**
-            * 职员ID
+            * 所属公司ID
             */
-    private String employeeId;
+    private String companyId;
 
             /**
-            * 角色ID
+            * 配置名称
             */
-    private String roleId;
+    private String name;
+
+            /**
+            * 配置值
+            */
+    private String value;
 
             /**
             * 更新时间
             */
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
             /**
             * 创建时间
             */
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
 
 }

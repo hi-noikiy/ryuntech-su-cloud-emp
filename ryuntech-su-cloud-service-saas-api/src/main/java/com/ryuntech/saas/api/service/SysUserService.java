@@ -3,6 +3,7 @@ package com.ryuntech.saas.api.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
+import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.model.SysUser;
 
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.List;
  * @author antu
  * @date 2019-05-22
  */
-public interface SysUserService  extends IService<SysUser> {
+public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 根据用户名查询用户信息
@@ -79,4 +80,12 @@ public interface SysUserService  extends IService<SysUser> {
      * @return
      */
     SysUser selectByUser(SysUser user);
+
+    /**
+     * 注册方法
+     * @param sysUserDTO
+     * @return
+     */
+    SysUser register(SysUserDTO sysUserDTO);
+
 }

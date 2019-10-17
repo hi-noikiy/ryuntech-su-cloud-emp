@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.CompanyMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.Company">
+        <result column="company_id" property="companyId" />
+        <result column="name" property="name" />
+        <result column="logo" property="logo" />
+        <result column="industry_type" property="industryType" />
+        <result column="province_id" property="provinceId" />
+        <result column="city_id" property="cityId" />
+        <result column="district_id" property="districtId" />
+        <result column="address" property="address" />
+        <result column="postal_code" property="postalCode" />
+        <result column="tel" property="tel" />
+        <result column="fax" property="fax" />
+        <result column="contactor" property="contactor" />
+        <result column="employee_id" property="employeeId" />
+        <result column="position" property="position" />
+        <result column="phone" property="phone" />
+        <result column="qq" property="qq" />
+        <result column="email" property="email" />
+        <result column="company_web" property="companyWeb" />
+        <result column="company_introduce" property="companyIntroduce" />
+        <result column="taxpayer_identify_num" property="taxpayerIdentifyNum" />
+        <result column="invoice_payable" property="invoicePayable" />
+        <result column="invoice_address" property="invoiceAddress" />
+        <result column="invoice_tel" property="invoiceTel" />
+        <result column="invoice_open_name" property="invoiceOpenName" />
+        <result column="invoice_open_bank" property="invoiceOpenBank" />
+        <result column="invoice_bank_account" property="invoiceBankAccount" />
+        <result column="hotline_tel" property="hotlineTel" />
+        <result column="is_del" property="isDel" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        company_id,
+        name, logo, industry_type, province_id, city_id, district_id, address, postal_code, tel, fax, contactor, employee_id, position, phone, qq, email, company_web, company_introduce, taxpayer_identify_num, invoice_payable, invoice_address, invoice_tel, invoice_open_name, invoice_open_bank, invoice_bank_account, hotline_tel, is_del, updated_at, created_at
+    </sql>
+
+</mapper>

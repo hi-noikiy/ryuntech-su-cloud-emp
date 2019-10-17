@@ -72,5 +72,11 @@ import java.util.Date;
             @Column(name = "updated")
     private Date updated;
 
+    /**
+     * 是否为超级管理员0否1是
+     */
+    @TableId("is_admin")
+            private String isAdmin;
+
 
 }

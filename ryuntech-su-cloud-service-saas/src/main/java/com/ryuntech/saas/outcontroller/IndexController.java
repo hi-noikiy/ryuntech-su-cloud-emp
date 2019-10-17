@@ -56,7 +56,7 @@ public class IndexController extends ModuleBaseController{
      */
     @PostMapping("/reportdata")
     @ApiOperation(value = "首页数据简报展示")
-    public Result<Index> index(WeChatIndexDTO weChatIndexDTO) {
+    public Result<WeChatIndexDTO> index(WeChatIndexDTO weChatIndexDTO) {
         //获取用户token，从缓存中取出用户数据
         Object employeeId =   redisTemplate.opsForValue().get(weChatIndexDTO.getToken());
         if (employeeId!=null){
@@ -124,25 +124,4 @@ public class IndexController extends ModuleBaseController{
         return new Result();
     }
 }
-
-/*
-
-ryn_employee(职工表)
-字段名称	数据类型	非空	字段描述
-EMPLOYEE_ID	VARCHAR2(64)	Y	职工编号
-USER_ID	VARCHAR2(64)	Y	用户编号
-NAME	VARCHAR2(255)	Y	员工姓名
-COMPANY_ID 	VARCHAR2(64)	Y	所属公司编号
-COMPANY_NAME	VARCHAR2(255)	N	所属公司名称
-
-
-        CREATE TABLE `RYN_EMPLOYEE` (
-          `EMPLOYEE_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '职工编号',
-          `USER_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '用户编号',
-          `NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '职工姓名',
-          `COMPANY_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '公司编号',
-          `COMPANY_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '公司姓名',
-          PRIMARY KEY (`EMPLOYEE_ID`) USING BTREE
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
-*/
 
