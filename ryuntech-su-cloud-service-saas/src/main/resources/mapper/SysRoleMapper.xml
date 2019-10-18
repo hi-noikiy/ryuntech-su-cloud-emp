@@ -9,13 +9,14 @@
         <result column="rdesc" property="rdesc" />
         <result column="rval" property="rval" />
         <result column="company_id" property="companyId" />
+        <result column="is_admin" property="isAdmin" />
         <result column="created" property="created" />
         <result column="updated" property="updated" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        rid, rname, rdesc, rval, company_id, created, updated
+        rid, rname, rdesc, rval, company_id, is_admin,created, updated
     </sql>
 
 

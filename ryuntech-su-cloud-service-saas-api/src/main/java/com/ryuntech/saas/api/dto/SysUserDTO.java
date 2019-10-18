@@ -47,4 +47,11 @@ public class SysUserDTO {
      * 姓名
      */
     private String name;
+
+
+
+    /**
+     * 手机验证码
+     */
+    private String vcode;
 }

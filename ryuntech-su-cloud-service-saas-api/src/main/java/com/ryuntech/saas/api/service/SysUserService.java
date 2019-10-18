@@ -81,6 +81,14 @@ public interface SysUserService  extends IBaseService<SysUser> {
      */
     SysUser selectByUser(SysUser user);
 
+
+    /**
+     * 通过指定用户查询
+     * @param userDTO
+     * @return
+     */
+    SysUser selectByUserDTO(SysUserDTO userDTO);
+
     /**
      * 注册方法
      * @param sysUserDTO

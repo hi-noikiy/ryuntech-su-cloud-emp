@@ -57,6 +57,12 @@ import java.util.Date;
     private String rval;
 
             /**
+             * 公司编号
+             */
+            @TableId("company_id")
+    private String companyId;
+
+            /**
             * 创建时间
             */
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

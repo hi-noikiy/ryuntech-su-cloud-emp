@@ -3,7 +3,7 @@
 <mapper namespace="com.ryuntech.saas.api.mapper.EmployeeRoleMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.entity.EmployeeRole">
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.EmployeeRole">
     <result column="id" property="id" />
         <result column="employee_id" property="employeeId" />
         <result column="role_id" property="roleId" />

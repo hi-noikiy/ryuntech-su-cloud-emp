@@ -10,6 +10,7 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.helper.SecurityUtils;
+import com.ryuntech.saas.api.helper.constant.RoleConstants;
 import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.SysUserService;
@@ -110,6 +111,17 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
     }
 
     @Override
+    public SysUser selectByUserDTO(SysUserDTO userDTO) {
+        if (userDTO.getUsername()!=null) {
+            queryWrapper.eq("username", userDTO.getUsername());
+        }
+        if (userDTO.getPhone()!=null) {
+            queryWrapper.eq("phone", userDTO.getPhone());
+        }
+        return sysUserMapper.selectOne(queryWrapper);
+    }
+
+    @Override
     public SysUser selectByUser(SysUser user) {
         if (StringUtils.isNotBlank(user.getId())){
             queryWrapper.eq("id", user.getId());
@@ -136,6 +148,7 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         sysUser.setUsername(sysUserDTO.getPhone());
         sysUser.setPhone(sysUserDTO.getPhone());
         sysUser.setAvatar(sysUserDTO.getAvatar());
+        sysUser.setPassword(sysUserDTO.getPassword());
         sysUser.setCreateTime(new Date());
         sysUser.setUpdatedAt(new Date());
         sysUserMapper.insert(sysUser);
@@ -154,33 +167,41 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         employee.setUpdatedAt(new Date());
         employeeMapper.insert(employee);
 
-        //默认分配管理员角色
-
-        SysRole sysRole = new SysRole();
-        Long roleId = uniqueIdGenerator.nextId();
-        sysRole.setRid(String.valueOf(roleId));
-        sysRole.setCreated(new Date());
-        sysRole.setUpdated(new Date());
-        sysRole.setIsAdmin("1");
-
-
-        EmployeeRole employeeRole = new EmployeeRole();
-        employeeRole.setEmployeeId(employee.getEmployeeId());
-        employeeRole.setRoleId("");
-        employeeRole.setCreatedAt(new Date());
-        employeeRole.setUpdatedAt(new Date());
-
 
         //创建公司
         Company company = new Company();
         String companyId = String.valueOf(uniqueIdGenerator.nextId());
         company.setCompanyId(companyId);
+        company.setName(sysUserDTO.getCompanyName());
 //        设置负责员工为当前
         company.setEmployeeId(employee.getEmployeeId());
         company.setCreatedAt(new Date());
         company.setUpdatedAt(new Date());
         companyMapper.insert(company);
 
-        return null;
+        //默认分配管理员角色
+
+        SysRole sysRole = new SysRole();
+        Long roleId = uniqueIdGenerator.nextId();
+        sysRole.setRid(String.valueOf(roleId));
+        sysRole.setRval(RoleConstants.ADMINROOT);
+        sysRole.setRname(RoleConstants.ADMIN);
+        sysRole.setRdesc(RoleConstants.ADMINDESC);
+        sysRole.setCreated(new Date());
+        sysRole.setUpdated(new Date());
+        sysRole.setIsAdmin(RoleConstants.ISADMIN);
+        sysRole.setCompanyId(employee.getEmployeeId());
+        sysRoleMapper.insert(sysRole);
+
+
+        EmployeeRole employeeRole = new EmployeeRole();
+        employeeRole.setEmployeeId(employee.getEmployeeId());
+        employeeRole.setRoleId(sysRole.getRid());
+        employeeRole.setCreatedAt(new Date());
+        employeeRole.setUpdatedAt(new Date());
+        employeeRoleMapper.insert(employeeRole);
+
+
+        return sysUser;
     }
 }

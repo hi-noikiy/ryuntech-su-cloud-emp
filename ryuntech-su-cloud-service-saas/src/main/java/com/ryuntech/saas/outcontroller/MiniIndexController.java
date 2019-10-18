@@ -29,7 +29,7 @@ import java.util.Date;
 @RestController
 @RequestMapping("/outindex")
 @Api(value = "IndexController", tags = {"对外首页信息接口"})
-public class IndexController extends ModuleBaseController{
+public class MiniIndexController extends ModuleBaseController{
     @Autowired
     RedisTemplate redisTemplate;
 

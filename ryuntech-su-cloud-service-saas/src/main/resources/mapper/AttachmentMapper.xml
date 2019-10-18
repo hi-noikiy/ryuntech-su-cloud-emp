@@ -3,7 +3,7 @@
 <mapper namespace="com.ryuntech.saas.api.mapper.AttachmentMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.entity.Attachment">
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.Attachment">
         <id column="ID" property="id" />
         <result column="ATTACHMENT_CODE" property="attachmentCode" />
         <result column="ATTACHMENT_URL" property="attachmentUrl" />
