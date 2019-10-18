@@ -27,7 +27,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/index")
 @Api(value = "SysUserController", tags = {"用户信息管理接口"})
-public class IndexController extends ModuleBaseController {
+public class IndexControllerOne extends ModuleBaseController {
 
 
     @Autowired

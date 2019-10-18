@@ -559,4 +559,16 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES ('1002748017179541505', '1002748319131680769');
 INSERT INTO `sys_user_role` VALUES ('986177923098808322', '999999888888777777');
 
+DROP TABLE IF EXISTS `employee_department_access`;
+CREATE TABLE `employee_department_access` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `company_id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '所属公司ID',
+  `employee_id` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT '职员ID',
+  `department_id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '拥有数据权限部门ID',
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `created_at` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='数据权限表';
+
+
 SET FOREIGN_KEY_CHECKS = 1;
