@@ -172,6 +172,41 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/system',
+    component: Layout,
+    name: '系统设置',
+    meta: { title: '系统设置', icon: 'setting' },
+    children: [
+      {
+        path: 'index',
+        name: '系统设置',
+        component: () => import('@/views/system/index'),
+        meta: { title: '系统设置', icon: 'setting' }
+      },
+      {
+        path: 'employee_department_employee',
+        name: '部门与员工帐号',
+        component: () => import('@/views/system/employee_department/employee'),
+        hidden: true,
+        meta: { title: '部门与员工帐号' }
+      },
+      {
+        path: 'employee_department_department',
+        name: '部门与员工帐号',
+        component: () => import('@/views/system/employee_department/department'),
+        hidden: true,
+        meta: { title: '部门与员工帐号' }
+      },
+      {
+        path: 'employee_department_access',
+        name: '部门与员工帐号',
+        component: () => import('@/views/system/employee_department/access'),
+        hidden: true,
+        meta: { title: '部门与员工帐号' }
+      }
+    ]
+  },
 
   /* {
     path: '/business',

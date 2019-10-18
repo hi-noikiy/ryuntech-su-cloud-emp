@@ -13,6 +13,9 @@ const MyMixins = {
         message: message,
         type: type
       })
+    },
+    gotoPage(path, query = {}) {
+      this.$router.push({ path: path, query: query })
     }
   }
 }
