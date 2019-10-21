@@ -179,6 +179,8 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         company.setUpdatedAt(new Date());
         companyMapper.insert(company);
 
+
+
         //默认分配管理员角色
 
         SysRole sysRole = new SysRole();
