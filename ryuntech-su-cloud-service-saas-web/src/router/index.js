@@ -103,7 +103,7 @@ export const constantRoutes = [
     path: '/contract',
     component: Layout,
     redirect: '/operation/business',
-    name: '应收合同',
+    name: '应收合同t',
     meta: { title: '应收合同', icon: 'setting' },
     children: [
       {
@@ -118,7 +118,7 @@ export const constantRoutes = [
     path: '/collection',
     component: Layout,
     redirect: '/operation/business',
-    name: '回款管理',
+    name: '回款管理t',
     meta: { title: '回款管理', icon: 'setting' },
     children: [
       {
@@ -140,7 +140,7 @@ export const constantRoutes = [
     path: '/customer',
     component: Layout,
     redirect: '/operation/business',
-    name: '客户管理',
+    name: '客户管理t',
     meta: { title: '客户管理', icon: 'setting' },
     children: [
       {
@@ -155,7 +155,7 @@ export const constantRoutes = [
     path: '/report',
     component: Layout,
     redirect: '/operation/business',
-    name: '数据报表',
+    name: '数据报表t',
     meta: { title: '数据报表', icon: 'setting' },
     children: [
       {
@@ -175,7 +175,7 @@ export const constantRoutes = [
   {
     path: '/system',
     component: Layout,
-    name: '系统设置',
+    name: 'system_setting',
     meta: { title: '系统设置', icon: 'setting' },
     children: [
       {
@@ -185,22 +185,29 @@ export const constantRoutes = [
         meta: { title: '系统设置', icon: 'setting' }
       },
       {
-        path: 'employee_department_employee',
-        name: '部门与员工帐号',
+        path: 'e_d_employee',
+        name: '员工帐号',
         component: () => import('@/views/system/employee_department/employee'),
         hidden: true,
         meta: { title: '部门与员工帐号' }
       },
       {
-        path: 'employee_department_department',
-        name: '部门与员工帐号',
+        path: 'add_employee',
+        name: '添加员工',
+        component: () => import('@/views/system/employee_department/add_employee'),
+        hidden: true,
+        meta: { title: '部门与员工帐号' }
+      },
+      {
+        path: 'e_d_department',
+        name: '部门设置',
         component: () => import('@/views/system/employee_department/department'),
         hidden: true,
         meta: { title: '部门与员工帐号' }
       },
       {
-        path: 'employee_department_access',
-        name: '部门与员工帐号',
+        path: 'e_d_access',
+        name: '角色权限',
         component: () => import('@/views/system/employee_department/access'),
         hidden: true,
         meta: { title: '部门与员工帐号' }

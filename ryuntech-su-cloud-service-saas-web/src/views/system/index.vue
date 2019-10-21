@@ -18,7 +18,7 @@
         </div>
       </div>
 
-      <div class="item" @click="gotoPage('/system/employee_department_employee')">
+      <div class="item" @click="gotoPage('/system/e_d_employee')">
         <img class="item-l" src="https://www.baidu.com/img/bd_logo1.png" alt="">
         <div class="item-r">
           <h3>部门与员工</h3>
