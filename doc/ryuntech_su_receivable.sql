@@ -494,7 +494,7 @@ CREATE TABLE `sys_role`  (
   `created` timestamp(0) NOT NULL,
   `updated` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   PRIMARY KEY (`rid`) USING BTREE,
-  UNIQUE INDEX `rval`(`rval`) USING BTREE
+  UNIQUE KEY `rval` (`rval`,`company_id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
