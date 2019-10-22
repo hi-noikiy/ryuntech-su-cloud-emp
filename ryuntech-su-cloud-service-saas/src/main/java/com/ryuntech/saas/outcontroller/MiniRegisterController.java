@@ -28,7 +28,7 @@ import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 @Slf4j
 @RestController
 @RequestMapping("/miniregister")
-@Api(value = "RegisterController", tags = {"对外小程序注册接口"})
+@Api(value = "MiniRegisterController", tags = {"对外小程序注册接口"})
 public class MiniRegisterController extends ModuleBaseController {
 
     @Autowired
@@ -84,7 +84,7 @@ public class MiniRegisterController extends ModuleBaseController {
         //开始注册操作
         SysUser register = sysUserService.register(sysUserDTO);
         if (register!=null){
-            return new Result();
+            return new Result(register);
         }else {
             return new Result(OPERATE_ERROR,"数据异常");
         }

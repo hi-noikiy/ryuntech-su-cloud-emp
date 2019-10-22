@@ -20,4 +20,5 @@ public class BaseModel implements Serializable {
         property.put(key,value);
     }
 
+
 }
