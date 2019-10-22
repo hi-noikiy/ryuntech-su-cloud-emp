@@ -26,6 +26,12 @@ import java.util.Date;
 
     private static final long serialVersionUID = 1L;
 
+
+    /**
+     * 主键
+     */
+    private String id;
+
             /**
             * 职员ID
             */

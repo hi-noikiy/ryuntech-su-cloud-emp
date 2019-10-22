@@ -198,6 +198,8 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
 
         EmployeeRole employeeRole = new EmployeeRole();
         employeeRole.setEmployeeId(employee.getEmployeeId());
+        Long employeeRoleId = uniqueIdGenerator.nextId();
+        employeeRole.setId(String.valueOf(employeeRoleId));
         employeeRole.setRoleId(sysRole.getRid());
         employeeRole.setCreatedAt(new Date());
         employeeRole.setUpdatedAt(new Date());
