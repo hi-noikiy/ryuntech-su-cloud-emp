@@ -8,18 +8,17 @@
               <el-option label="部门02" :value="1" />
           </el-select>
           <el-select style="margin-left: 15px;width: 120px" v-model="search.status" placeholder="全部状态" clearable size="mini">
-              <el-option label="正常" :value="0" />
-              <el-option label="禁用" :value="1" />
+              <el-option v-for="(v,k) in employeeStatusOption" :label="v" :value="k" />
           </el-select>
           <el-input v-model="search.keyword" clearable size="mini" style="margin-left: 15px;width: 350px;" placeholder="请输入员工姓名/帐号/手机/角色">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+          <el-button slot="append" icon="el-icon-search" @click="fetchData"></el-button>
           </el-input>
 
           <el-button @click="$router.push('/system/add_employee')" type="primary" size="mini" style="float: right;margin-right: 20px">新建员工</el-button>
       </div>
 
       <el-table style="margin-top: 20px" v-loading="listLoading" :data="employeeList" fit highlight-current-row>
-          <el-table-column align="center" label="名字" width="100">
+          <el-table-column align="center" label="姓名" width="100">
               <template slot-scope="scope">
                   {{ scope.row.name }}
               </template>
@@ -38,8 +37,7 @@
 
           <el-table-column align="center" label="手机号" width="160">
               <template slot-scope="scope">
-                  <i class="el-icon-time" />
-                  <span>{{ scope.row.phone }}</span>
+                  <span>{{ scope.row.mobile }}</span>
               </template>
           </el-table-column>
 
@@ -51,15 +49,15 @@
 
           <el-table-column align="center" label="状态" width="150">
               <template slot-scope="scope">
-                  <span>{{ scope.row.status }}</span>
+                  <span>{{ employeeStatusOption[scope.row.status] }}</span>
               </template>
           </el-table-column>
 
-          <el-table-column align="center" label="操作" width="200">
+          <el-table-column align="center" label="操作" width="220">
               <template slot-scope="scope">
-                  <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.contractId)">编辑</el-button>
-                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.contractId)">禁用</el-button>
-                  <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.contractId)">恢复</el-button>
+                  <el-button type="primary" size="mini"  @click="handleEdit(scope.row.contractId)">编辑</el-button>
+                  <el-button type="danger" v-if="scope.row.status == 0"  size="mini" @click="handleDel(scope.row.contractId)">禁用</el-button>
+                  <el-button type="info" v-if="scope.row.status == 1"  size="mini" @click="handleDel(scope.row.contractId)">恢复</el-button>
               </template>
           </el-table-column>
       </el-table>
@@ -77,11 +75,14 @@
 
 <script>
 import bannerHeader from './bannerHeader.vue'
+import { getEmployeeList } from '@/api/system/employee'
+import { employeeStatusOption } from './e_d'
 export default {
   name: 'EmployeeDepartmentEmployee',
   components: { bannerHeader },
   data() {
     return {
+      employeeStatusOption: employeeStatusOption,
       search: {
         department_id: undefined,
         status: undefined,
@@ -96,9 +97,16 @@ export default {
       listLoading: false,
     }
   },
+  created() {
+    this.fetchData()
+  },
   methods: {
     fetchData() {
-
+      getEmployeeList(this.listQuery, this.search)
+        .then( res => {
+          this.employeeList = res.data.records
+          this.total = res.data.total
+        }).catch( er => { console.log(er) })
     }
 
   }

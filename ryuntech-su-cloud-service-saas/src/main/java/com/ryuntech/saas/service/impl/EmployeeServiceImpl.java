@@ -1,5 +1,6 @@
 package com.ryuntech.saas.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
@@ -11,6 +12,8 @@ import com.ryuntech.saas.api.service.IEmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * <p>
@@ -33,15 +36,28 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     }
 
     @Override
-    public Result<IPage<Employee>> selectListBySearch(Employee employee, QueryPage queryPage) {
-        log.info(employee.toString());
-        if (StringUtils.isNotBlank(employee.getDepartmentId())) {
-            queryWrapper.eq("department_id",employee.getDepartmentId());
+    public Result<IPage<Employee>> selectListBySearch(Map param, QueryPage queryPage) {
+        log.info(param.toString());
+        QueryWrapper qw = new QueryWrapper();
+        if (param.containsKey("departmentId")) {
+            // todo: 找出部门下的所有部门
+            qw.eq("department_id",param.get("departmentId"));
         }
-        if (employee.getStatus() != null && StringUtils.isNotBlank(String.valueOf(employee.getStatus()))) {
-            queryWrapper.eq("status",employee.getStatus());
+        if (param.containsKey("status")) {
+            qw.eq("status",param.get("status"));
+        }
+        if (param.containsKey("employeeId")) {
+            qw.eq("employee_id",param.get("employeeId"));
+        }
+        if (param.containsKey("companyId")) {
+            qw.eq("company_id",param.get("companyId"));
+        }
+        // 关键字搜索
+        if (param.containsKey("keyword") && StringUtils.isNotBlank((String) param.get("keyword"))) {
+            String keyword = String.valueOf(param.get("keyword"));
+//            qw.and(i -> i.like("mobile",keyword).or().like("name",keyword));
         }
         Page<Employee> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        return super.pageList(queryWrapper, page);
+        return super.pageList(qw, page);
     }
 }

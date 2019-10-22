@@ -5,6 +5,8 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.Employee;
 
+import java.util.Map;
+
 /**
  * <p>
  *  服务类
@@ -25,5 +27,5 @@ public interface IEmployeeService extends IBaseService<Employee> {
      *
      * @return
      */
-    Result<IPage<Employee>> selectListBySearch(Employee employee, QueryPage page);
+    Result<IPage<Employee>> selectListBySearch(Map param, QueryPage page);
 }

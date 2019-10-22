@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
+import java.util.Map;
+
 
 /**
  * @author liugg 2019年10月21日
@@ -28,16 +30,17 @@ public class EmployeeController extends ModuleBaseController {
 
     /**
      * 分页查询列表数据，条件查询
-     * @param employee
+     * @param param
      * @return
      */
     @PostMapping("/list")
     @ApiOperation(value = "分页、条件查询员工帐号列表")
-    @ApiImplicitParam(name = "employee", value = "查询条件", required = true, dataType = "Employee", paramType = "body")
-    public Result<IPage<Employee>> list(@RequestBody Employee employee, QueryPage queryPage) {
+    @ApiImplicitParam(name = "param", value = "查询条件", required = true, dataType = "Map", paramType = "body")
+    public Result<IPage<Employee>> list(@RequestBody Map param, QueryPage queryPage) {
+        //todo: 获取当前登录公司ID
         String company_id = "1";
-        employee.setCompanyId(company_id);
-        return  iEmployeeService.selectListBySearch(employee, queryPage);
+//        param.put("companyId",company_id);
+        return  iEmployeeService.selectListBySearch(param, queryPage);
     }
 
 }
