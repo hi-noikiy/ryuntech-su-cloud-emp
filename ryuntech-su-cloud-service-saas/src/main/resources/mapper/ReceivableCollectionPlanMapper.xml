@@ -30,4 +30,22 @@
         </where>
     </select>
 
+
+
+    <!--批量插入-->
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into ryn_receivable_collection_plan
+        ( plan_id, plan_amount, remakes, status, contract_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+                #{item.planId},
+                #{item.planAmount},
+                #{item.remakes},
+                #{item.status},
+                #{item.contractId}
+            )
+        </foreach>
+    </insert>
+
 </mapper>

@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
+
+import java.util.List;
 
 /**
  * <p>
@@ -32,4 +35,12 @@ public interface IReceivableCollectionPlanService extends IBaseService<Receivabl
      * @return
      */
     Result<IPage<ReceivableCollectionPlan>> selectPageList(ReceivableCollectionPlan receivableCollectionPlan, QueryPage queryPage);
+
+
+    /**
+     * 批量插入
+     * @param receivableCollectionPlans
+     * @return
+     */
+    Boolean insertBatch(List<ReceivableCollectionPlan> receivableCollectionPlans);
 }

@@ -3,6 +3,10 @@ package com.ryuntech.saas.api.mapper;
 
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.Attachment;
+import com.ryuntech.saas.api.model.CustomerUserInfo;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -14,4 +18,10 @@ import com.ryuntech.saas.api.model.Attachment;
  */
 public interface AttachmentMapper extends IBaseMapper<Attachment> {
 
+    /**
+     * 批量插入数据
+     * @param attachments
+     * @return
+     */
+    int insertBatch(List<Attachment> attachments);
 }

@@ -18,4 +18,23 @@
         ID, ATTACHMENT_CODE, ATTACHMENT_URL, ATTACHMENT_TYPE, STATUS, UPDATED_AT, CREATED_AT
     </sql>
 
+
+    <!--批量插入-->
+    <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="false">
+        INSERT INTO RYN_ATTACHMENT
+        ( ID, ATTACHMENT_CODE, ATTACHMENT_URL, ATTACHMENT_TYPE, STATUS, UPDATED_AT, CREATED_AT)
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.attachmentCode},
+            #{item.attachmentUrl},
+            #{item.attachmentType},
+            #{item.status},
+            #{item.updatedAt},
+            #{item.createdAt}
+            )
+        </foreach>
+    </insert>
+
 </mapper>

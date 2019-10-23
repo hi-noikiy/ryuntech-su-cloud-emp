@@ -4,7 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
+import com.ryuntech.saas.api.dto.ReceivableContractDTO;
+import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.PaymentResult;
+import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
 
 import java.util.List;
@@ -36,4 +40,14 @@ public interface IReceivableContractService extends IBaseService<ReceivableContr
      * @return
      */
     List<ReceivableContract> receivableContractList(ReceivableContract receivableContract);
+
+
+    /**
+     * 添加合同信息
+     * @param attachments
+     * @param receivableContract
+     * @param receivableCollectionPlans
+     * @return
+     */
+    Boolean addReceivableContract(List<Attachment> attachments,ReceivableContract receivableContract, List<ReceivableCollectionPlan> receivableCollectionPlans);
 }
