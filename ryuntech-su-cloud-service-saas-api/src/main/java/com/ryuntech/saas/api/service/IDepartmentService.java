@@ -1,5 +1,6 @@
 package com.ryuntech.saas.api.service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.ryuntech.saas.api.model.Department;
 
 import java.util.ArrayList;
@@ -39,4 +40,13 @@ public interface IDepartmentService extends IBaseService<Department> {
      */
     Department findById(String departmentId);
 
+    /**
+     * 根据条件查询部门
+     */
+    Department selectOneByWhere(Wrapper queryWrapper);
+
+    /**
+     * 根据条件删除部门
+     */
+    boolean remove(Wrapper wrapper);
 }

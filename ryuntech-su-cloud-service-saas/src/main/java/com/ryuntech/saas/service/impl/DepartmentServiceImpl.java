@@ -1,5 +1,6 @@
 package com.ryuntech.saas.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.saas.api.mapper.DepartmentMapper;
@@ -71,5 +72,15 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     public Department findById(String departmentId) {
         Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("department_id", departmentId));
         return department;
+    }
+
+    @Override
+    public Department selectOneByWhere(Wrapper queryWrapper) {
+        return departmentMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public boolean remove(Wrapper wrapper) {
+       return super.remove(wrapper);
     }
 }

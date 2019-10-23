@@ -1,5 +1,7 @@
 package com.ryuntech.saas.controller;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.Department;
 import com.ryuntech.saas.api.service.IDepartmentService;
@@ -49,7 +51,7 @@ public class DepartmentController extends ModuleBaseController {
         log.info(department.toString());
         department.setDepartmentId(String.valueOf(generateId()));
         department.setCompanyId(company_id);
-        if (String.valueOf(department.getPid()) != "0") {
+        if (!String.valueOf(department.getPid()).equals("0")) {
             Department parent = iDepartmentService.findById(department.getPid());
             int level = Integer.valueOf(parent.getLevel()) + 1;
             department.setLevel(String.valueOf(level));
@@ -77,7 +79,13 @@ public class DepartmentController extends ModuleBaseController {
     @PostMapping("/delete")
     public Result delete(@RequestBody Map p) {
         String id = (String) p.get("id");
-        iDepartmentService.removeById(id);
+        String company_id = "2"; // todo
+        // 先查找当前部门下有没有子部门，有的话不可以删除
+        Department department = iDepartmentService.selectOneByWhere(new QueryWrapper<>().eq("pid",id).eq("company_id",company_id));
+        if (department != null) {
+            return new Result(new ArrayList<>(),"要删除的部门下有子部门，不可以删除！");
+        }
+        iDepartmentService.remove(new QueryWrapper<>().eq("department_id",id).eq("company_id",company_id));
         return new Result();
     }
 

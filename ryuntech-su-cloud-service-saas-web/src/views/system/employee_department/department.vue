@@ -167,7 +167,7 @@
       editArea(item) {
         this.disabledSelect = true
         this.editForm.departmentName = item.department_name
-        this.editForm.id = item.department_id
+        this.editForm.departmentId = item.department_id
         this.editDialogVisible = true
       },
       deleteArea(item) {
