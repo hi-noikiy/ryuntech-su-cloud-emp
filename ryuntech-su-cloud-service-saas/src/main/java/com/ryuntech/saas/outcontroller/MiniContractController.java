@@ -2,12 +2,14 @@ package com.ryuntech.saas.outcontroller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
-import com.ryuntech.saas.api.model.CustomerUserInfo;
-import com.ryuntech.saas.api.model.ReceivableContract;
-import com.ryuntech.saas.api.model.SysUser;
+import com.ryuntech.saas.api.helper.constant.AttachmentConstants;
+import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
 import com.ryuntech.saas.api.service.IReceivableContractService;
 import com.ryuntech.saas.api.service.SysUserService;
@@ -17,10 +19,11 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 import static com.ryuntech.common.constant.enums.CommonEnums.PARAM_ERROR;
@@ -53,6 +56,25 @@ public class MiniContractController extends ModuleBaseController {
     }
 
 
+
+    /**
+     * 根据ID查询用户信息
+     *
+     * @param contractId
+     * @return
+     */
+    @GetMapping("/outFindById")
+    @ApiOperation(value = "查询详细融资客户信息", notes = "contractId存在")
+    @ApiImplicitParam(name = "contractId", value = "合同编号", required = true, dataType = "String")
+    public Result<ReceivableContract> findById(String contractId) {
+        if (StringUtils.isBlank(contractId)) {
+            return new Result<>();
+        } else {
+            return new Result<>(iReceivableContractService.getById(contractId));
+        }
+    }
+
+
     /**
      * 添加合同信息
      *
@@ -71,25 +93,69 @@ public class MiniContractController extends ModuleBaseController {
 //            return new Result(PARAM_ERROR,"负责员工不能为空");
 //        }
         ReceivableContract receivableContract = new ReceivableContract();
-        receivableContract.setContractId(String.valueOf(generateId()));
+//        合同编号
+        String contractId = String.valueOf(generateId());
+        receivableContract.setContractId(contractId);
+//        合同名称
+        receivableContract.setContractName(receivableContractDTO.getContractName());
+        //        合同金额
         receivableContract.setBalanceAmount(receivableContractDTO.getContractAmount());
+//        回款余额
         receivableContract.setCollectionAmount("0.00");
-
+//       负责人编号
         String staffId = receivableContractDTO.getStaffId();
         if (StringUtils.isNotBlank(staffId)){
             SysUser sysUser = sysUserService.getById(staffId);
             receivableContract.setStaffName(sysUser.getUsername());
         }
+        //       客户编号
         String customerId = receivableContractDTO.getCustomerId();
         if (StringUtils.isNotBlank(customerId)){
             CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
             receivableContract.setCustomerName(customerUserInfo.getCustomerName());
         }
-        receivableContract.setStatus("2");
-//        receivableContract.setAttachmentCode()
+//        合同状态
+        receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
 
-        boolean b = iReceivableContractService.saveOrUpdate(receivableContract);
-        if (b){
+        List<ReceivableCollectionPlan> receivableCollectionPlans = new ArrayList<>();
+        List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractDTO.getReceivableCollectionPlanDTOs();
+        if (receivableCollectionPlanDTOs!=null&&receivableCollectionPlanDTOs.size()!=0){
+            for (ReceivableCollectionPlanDTO receivableCollectionPlanDTO :receivableCollectionPlanDTOs){
+                ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
+                receivableCollectionPlan.setContractId(contractId);
+//                计划编号
+                String planId = String.valueOf(generateId());
+                receivableCollectionPlan.setPlanId(planId);
+                receivableCollectionPlan.setPlanAmount(receivableCollectionPlanDTO.getPlanAmount());
+                receivableCollectionPlan.setRemakes(receivableCollectionPlanDTO.getRemakes());
+                receivableCollectionPlan.setPlanTime(DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()));
+                receivableCollectionPlans.add(receivableCollectionPlan);
+            }
+        }
+
+        List<AttachmentFile> attachmentFiles = receivableContractDTO.getFiles();
+        List<Attachment> attachments = new ArrayList<>();
+        if (attachmentFiles!=null&&attachmentFiles.size()!=0){
+            //                附件编码
+            String attachmentCode = String.valueOf(generateId());
+            receivableContract.setAttachmentCode(attachmentCode);
+            for (AttachmentFile attachmentFile :attachmentFiles){
+                //                文件编号
+                String attachmentId = String.valueOf(generateId());
+                Attachment attachment = new Attachment();
+                attachment.setId(attachmentId);
+                attachment.setAttachmentType(AttachmentConstants.TYPE1);
+                attachment.setAttachmentCode(attachmentCode);
+                attachment.setAttachmentUrl(attachmentFile.getUrl());
+                attachment.setStatus(AttachmentConstants.YES);
+                attachment.setUpdatedAt(new Date());
+                attachment.setCreatedAt(new Date());
+                attachments.add(attachment);
+            }
+        }
+
+        Boolean aBoolean = iReceivableContractService.addReceivableContract(attachments,receivableContract, receivableCollectionPlans);
+        if (aBoolean){
             //更新成功
             return new Result(receivableContract);
         }else {

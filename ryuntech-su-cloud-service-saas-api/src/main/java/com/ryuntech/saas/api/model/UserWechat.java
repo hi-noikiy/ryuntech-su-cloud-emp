@@ -1,5 +1,6 @@
 package com.ryuntech.saas.api.model;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
@@ -25,9 +26,15 @@ import java.time.LocalDateTime;
 
     private static final long serialVersionUID = 1L;
 
-            /**
-            * 关联用户表主键
-            */
+
+    /**
+     * 表主键
+     */
+    @TableId("ID")
+    private String id;
+    /**
+     * 关联用户表主键
+     */
     private String userId;
 
             /**

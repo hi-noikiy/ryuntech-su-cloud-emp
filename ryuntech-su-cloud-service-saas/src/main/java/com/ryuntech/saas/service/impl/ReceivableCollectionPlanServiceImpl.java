@@ -11,6 +11,8 @@ import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IReceivableCollectionPlanService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务实现类
@@ -35,5 +37,13 @@ public class ReceivableCollectionPlanServiceImpl extends BaseServiceImpl<Receiva
     public Result<IPage<ReceivableCollectionPlan>> selectPageList(ReceivableCollectionPlan receivableCollectionPlan, QueryPage queryPage) {
         Page<ReceivableCollectionPlan> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
         return new Result(m.selectPageList(page,receivableCollectionPlan));
+    }
+
+    @Override
+    public Boolean insertBatch(List<ReceivableCollectionPlan> receivableCollectionPlans) {
+        if (baseMapper.insertBatch(receivableCollectionPlans)>0){
+            return true;
+        }
+        return false;
     }
 }
