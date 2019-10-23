@@ -36,7 +36,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     }
 
     @Override
-    public Result<IPage<Employee>> selectListBySearch(Map param, QueryPage queryPage) {
+    public IPage<Employee> selectListBySearch(Map param, QueryPage queryPage) {
         log.info(param.toString());
         QueryWrapper qw = new QueryWrapper();
         if (param.containsKey("departmentId")) {
@@ -58,6 +58,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 //            qw.and(i -> i.like("mobile",keyword).or().like("name",keyword));
         }
         Page<Employee> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        return super.pageList(qw, page);
+        return m.selectPage(page, queryWrapper);
     }
 }

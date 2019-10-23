@@ -31,7 +31,7 @@
 
           <el-table-column align="center" label="部门" min-width="100">
               <template slot-scope="scope">
-                  {{ scope.row.customerName }}
+                  {{ scope.row.property.departmentName }}
               </template>
           </el-table-column>
 

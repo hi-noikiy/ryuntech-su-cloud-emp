@@ -2,7 +2,6 @@ package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
-import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.Employee;
 
 import java.util.Map;
@@ -27,5 +26,5 @@ public interface IEmployeeService extends IBaseService<Employee> {
      *
      * @return
      */
-    Result<IPage<Employee>> selectListBySearch(Map param, QueryPage page);
+    IPage<Employee> selectListBySearch(Map param, QueryPage page);
 }
