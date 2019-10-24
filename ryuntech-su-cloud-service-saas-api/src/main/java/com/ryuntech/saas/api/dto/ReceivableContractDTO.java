@@ -1,9 +1,8 @@
 package com.ryuntech.saas.api.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.ryuntech.common.model.BaseModel;
 import com.ryuntech.saas.api.model.AttachmentFile;
+import com.ryuntech.saas.api.model.FollowupRecord;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -104,4 +103,8 @@ public class ReceivableContractDTO extends BaseModel {
     * 还款计划
     * */
     List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs;
+    /**
+     * 跟进信息
+     */
+    List<FollowupRecord> followUpRecords;
 }

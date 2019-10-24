@@ -66,11 +66,13 @@ public class MiniContractController extends ModuleBaseController {
     @GetMapping("/outFindById")
     @ApiOperation(value = "查询详细融资客户信息", notes = "contractId存在")
     @ApiImplicitParam(name = "contractId", value = "合同编号", required = true, dataType = "String")
-    public Result<ReceivableContract> findById(String contractId) {
+    public Result<ReceivableContractDTO> findById(String contractId) {
         if (StringUtils.isBlank(contractId)) {
             return new Result<>();
         } else {
-            return new Result<>(iReceivableContractService.getById(contractId));
+            ReceivableContractDTO receivableContractDTO = new ReceivableContractDTO();
+            receivableContractDTO.setContractId(contractId);
+            return new Result<>(iReceivableContractService.findByContractId(receivableContractDTO));
         }
     }
 

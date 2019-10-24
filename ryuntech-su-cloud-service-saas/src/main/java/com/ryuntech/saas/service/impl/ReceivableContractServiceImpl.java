@@ -1,9 +1,11 @@
 package com.ryuntech.saas.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
+import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
@@ -21,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,6 +43,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
 
     @Autowired
     AttachmentMapper attachmentMapper;
+
+
 
 
     @Override
@@ -78,5 +83,53 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
 //        插入计划数据
         receivableCollectionPlanMapper.insertBatch(receivableCollectionPlans);
         return true;
+    }
+
+    @Override
+    public ReceivableContractDTO findByContractId(ReceivableContractDTO receivableContractDTO) {
+
+        //        计划
+        List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = new ArrayList<>();
+        //        合同对象
+        ReceivableContract receivableContract = null;
+        if (StringUtils.isNotBlank(receivableContractDTO.getContractId())){
+            queryWrapper.eq("contract_id", receivableContractDTO.getContractId());
+            QueryWrapper<ReceivableCollectionPlan> queryWrapper2 =new QueryWrapper<>();
+            List<ReceivableCollectionPlan> receivableCollectionPlans= receivableCollectionPlanMapper.selectList(queryWrapper2);
+            if (receivableCollectionPlans!=null&&receivableCollectionPlans.size()!=0){
+                for (ReceivableCollectionPlan receivableCollectionPlan:receivableCollectionPlans){
+                    ReceivableCollectionPlanDTO receivableCollectionPlanDTO =new ReceivableCollectionPlanDTO();
+                    receivableCollectionPlanDTO.setPlanAmount(receivableCollectionPlan.getPlanAmount());
+                    if (receivableCollectionPlan.getPlanTime()!=null){
+                        receivableCollectionPlanDTO.setPlanTime(DateUtil.formatDateTime(receivableCollectionPlan.getPlanTime()));
+                    }
+                    receivableCollectionPlanDTO.setRemakes(receivableCollectionPlan.getRemakes());
+                    receivableCollectionPlanDTO.setStatus(receivableCollectionPlan.getStatus());
+                    receivableCollectionPlanDTOs.add(receivableCollectionPlanDTO);
+                }
+
+            }
+            receivableContract = baseMapper.selectOne(queryWrapper);
+            if (receivableContract!=null){
+                receivableContractDTO.setAttachmentCode(receivableContract.getAttachmentCode());
+                receivableContractDTO.setBalanceAmount(receivableContract.getBalanceAmount());
+                receivableContractDTO.setCollectionAmount(receivableContract.getCollectionAmount());
+                receivableContractDTO.setContacts(receivableContract.getContacts());
+                receivableContractDTO.setContactsPhone(receivableContract.getContactsPhone());
+                receivableContractDTO.setContractId(receivableContract.getContractId());
+                receivableContractDTO.setContractName(receivableContract.getContractName());
+                receivableContractDTO.setContractTime(receivableContract.getContractTime());
+                receivableContractDTO.setContractCode(receivableContract.getContractCode());
+                receivableContractDTO.setCustomerId(receivableContract.getCustomerId());
+                receivableContractDTO.setContractName(receivableContract.getCustomerName());
+                receivableContractDTO.setDepartment(receivableContract.getDepartment());
+                receivableContractDTO.setStaffId(receivableContract.getStaffId());
+                receivableContractDTO.setStaffName(receivableContract.getStaffName());
+                receivableContractDTO.setStatus(receivableContract.getStatus());
+            }
+        }
+
+        receivableContractDTO.setReceivableCollectionPlanDTOs(receivableCollectionPlanDTOs);
+        return receivableContractDTO;
     }
 }

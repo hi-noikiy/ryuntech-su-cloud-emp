@@ -50,4 +50,11 @@ public interface IReceivableContractService extends IBaseService<ReceivableContr
      * @return
      */
     Boolean addReceivableContract(List<Attachment> attachments,ReceivableContract receivableContract, List<ReceivableCollectionPlan> receivableCollectionPlans);
+
+    /**
+     * 查询完整的合同对象
+     * @param receivableContractDTO
+     * @return
+     */
+    ReceivableContractDTO findByContractId(ReceivableContractDTO receivableContractDTO);
 }

@@ -29,4 +29,8 @@ public class ReceivableCollectionPlanDTO extends BaseModel {
      * 计划回款时间
      */
     private String planTime;
+    /**
+     * 回款状态(0逾期1已还款2未开始)
+     */
+    private String status;
 }
