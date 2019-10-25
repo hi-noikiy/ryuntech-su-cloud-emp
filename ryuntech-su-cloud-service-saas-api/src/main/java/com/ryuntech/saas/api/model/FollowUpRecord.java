@@ -1,12 +1,15 @@
 package com.ryuntech.saas.api.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -25,6 +28,10 @@ import java.time.LocalDateTime;
     private static final long serialVersionUID = 1L;
 
     private String followupId;
+    /**
+     * 合同编号
+     */
+    private String contractId;
 
             /**
             * 跟进内容
@@ -46,11 +53,17 @@ import java.time.LocalDateTime;
             */
     private String attachmentCode;
 
-    private LocalDateTime followupTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date followupTime;
 
-    private LocalDateTime updatedAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatedAt;
 
-    private LocalDateTime createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createdAt;
 
 
 }

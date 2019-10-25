@@ -107,4 +107,8 @@ public class ReceivableContractDTO extends BaseModel {
      * 跟进信息
      */
     List<FollowupRecord> followUpRecords;
+    /**
+     * 跟进的第一个信息
+     */
+    FollowupRecord followupRecord;
 }

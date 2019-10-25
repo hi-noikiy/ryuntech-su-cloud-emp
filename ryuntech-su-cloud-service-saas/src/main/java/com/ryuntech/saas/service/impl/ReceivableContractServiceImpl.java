@@ -10,14 +10,8 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
-import com.ryuntech.saas.api.mapper.AttachmentMapper;
-import com.ryuntech.saas.api.mapper.ReceivableCollectionPlanMapper;
-import com.ryuntech.saas.api.mapper.ReceivableContractMapper;
-import com.ryuntech.saas.api.mapper.SysUserMapper;
-import com.ryuntech.saas.api.model.Attachment;
-import com.ryuntech.saas.api.model.PaymentResult;
-import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
-import com.ryuntech.saas.api.model.ReceivableContract;
+import com.ryuntech.saas.api.mapper.*;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.IReceivableContractService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +37,9 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
 
     @Autowired
     AttachmentMapper attachmentMapper;
+
+    @Autowired
+    FollowupRecordMapper followupRecordMapper;
 
 
 
@@ -129,7 +126,14 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
             }
         }
 
+//        计划
         receivableContractDTO.setReceivableCollectionPlanDTOs(receivableCollectionPlanDTOs);
+//        跟进记录
+        List<FollowupRecord> followupRecord2 = followupRecordMapper.selectList(new QueryWrapper<FollowupRecord>().eq("contract_id", receivableContractDTO.getContractId()));
+        if (followupRecord2!=null&&followupRecord2.size()!=0){
+            FollowupRecord followupRecord = followupRecord2.get(0);
+            receivableContractDTO.setFollowupRecord(followupRecord);
+        }
         return receivableContractDTO;
     }
 }
