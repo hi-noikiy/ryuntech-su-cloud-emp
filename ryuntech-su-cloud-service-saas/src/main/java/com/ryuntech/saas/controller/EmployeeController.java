@@ -1,5 +1,6 @@
 package com.ryuntech.saas.controller;
 
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 
@@ -63,6 +64,65 @@ public class EmployeeController extends ModuleBaseController {
             }
         }
         return  new Result<>(iPage);
+    }
+
+    /**
+     * 更新员工状态 0-正常 1-禁用
+     * @return
+     */
+    @PostMapping("updateStatus")
+    @ApiOperation(value = "更新员工状态")
+    @ApiImplicitParam(name = "param", value = "更新参数", required = true, dataType = "Map", paramType = "body")
+    public Result updateStatus(@RequestBody Map param) {
+        if (!param.containsKey("employeeId")) {
+            return new Result(CommonEnums.PARAM_ERROR,"员工ID不能为空");
+        }
+        Employee employee = new Employee();
+        employee.setEmployeeId((String)param.get("employeeId"));
+        employee.setStatus((Integer)param.get("status"));
+        iEmployeeService.updateById(employee);
+        return new Result();
+    }
+
+    /**
+     * 删除员工
+     * @return
+     */
+    @PostMapping("del")
+    @ApiOperation(value = "删除员工")
+    @ApiImplicitParam(name = "param", value = "员工ID", required = true, dataType = "Map", paramType = "body")
+    public Result del(@RequestBody Map param) {
+        if (!param.containsKey("employeeId")) {
+            return new Result(CommonEnums.PARAM_ERROR,"员工ID不能为空");
+        }
+        String employeeId = (String) param.get("employeeId");
+        iEmployeeService.removeById(employeeId);
+        return new Result();
+    }
+
+
+    /**
+     * 添加员工
+     * @return
+     */
+    @PostMapping("add")
+    @ApiOperation(value = "添加员工")
+    @ApiImplicitParam(name = "employee", value = "员工ID", required = true, dataType = "Map", paramType = "body")
+    public Result del(@RequestBody Employee employee) {
+        employee.setEmployeeId(String.valueOf(generateId()));
+        employee.setStatus(0);
+        iEmployeeService.save(employee);
+        return new Result();
+    }
+
+    /**
+     * 编辑部门
+     * @return
+     */
+    @PostMapping("/edit")
+    public Result edit(@RequestBody Employee employee) {
+        iEmployeeService.updateById(employee);
+        return new Result();
     }
 
 }

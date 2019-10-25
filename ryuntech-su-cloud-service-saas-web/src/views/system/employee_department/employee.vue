@@ -56,8 +56,9 @@
           <el-table-column align="center" label="操作" width="220">
               <template slot-scope="scope">
                   <el-button type="primary" size="mini"  @click="handleEdit(scope.row.contractId)">编辑</el-button>
-                  <el-button type="danger" v-if="scope.row.status == 0"  size="mini" @click="handleDel(scope.row.contractId)">禁用</el-button>
-                  <el-button type="info" v-if="scope.row.status == 1"  size="mini" @click="handleDel(scope.row.contractId)">恢复</el-button>
+                  <el-button type="danger" v-if="scope.row.status == 0"  size="mini" @click="updateStatus(scope.row.employeeId,1)">禁用</el-button>
+                  <el-button type="info" v-if="scope.row.status == 1"  size="mini" @click="updateStatus(scope.row.employeeId,0)">恢复</el-button>
+                  <el-button type="danger"  size="mini" @click="deleteEmployee(scope.row.employeeId)">删除</el-button>
               </template>
           </el-table-column>
       </el-table>
@@ -75,7 +76,7 @@
 
 <script>
 import bannerHeader from './bannerHeader.vue'
-import { getEmployeeList } from '@/api/system/employee'
+import { getEmployeeList, updateStatus, del, add, edit } from '@/api/system/employee'
 import { employeeStatusOption } from './e_d'
 export default {
   name: 'EmployeeDepartmentEmployee',
@@ -106,6 +107,20 @@ export default {
         .then( res => {
           this.employeeList = res.data.records
           this.total = res.data.total
+        }).catch( er => { console.log(er) })
+    },
+    updateStatus(employeeId,status) {
+      updateStatus({employeeId,status})
+        .then( res => {
+          this.$message.success("操作成功！")
+          this.fetchData();
+        }).catch( er => { console.log(er) })
+    },
+    deleteEmployee(employeeId) {
+      del({employeeId})
+        .then(res => {
+          this.$message.success("操作成功！")
+          this.fetchData()
         }).catch( er => { console.log(er) })
     }
 
