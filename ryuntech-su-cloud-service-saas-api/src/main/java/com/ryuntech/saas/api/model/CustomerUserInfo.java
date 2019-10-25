@@ -76,9 +76,21 @@ import java.io.Serializable;
 
 
     /**
-     * 详细地址
+     * 城市编号
      */
-    @TableField("CITY")
-    private String city;
+    @TableField("CITY_ID")
+    private String cityId;
+
+    /**
+     * 省份编号
+     */
+    @TableField("PROVINCE_ID")
+    private String provinceId;
+
+    /**
+     * 区编号
+     */
+    @TableField("DISTRICT_ID")
+    private String districtId;
 
 }
