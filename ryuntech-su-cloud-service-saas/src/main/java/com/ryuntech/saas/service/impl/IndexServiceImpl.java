@@ -53,5 +53,15 @@ public class IndexServiceImpl extends BaseServiceImpl<IndexMapper, Index> implem
         return baseMapper.selectExpireSum(weChatIndexDTO);
     }
 
+    @Override
+    public Integer totalContractNumber(WeChatIndexDTO weChatIndexDTO) {
+        return baseMapper.totalContractNumber(weChatIndexDTO);
+    }
+
+    @Override
+    public Integer totalCustomerNumber(WeChatIndexDTO weChatIndexDTO) {
+        return baseMapper.totalCustomerNumber(weChatIndexDTO);
+    }
+
 
 }

@@ -67,6 +67,20 @@ public interface IndexService extends IBaseService<Index> {
      */
     String selectExpireSum(WeChatIndexDTO weChatIndexDTO);
 
+    /**
+     * 合同总数
+     * @param weChatIndexDTO
+     * @return
+     */
+    Integer totalContractNumber(WeChatIndexDTO weChatIndexDTO);
+
+    /**
+     * 客户总数
+     * @param weChatIndexDTO
+     * @return
+     */
+    Integer totalCustomerNumber(WeChatIndexDTO weChatIndexDTO);
+
 
 
 }

@@ -136,4 +136,9 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
         }
         return receivableContractDTO;
     }
+
+    @Override
+    public ReceivableContractDTO findDetailByContractId(ReceivableContractDTO receivableContractDTO) {
+        return null;
+    }
 }

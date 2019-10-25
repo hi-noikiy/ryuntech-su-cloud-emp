@@ -422,77 +422,16 @@
 
         </where>
     </select>
+<!--    totalContractNumber合同总数-->
+    <select id="totalContractNumber" resultType="Integer">
 
 
-    <!--    指定时间内预计回款-->
-<!--
-    &lt;!&ndash;指定时间内的到期数目 expire&ndash;&gt;
-    <select id="selectExpireNumber" resultType="Integer">
-        select count(*) from ryn_receivable_collection_plan
-        <where>
-            contract_id in(
-            select
-            contract_id
-            from
-            ryn_receivable_collection
-            where contract_id in(
-            select
-            contract_id
-            from
-            ryn_receivable_contract
-            <where>
-                staff_id in (
-                select
-                employee_id
-                from
-                ryn_employee_department
-                <where>
-                    department_id in (
-                    select
-                    department_id
-                    from
-                    ryn_employee_department
-                    <where>
-                        <if test="weChatIndexDTO.employeeId!=null">
-                            employee_id = #{weChatIndexDTO.employeeId}
-                        </if>
-                    </where>
-                    )
-                </where>
-                )
-                <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
-                    <![CDATA[
-                                   and time >= #{weChatIndexDTO.startDate}
-                                ]]>
-                </if>
-                <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
-                    <![CDATA[
-                                        and time <= #{weChatIndexDTO.endDate}
-                                ]]>
-                </if>
-            </where>
-            )
-            )
+    </select>
 
-            <if test="weChatIndexDTO.status!=null and weChatIndexDTO.status!=''">
-                <![CDATA[
-                            and status = #{weChatIndexDTO.status}
-                    ]]>
-            </if>
-
-            <if test="weChatIndexDTO.planStartDate!=null and weChatIndexDTO.planStartDate!=''">
-                <![CDATA[
-                                   and plan_time >= #{weChatIndexDTO.planStartDate}
-                                ]]>
-            </if>
-            <if test="weChatIndexDTO.planEndDate!=null and weChatIndexDTO.planEndDate!=''">
-                <![CDATA[
-                                        and plan_time <= #{weChatIndexDTO.planEndDate}
-                                ]]>
-            </if>
+<!--    客户总数-->
+    <select id="totalCustomerNumber" resultType="Integer">
 
 
-        </where>
-    </select>-->
+    </select>
 
 </mapper>

@@ -71,4 +71,6 @@ public class MiniCustomerController extends ModuleBaseController{
             return new Result<>(OPERATE_ERROR);
         }
     }
+
+
 }

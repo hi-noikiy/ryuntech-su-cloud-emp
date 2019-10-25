@@ -48,7 +48,7 @@ public class MiniContractController extends ModuleBaseController {
     private ICustomerUserInfoService iCustomerUserInfoService;
 
     @PostMapping("/outlist")
-    @ApiOperation(value = "分页、条件查询用户列表信息")
+    @ApiOperation(value = "分页、条件查询合同信息")
     @ApiImplicitParam(name = "receivableContract", value = "查询条件", required = true, dataType = "ReceivableContract", paramType = "body")
     public Result<IPage<ReceivableContract>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
         log.info("receivableContract.getContractId()"+receivableContract.getContractId());
@@ -64,7 +64,7 @@ public class MiniContractController extends ModuleBaseController {
      * @return
      */
     @GetMapping("/outFindById")
-    @ApiOperation(value = "查询详细融资客户信息", notes = "contractId存在")
+    @ApiOperation(value = "查询详细合同信息", notes = "contractId存在")
     @ApiImplicitParam(name = "contractId", value = "合同编号", required = true, dataType = "String")
     public Result<ReceivableContractDTO> findById(String contractId) {
         if (StringUtils.isBlank(contractId)) {
@@ -75,6 +75,27 @@ public class MiniContractController extends ModuleBaseController {
             return new Result<>(iReceivableContractService.findByContractId(receivableContractDTO));
         }
     }
+
+    /**
+     * 根据ID查询用户信息
+     *
+     * @param contractId
+     * @return
+     */
+    @GetMapping("/outDetailFindById")
+    @ApiOperation(value = "查询详细合同信息", notes = "contractId存在")
+    @ApiImplicitParam(name = "contractId", value = "合同编号", required = true, dataType = "String")
+    public Result<ReceivableContractDTO> detailFindById(String contractId) {
+        if (StringUtils.isBlank(contractId)) {
+            return new Result<>();
+        } else {
+            ReceivableContractDTO receivableContractDTO = new ReceivableContractDTO();
+            receivableContractDTO.setContractId(contractId);
+            return new Result<>(iReceivableContractService.findByContractId(receivableContractDTO));
+        }
+    }
+
+
 
 
     /**

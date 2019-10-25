@@ -71,4 +71,18 @@ public interface IndexMapper extends IBaseMapper<Index> {
      */
     String selectExpireSum(@Param("weChatIndexDTO") WeChatIndexDTO weChatIndexDTO);
 
+    /**
+     * 合同总数
+     * @param weChatIndexDTO
+     * @return
+     */
+    Integer totalContractNumber(WeChatIndexDTO weChatIndexDTO);
+
+    /**
+     * 客户总数
+     * @param weChatIndexDTO
+     * @return
+     */
+    Integer totalCustomerNumber(WeChatIndexDTO weChatIndexDTO);
+
 }
