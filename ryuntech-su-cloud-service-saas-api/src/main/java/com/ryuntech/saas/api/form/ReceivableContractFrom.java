@@ -1,20 +1,22 @@
-package com.ryuntech.saas.api.dto;
+package com.ryuntech.saas.api.form;
 
 import com.ryuntech.common.model.BaseModel;
+import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.model.AttachmentFile;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 输出到页面数据
+ * 接受前台参数
  * @author EDZ
  */
 @Data
-public class ReceivableContractDTO extends BaseModel {
-
+@Accessors(chain = true)
+public class ReceivableContractFrom extends BaseModel {
     /**
      * 合同编号
      */
@@ -101,8 +103,8 @@ public class ReceivableContractDTO extends BaseModel {
     private List<AttachmentFile> files;
 
     /*
-    * 还款计划
-    * */
+     * 还款计划
+     * */
     List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs;
     /**
      * 跟进信息

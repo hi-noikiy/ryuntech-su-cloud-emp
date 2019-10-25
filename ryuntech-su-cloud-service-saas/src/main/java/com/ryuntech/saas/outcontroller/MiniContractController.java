@@ -7,6 +7,7 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
+import com.ryuntech.saas.api.form.ReceivableContractFrom;
 import com.ryuntech.saas.api.helper.constant.AttachmentConstants;
 import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
 import com.ryuntech.saas.api.model.*;
@@ -101,15 +102,15 @@ public class MiniContractController extends ModuleBaseController {
     /**
      * 添加合同信息
      *
-     * @param receivableContractDTO
+     * @param receivableContractFrom
      * @return
      */
     @PostMapping("/outadd")
     @ApiOperation(value = "添加合同信息")
-    @ApiImplicitParam(name = "receivableContract", value = "合同实体信息", required = true, dataType = "ReceivableContract", paramType = "body")
-    public Result add(@RequestBody ReceivableContractDTO receivableContractDTO) {
+    @ApiImplicitParam(name = "receivableContractFrom", value = "合同实体信息", required = true, dataType = "ReceivableContractFrom", paramType = "body")
+    public Result add(@RequestBody ReceivableContractFrom receivableContractFrom) {
 
-        if (StringUtils.isBlank(receivableContractDTO.getContractName())){
+        if (StringUtils.isBlank(receivableContractFrom.getContractName())){
             return new Result(PARAM_ERROR,"合同名不能为空");
         }
 //        if (StringUtils.isBlank(receivableContractDTO.getStaffId())) {
@@ -120,19 +121,19 @@ public class MiniContractController extends ModuleBaseController {
         String contractId = String.valueOf(generateId());
         receivableContract.setContractId(contractId);
 //        合同名称
-        receivableContract.setContractName(receivableContractDTO.getContractName());
+        receivableContract.setContractName(receivableContractFrom.getContractName());
         //        合同金额
-        receivableContract.setBalanceAmount(receivableContractDTO.getContractAmount());
+        receivableContract.setBalanceAmount(receivableContractFrom.getContractAmount());
 //        回款余额
         receivableContract.setCollectionAmount("0.00");
 //       负责人编号
-        String staffId = receivableContractDTO.getStaffId();
+        String staffId = receivableContractFrom.getStaffId();
         if (StringUtils.isNotBlank(staffId)){
             SysUser sysUser = sysUserService.getById(staffId);
             receivableContract.setStaffName(sysUser.getUsername());
         }
         //       客户编号
-        String customerId = receivableContractDTO.getCustomerId();
+        String customerId = receivableContractFrom.getCustomerId();
         if (StringUtils.isNotBlank(customerId)){
             CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
             receivableContract.setCustomerName(customerUserInfo.getCustomerName());
@@ -141,7 +142,7 @@ public class MiniContractController extends ModuleBaseController {
         receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
 
         List<ReceivableCollectionPlan> receivableCollectionPlans = new ArrayList<>();
-        List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractDTO.getReceivableCollectionPlanDTOs();
+        List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractFrom.getReceivableCollectionPlanDTOs();
         if (receivableCollectionPlanDTOs!=null&&receivableCollectionPlanDTOs.size()!=0){
             for (ReceivableCollectionPlanDTO receivableCollectionPlanDTO :receivableCollectionPlanDTOs){
                 ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
@@ -156,7 +157,7 @@ public class MiniContractController extends ModuleBaseController {
             }
         }
 
-        List<AttachmentFile> attachmentFiles = receivableContractDTO.getFiles();
+        List<AttachmentFile> attachmentFiles = receivableContractFrom.getFiles();
         List<Attachment> attachments = new ArrayList<>();
         if (attachmentFiles!=null&&attachmentFiles.size()!=0){
             //                附件编码
