@@ -10,6 +10,7 @@ import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.model.UserRoleLimit;
 import com.ryuntech.saas.api.service.IDepartmentService;
 import com.ryuntech.saas.api.service.IEmployeeService;
+import com.ryuntech.saas.api.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +34,9 @@ public class EmployeeController extends ModuleBaseController {
     private IEmployeeService iEmployeeService;
     @Autowired
     private IDepartmentService iDepartmentService;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 分页查询列表数据，条件查询
