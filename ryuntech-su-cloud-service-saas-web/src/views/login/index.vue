@@ -70,22 +70,40 @@
           >Login
           </el-button>
         </el-form>
+
+        <!--弹出窗口：选择公司-->
+        <el-dialog title="请选择公司" :visible.sync="editRolesDialogVisible" width="30%" padding="1px" margin="0px" align="center" @close="closeDialog">
+          <div style="margin: -20px 0px 0px 0px;">
+            <!--<a v-for="(item,index) in companyList" :key="index">{{item}}</a>-->
+            <ul id="companycss">
+              <li v-for="(item,index) in companyList" @click="handleLink(item)">
+                <span v-if='item.company'>{{ item.company }}</span>
+              </li>
+            </ul>
+          </div>
+        </el-dialog>
       </el-card>
     </div>
   </div>
 </template>
 
 <script>
-import { parseTime } from '@/utils/index'
+import { asyncRouterMap } from '@/router'
+// import { filterAsyncRouter } from '@/store/modules/permission'
+import { parseTime, companyListByUserName } from '@/utils/index'
+import { setToken } from '@/utils/auth'
+import { logout } from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
     return {
+      companyList: null,
+      userDetail: null,
       date: parseTime(new Date().getTime(), ''),
       loginForm: {
         username: 'ryuntech',
-        password: ''
+        password: '12345678'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],
@@ -93,7 +111,8 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      editRolesDialogVisible:false
     }
   },
   watch: {
@@ -131,8 +150,18 @@ export default {
         if (valid) {
           this.loading = true
           this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
+            this.editRolesDialogVisible = true
+            // this.$router.push({ path: this.redirect || '/' })
+
+            companyListByUserName(this.loginForm.username).then(response => {
+              this.companyList = response.data
+            }).catch(() => {
+              this.$message({
+                type: 'error',
+                message: '用户所在公司查询失败！'
+              });
+            })
+
           }).catch(() => {
             this.loading = false
           })
@@ -141,6 +170,29 @@ export default {
           return false
         }
       })
+    },
+    closeDialog() {
+      this.loading = false
+      this.editRolesDialogVisible = false
+      this.$store.dispatch('user/logout')
+    },
+    // 选择公司事件
+    handleLink(data) {
+
+      this.$store.dispatch('user/getInfo').then(responses => {
+        this.userDetail = responses
+        // 如果选中公司和查询到的该用户信息中的公司一样，将该公司对应的权限添加到路由表中
+        if (data.company == responses.companyName) {
+          this.$router.addRoutes(responses.perms)
+        }
+        this.$router.push({ path: this.redirect || '/' })
+      }).catch(() => {
+        this.$message({
+          type: 'error',
+          message: '用户所在公司相应权限信息查询失败！'
+        });
+      })
+
     }
   }
 }
@@ -161,6 +213,24 @@ export default {
     to {
       background-position: 0 100%
     }
+  }
+
+  #companycss {
+    margin: 0px 36px 0px 0px;
+  }
+
+  #companycss li {
+    cursor: pointer;
+    border: 1px solid black;
+    border-left: none;
+    border-right: none;
+    margin: 0px;
+    padding: 6px;
+    list-style-type:none;
+  }
+
+  #companycss li:hover {
+    background-color: #F0F0F0;
   }
 
   .el-card {

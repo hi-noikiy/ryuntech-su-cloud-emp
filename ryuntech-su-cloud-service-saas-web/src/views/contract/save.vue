@@ -64,21 +64,43 @@
           </template>
         </el-upload>
       </el-form-item>
-
       <el-form-item style="width: 100%" label="回款计划">
-        <el-button type="text">添加回款计划</el-button>
+        <el-button @click="addItem" type="text">添加回款计划</el-button>
       </el-form-item>
+
+      <div v-for="(item, index) in form.planForm" :key="index" class="d-contract-edit-form-div">
+          <el-form-item label="计划日期" :prop="'planForm.' + index + '.planTime'" :rules="formRules.planTime">
+              <el-date-picker
+                v-model="item.planTime"
+                type="datetime"
+                placeholder="请选择计划日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd HH:mm:ss"
+                @input="change1($event)"
+              />
+            </el-form-item>
+          <el-form-item label="计划金额" :prop="'planForm.' + index + '.planAmount'" :rules="formRules.planAmount">
+              <el-input v-model="item.planAmount" placeholder="请输入计划金额" @input="change2($event)"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" :prop="'planForm.' + index + '.remakes'" :rules="formRules.remakes">
+              <el-input v-model="item.remakes" placeholder="请输入备注" @input="change3($event)"></el-input>
+          </el-form-item>
+          <el-form-item>
+              <a class="el-icon-delete" @click="deleteItem(item, index)"></a>
+          </el-form-item>
+      </div>
 
     </el-form>
     <div slot="footer" class="dialog-footer" style="margin-right: 30px">
-      <el-button @click="handleClose">　退 出　</el-button>
+      <el-button @click="handleClose">　取 消　</el-button>
       <el-button type="primary" @click="onSubmit('form')">　提 交　</el-button>
     </div>
   </el-dialog>
 </template>
 
+
 <script>
-import { save, edit, upload } from '@/api/contract'
+import { save, edit, upload, backPlanInsertBatch } from '@/api/contract'
 import { parseTime } from '@/utils/index'
 
 export default {
@@ -86,13 +108,17 @@ export default {
   // 一旦父组件改变了`sonData`对应的值，子组件的`sonData`会立即改变，通过watch函数可以实时监听到值的变化
   // `props`不属于data，但是`props`中的参数可以像data中的参数一样直接使用
   props: ['sonData', 'staffMap', 'customerMap'],
-
   data() {
     return {
       dialogVisible: false,
       dialogTitle: '合同详细信息',
       localUpload: upload,
       imgURL: '',
+      // backPlanForm: [{
+      //   planTime: '',
+      //   planAmount: '',
+      //   remakes: ''
+      // }],
       form: {
         contractId: '',
         contractName: '',
@@ -103,8 +129,30 @@ export default {
         contactsPhone: '',
         customerId: '',
         staffId: '',
-        url: ''
+        attachmentCode: '',
+        url: '',
+        // 回款计划
+        planForm: [{
+          contractId: '',
+          planId: '',
+          planTime: '',
+          planAmount: '',
+          status: '',
+          remakes: '',
+          backedAmount:'',
+          surplusAmount: ''
+        }]
       },
+      formRules: {
+        planTime: [],
+        planAmount: [],
+        remakes: []
+      },
+      // formRules: {
+      //   planTime: [{required: true, message: '选择计划日期', trigger: 'blur'}],
+      //   planAmount: [{required: true, message: '计划金额', trigger: 'blur'}],
+      //   remakes: [{required: true, message: '备注', trigger: 'blur'}]
+      // },
       rules: {
         contractId: [{ required: false, trigger: 'blur', message: '请输入合同编号' }],
         contractName: [{ required: true, trigger: 'blur', message: '请输入合同名' }],
@@ -131,6 +179,50 @@ export default {
     }
   },
   methods: {
+    change1(e) {
+      this.formRules.planTime = [{required: false, message: '选择计划日期', trigger: 'blur'}]
+      this.$forceUpdate()
+    },
+    change2() {
+      this.formRules.planAmount = [{required: false, message: '计划金额', trigger: 'blur'}],
+      this.$forceUpdate()
+    },
+    change3() {
+      this.formRules.remakes = [{required: false, message: '备注', trigger: 'blur'}]
+      this.$forceUpdate()
+    },
+    addItem() {
+      this.formRules.planTime = [{required: true, message: '选择计划日期', trigger: 'blur'}]
+      this.formRules.planAmount = [{required: true, message: '计划金额', trigger: 'blur'}],
+      this.formRules.remakes = [{required: true, message: '备注', trigger: 'blur'}]
+      if(typeof(this.form.planForm) === 'undefined') {
+        this.form.planForm = []
+      }
+      this.form.planForm.push({
+        contractId: '',
+          planId: '',
+          planTime: '',
+          planAmount: '',
+          status: '',
+          remakes: '',
+          backedAmount:'',
+          surplusAmount: ''
+      })
+      this.form.planForm.contractId = this.form.contractId
+      // this.$nextTick(() => {
+        this.$forceUpdate()
+      // })
+      console.log(this.form.planForm + '------------------------------------')
+    },
+    deleteItem(item, index) {
+      console.log(index + '===========================')
+      console.log(item + '==============item=============')
+      index = this.form.planForm.indexOf(item);
+        if (index !== -1) {
+          this.form.planForm.splice(index, 1)
+          this.$forceUpdate()
+        }
+    },
     clearForm() {
       this.form.contractId = null
       this.form.contractName = null
@@ -141,6 +233,7 @@ export default {
       this.form.contactsPhone = null
       this.form.customerId = null
       this.form.staffId = null
+      this.form.attachmentCode= null
       this.form.url = null
       this.form.createTime = parseTime(new Date(), '')
     },
@@ -154,6 +247,15 @@ export default {
         if (valid) {
           if (this.form.contractId === null) {
             save(this.form).then(response => {
+              // if (response.tcode === 200) {
+              //   this._notify(response.msg, 'success')
+              //   this.clearForm()
+              //   this.$emit('sonStatus', true)
+              //   this.dialogVisible = false
+              // } else {
+              //   this._notify(response.msg, 'error')
+              // }
+              backPlanInsertBatch(this.form.planForm).then(response => {
               if (response.tcode === 200) {
                 this._notify(response.msg, 'success')
                 this.clearForm()
@@ -163,8 +265,31 @@ export default {
                 this._notify(response.msg, 'error')
               }
             })
+            })
+            // 回款计划
+            // backPlanInsertBatch(this.form.planForm).then(response => {
+            //   if (response.tcode === 200) {
+            //     this._notify(response.msg, 'success')
+            //     this.clearForm()
+            //     this.$emit('sonStatus', true)
+            //     this.dialogVisible = false
+            //   } else {
+            //     this._notify(response.msg, 'error')
+            //   }
+            // })
           } else {
             edit(this.form).then(response => {
+              if (response.tcode === 200) {
+                this._notify(response.msg, 'success')
+                this.clearForm()
+                this.$emit('sonStatus', true)
+                this.dialogVisible = false
+              } else {
+                this._notify(response.msg, 'error')
+              }
+            })
+            // 回款计划
+            backPlanInsertBatch(this.form.planForm).then(response => {
               if (response.tcode === 200) {
                 this._notify(response.msg, 'success')
                 this.clearForm()
@@ -187,6 +312,7 @@ export default {
         this._notify('图片上传成功', 'success')
         this.form.url = res.data.url
         this.imgURL = res.data.url
+        this.form.attachmentCode = this.form.url
       }
     },
     // 文件上传前的前的钩子函数
@@ -252,6 +378,23 @@ export default {
     @media screen and (min-width: 1024px){
       .el-form-item{
         width: 48%;
+        &:nth-of-type(2n+1) {
+          margin-right: 2%;
+        }
+      }
+    }
+  }
+  .d-contract-edit-form-div {
+    display: flex;
+    // flex-wrap: wrap;
+    @media screen and (max-width: 1024px) {
+      .el-form-item{
+        width: 280px;
+      }
+    }
+    @media screen and (min-width: 1024px){
+      .el-form-item{
+        width: 280px;
         &:nth-of-type(2n+1) {
           margin-right: 2%;
         }

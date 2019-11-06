@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.saas.api.model.Employee;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -27,4 +28,11 @@ public interface IEmployeeService extends IBaseService<Employee> {
      * @return
      */
     IPage<Employee> selectListBySearch(Map param, QueryPage page);
+
+    /**
+     * 根据用户id查询该用户所在的公司
+     * @param userId
+     * @return
+     */
+    List<Map<String, String>> selectCompanys(String userId);
 }

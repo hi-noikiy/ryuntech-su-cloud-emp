@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -48,7 +47,7 @@ import java.util.Date;
     private String remakes;
 
     /**
-     * 回款状态(0逾期1已还款2未开始)
+     * 回款状态(0逾期1已还款2未开始3回款中)
      */
     @TableField("STATUS")
     private String status;
@@ -67,5 +66,16 @@ import java.util.Date;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date planTime;
 
+    /**
+     * 计划已还金额
+     */
+    @TableField("BACKED_AMOUNT")
+    private String backedAmount;
+
+    /**
+     * 计划剩余金额
+     */
+    @TableField("SURPLUS_AMOUNT")
+    private String surplusAmount;
 
 }

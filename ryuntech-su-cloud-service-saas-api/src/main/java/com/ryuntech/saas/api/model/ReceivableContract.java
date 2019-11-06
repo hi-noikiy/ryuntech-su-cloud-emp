@@ -10,9 +10,7 @@ import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
 * <p>
@@ -57,6 +55,8 @@ import java.util.Date;
      * 合同日期
      */
     @TableField("CONTRACT_TIME")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private LocalDateTime contractTime;
 
     /**
@@ -66,13 +66,13 @@ import java.util.Date;
     private String contractAmount;
 
     /**
-     * 应收余额
+     * 待还款
      */
     @TableField("BALANCE_AMOUNT")
     private String balanceAmount;
 
     /**
-     * 回款余额
+     * 已还款
      */
     @TableField("COLLECTION_AMOUNT")
     private String collectionAmount;
@@ -124,6 +124,5 @@ import java.util.Date;
      */
     @TableField("ATTACHMENT_CODE")
     private String attachmentCode;
-
 
 }
