@@ -3,13 +3,16 @@ package com.ryuntech.saas.api.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -28,7 +31,7 @@ import java.time.LocalDateTime;
     private static final long serialVersionUID = 1L;
 
     /**
-     * 客户编号
+     * 主键
      */
     @TableId("COLLECTION_ID")
     private String collectionId;
@@ -67,7 +70,9 @@ import java.time.LocalDateTime;
      * 回款时间
      */
     @TableField("TIME")
-    private LocalDateTime time;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date time;
 
     /**
      * 凭证类型
@@ -91,7 +96,9 @@ import java.time.LocalDateTime;
      * 创建时间
      */
     @TableField("CREATE_TIME")
-    private LocalDateTime createTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createTime;
 
     /**
      * 回款状态(0已作废，1已收款)
@@ -109,7 +116,9 @@ import java.time.LocalDateTime;
      * 回款日期
      */
     @TableField("COLLECTION_DATE")
-    private LocalDateTime collectionDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date collectionDate;
 
     /**
      * 合同编号

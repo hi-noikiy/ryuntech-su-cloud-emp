@@ -54,8 +54,9 @@ public class SmsController extends ModuleBaseController {
             Sms sms = new Sms();
             sms.setPhoneNumbers(phone);
             sms.setContent("{\"code\":\"" + numberCode + "\"}");
-            SmsResponse smsResponse = messageSendService.sendSms(sms);
-            return new Result(smsResponse);
+            return new Result();
+            /*SmsResponse smsResponse = messageSendService.sendSms(sms);
+            return new Result(smsResponse);*/
         }
     }
 }

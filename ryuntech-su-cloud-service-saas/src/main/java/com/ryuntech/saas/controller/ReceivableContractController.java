@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
 import com.ryuntech.saas.api.service.IPartnerService;
@@ -55,7 +56,7 @@ public class ReceivableContractController extends ModuleBaseController {
             @ApiImplicitParam(name = "receivableContract", value = "查询条件", dataType = "ReceivableContract", paramType = "body"),
             @ApiImplicitParam(name="queryPage",value="分页信息",dataType="QueryPage", paramType = "body")
     })
-    public Result<IPage<ReceivableContract>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
+    public Result<IPage<ReceivableContractDTO>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
         return iReceivableContractService.selectPageList(receivableContract,queryPage);
     }
 

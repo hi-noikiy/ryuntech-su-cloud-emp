@@ -11,6 +11,9 @@
         <result column="STAFF_ID" property="staffId" />
         <result column="STAFF_NAME" property="staffName" />
         <result column="DEPARTMENT" property="department" />
+        <result column="COMPANY_ID" property="companyId" />
+        <result column="COMPANY_NAME" property="companyName" />
+        <result column="DEPARTMENT" property="department" />
         <result column="ADDRESS" property="address" />
         <result column="PROVINCE_ID" property="provinceId" />
         <result column="CITY_ID" property="cityId" />
@@ -35,13 +38,46 @@
         </where>
     </select>
 
-    <select id="selectCustomerMap" resultType="com.ryuntech.saas.api.model.CustomerUserInfo">
+    <select id="selectCustomerMap" resultType="java.lang.String">
         select CUSTOMER_ID,CUSTOMER_NAME from ryn_customer_user_info
         <where>
             <if test="customerUserInfo.customerName!=null and customerUserInfo.customerName!=''">
                 customer_name like concat('%',#{customerUserInfo.customerName},'%')
             </if>
         </where>
+    </select>
+
+<!--    统计总待收-->
+    <select id="selectAllBalanceAmounts" resultType="java.lang.String">
+        select sum(balance_amount) from ryn_receivable_contract
+        <where>
+            <if test="customerUserInfo.customerId!=null and customerUserInfo.customerId!=''">
+                customer_id like concat('%',#{customerUserInfo.customerId},'%')
+            </if>
+        </where>
+        group by customer_id
+    </select>
+
+    <!--    统计总已收款-->
+    <select id="selectAllCollectionAmount" resultType="java.lang.String">
+        select sum(collection_amount) from ryn_receivable_contract
+        <where>
+            <if test="customerUserInfo.customerId!=null and customerUserInfo.customerId!=''">
+                customer_id like concat('%',#{customerUserInfo.customerId},'%')
+            </if>
+        </where>
+        group by customer_id
+    </select>
+
+    <!--    统计合同总金额-->
+    <select id="selectAllContractAmount" resultType="java.lang.String">
+        select sum(contract_amount) from ryn_receivable_contract
+        <where>
+            <if test="customerUserInfo.customerId!=null and customerUserInfo.customerId!=''">
+                customer_id like concat('%',#{customerUserInfo.customerId},'%')
+            </if>
+        </where>
+        group by customer_id
     </select>
 
 </mapper>

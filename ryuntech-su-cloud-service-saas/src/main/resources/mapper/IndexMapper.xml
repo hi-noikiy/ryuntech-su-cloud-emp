@@ -28,12 +28,12 @@
             </if>
             <if test="indexDTO.startDate!=null and indexDTO.startDate!=''">
                 <![CDATA[
-                   and  ryn_receivable_collection.time >= #{indexDTO.startDate}
+                   and  ryn_receivable_collection.contract_time >= #{indexDTO.startDate}
                 ]]>
             </if>
             <if test="indexDTO.endDate!=null and indexDTO.endDate!=''">
                 <![CDATA[
-                        and ryn_receivable_collection.time <= #{indexDTO.endDate}
+                        and ryn_receivable_collection.contract_time <= #{indexDTO.endDate}
                 ]]>
             </if>
         </where>
@@ -51,13 +51,13 @@
                 select
                     employee_id
                 from
-                    ryn_employee_department
+                    ryn_employee
                 <where>
                         department_id in (
                             select
                                 department_id
                             from
-                                ryn_employee_department
+                                ryn_employee
                             <where>
                                 <if test="weChatIndexDTO.employeeId!=null">
                                     employee_id = #{weChatIndexDTO.employeeId}
@@ -68,12 +68,12 @@
             )
             <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                 <![CDATA[
-                   and time >= #{weChatIndexDTO.startDate}
+                   and contract_time >= #{weChatIndexDTO.startDate}
                 ]]>
             </if>
             <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                 <![CDATA[
-                        and time <= #{weChatIndexDTO.endDate}
+                        and contract_time <= #{weChatIndexDTO.endDate}
                 ]]>
             </if>
         </where>
@@ -90,13 +90,13 @@
             select
                 employee_id
             from
-                ryn_employee_department
+            ryn_employee
             <where>
                 department_id in (
                 select
                     department_id
                 from
-                    ryn_employee_department
+                    ryn_employee
                 <where>
                     <if test="weChatIndexDTO.employeeId!=null">
                         employee_id = #{weChatIndexDTO.employeeId}
@@ -107,12 +107,12 @@
             )
             <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                 <![CDATA[
-                   and time >= #{weChatIndexDTO.startDate}
+                   and contract_time >= #{weChatIndexDTO.startDate}
                 ]]>
             </if>
             <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                 <![CDATA[
-                        and time <= #{weChatIndexDTO.endDate}
+                        and contract_time <= #{weChatIndexDTO.endDate}
                 ]]>
             </if>
         </where>
@@ -132,15 +132,15 @@
             <where>
                 staff_id in (
                 select
-                employee_id
+                    employee_id
                 from
-                ryn_employee_department
+                    ryn_employee
                 <where>
                     department_id in (
                     select
-                    department_id
+                        department_id
                     from
-                    ryn_employee_department
+                        ryn_employee
                     <where>
                         <if test="weChatIndexDTO.employeeId!=null">
                             employee_id = #{weChatIndexDTO.employeeId}
@@ -151,12 +151,12 @@
                 )
                 <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                     <![CDATA[
-                       and time >= #{weChatIndexDTO.startDate}
+                       and contract_time >= #{weChatIndexDTO.startDate}
                     ]]>
                 </if>
                 <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                     <![CDATA[
-                            and time <= #{weChatIndexDTO.endDate}
+                            and contract_time <= #{weChatIndexDTO.endDate}
                     ]]>
                 </if>
             </where>
@@ -183,13 +183,13 @@
                         select
                             employee_id
                         from
-                            ryn_employee_department
+                            ryn_employee
                         <where>
                             department_id in (
                             select
                                 department_id
                             from
-                                ryn_employee_department
+                                ryn_employee
                             <where>
                                 <if test="weChatIndexDTO.employeeId!=null">
                                     employee_id = #{weChatIndexDTO.employeeId}
@@ -200,12 +200,12 @@
                         )
                         <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                             <![CDATA[
-                                   and time >= #{weChatIndexDTO.startDate}
+                                   and contract_time >= #{weChatIndexDTO.startDate}
                                 ]]>
                         </if>
                         <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                             <![CDATA[
-                                        and time <= #{weChatIndexDTO.endDate}
+                                        and contract_time <= #{weChatIndexDTO.endDate}
                                 ]]>
                         </if>
                     </where>
@@ -244,13 +244,13 @@
                 select
                 employee_id
                 from
-                ryn_employee_department
+                    ryn_employee
                 <where>
                     department_id in (
                     select
                     department_id
                     from
-                    ryn_employee_department
+                        ryn_employee
                     <where>
                         <if test="weChatIndexDTO.employeeId!=null">
                             employee_id = #{weChatIndexDTO.employeeId}
@@ -261,12 +261,12 @@
                 )
                 <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                     <![CDATA[
-                                   and time >= #{weChatIndexDTO.startDate}
+                                   and contract_time >= #{weChatIndexDTO.startDate}
                                 ]]>
                 </if>
                 <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                     <![CDATA[
-                                        and time <= #{weChatIndexDTO.endDate}
+                                        and contract_time <= #{weChatIndexDTO.endDate}
                                 ]]>
                 </if>
             </where>
@@ -302,13 +302,13 @@
                 select
                 employee_id
                 from
-                ryn_employee_department
+                    ryn_employee
                 <where>
                     department_id in (
                     select
                     department_id
                     from
-                    ryn_employee_department
+                        ryn_employee
                     <where>
                         <if test="weChatIndexDTO.employeeId!=null">
                             employee_id = #{weChatIndexDTO.employeeId}
@@ -319,12 +319,12 @@
                 )
                 <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                     <![CDATA[
-                                   and time >= #{weChatIndexDTO.startDate}
+                                   and contract_time >= #{weChatIndexDTO.startDate}
                                 ]]>
                 </if>
                 <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                     <![CDATA[
-                                        and time <= #{weChatIndexDTO.endDate}
+                                        and contract_time <= #{weChatIndexDTO.endDate}
                                 ]]>
                 </if>
             </where>
@@ -372,13 +372,13 @@
                 select
                 employee_id
                 from
-                ryn_employee_department
+                    ryn_employee
                 <where>
                     department_id in (
                     select
                     department_id
                     from
-                    ryn_employee_department
+                        ryn_employee
                     <where>
                         <if test="weChatIndexDTO.employeeId!=null">
                             employee_id = #{weChatIndexDTO.employeeId}
@@ -389,12 +389,12 @@
                 )
                 <if test="weChatIndexDTO.startDate!=null and weChatIndexDTO.startDate!=''">
                     <![CDATA[
-                                   and time >= #{weChatIndexDTO.startDate}
+                                   and contract_time >= #{weChatIndexDTO.startDate}
                                 ]]>
                 </if>
                 <if test="weChatIndexDTO.endDate!=null and weChatIndexDTO.endDate!=''">
                     <![CDATA[
-                                        and time <= #{weChatIndexDTO.endDate}
+                                        and contract_time <= #{weChatIndexDTO.endDate}
                                 ]]>
                 </if>
             </where>
@@ -424,14 +424,197 @@
     </select>
 <!--    totalContractNumber合同总数-->
     <select id="totalContractNumber" resultType="Integer">
+        select
+            count(*)
+        from
+            ryn_receivable_collection
+        where contract_id in(
+        select
+        contract_id
+        from
+        ryn_receivable_contract
+        <where>
+            staff_id in (
+            select
+            employee_id
+            from
+                ryn_employee
+            <where>
+                department_id in (
+                select
+                department_id
+                from
+                    ryn_employee
+                <where>
+                    <if test="weChatIndexDetailForm.employeeId!=null">
+                        employee_id = #{weChatIndexDTO.employeeId}
+                    </if>
+                </where>
+                )
+            </where>
+            )
+            <if test="weChatIndexDetailForm.startDate!=null and weChatIndexDetailForm.startDate!=''">
+                <![CDATA[
+                                   and contract_time >= #{weChatIndexDetailForm.startDate}
+                                ]]>
+            </if>
+            <if test="weChatIndexDetailForm.endDate!=null and weChatIndexDetailForm.endDate!=''">
+                <![CDATA[
+                                        and contract_time <= #{weChatIndexDetailForm.endDate}
+                                ]]>
+            </if>
+        </where>
+        )
 
+        <if test="weChatIndexDetailForm.status!=null and weChatIndexDetailForm.status!=''">
+            <![CDATA[
+                            and status = #{weChatIndexDetailForm.status}
+                    ]]>
+        </if>
+
+
+        <if test="weChatIndexDetailForm.planStartDate!=null and weChatIndexDetailForm.planStartDate!=''">
+            <![CDATA[
+                                   and plan_time >= #{weChatIndexDetailForm.planStartDate}
+                                ]]>
+        </if>
+        <if test="weChatIndexDetailForm.planEndDate!=null and weChatIndexDetailForm.planEndDate!=''">
+            <![CDATA[
+                                        and plan_time <= #{weChatIndexDetailForm.planEndDate}
+                                ]]>
+        </if>
 
     </select>
 
 <!--    客户总数-->
     <select id="totalCustomerNumber" resultType="Integer">
+        select count(*) from ryn_customer_user_info
+        <where>
+            customer_id in (
+                select
+                    collection_id
+                from
+                ryn_receivable_collection
+                where contract_id in(
+                select
+                contract_id
+                from
+                ryn_receivable_contract
+                <where>
+                    staff_id in (
+                    select
+                    employee_id
+                    from
+                        ryn_employee
+                    <where>
+                        department_id in (
+                        select
+                        department_id
+                        from
+                            ryn_employee
+                        <where>
+                            <if test="weChatIndexDetailForm.employeeId!=null">
+                                employee_id = #{weChatIndexDetailForm.employeeId}
+                            </if>
+                        </where>
+                        )
+                    </where>
+                    )
+                    <if test="weChatIndexDetailForm.startDate!=null and weChatIndexDetailForm.startDate!=''">
+                        <![CDATA[
+                                           and contract_time >= #{weChatIndexDetailForm.startDate}
+                                        ]]>
+                    </if>
+                    <if test="weChatIndexDetailForm.endDate!=null and weChatIndexDetailForm.endDate!=''">
+                        <![CDATA[
+                                                and contract_time <= #{weChatIndexDetailForm.endDate}
+                                        ]]>
+                    </if>
+                </where>
+                )
+                )
 
+                <if test="weChatIndexDetailForm.status!=null and weChatIndexDetailForm.status!=''">
+                    <![CDATA[
+                                    and status = #{weChatIndexDetailForm.status}
+                            ]]>
+                </if>
+
+
+                <if test="weChatIndexDetailForm.planStartDate!=null and weChatIndexDetailForm.planStartDate!=''">
+                    <![CDATA[
+                                           and plan_time >= #{weChatIndexDetailForm.planStartDate}
+                                        ]]>
+                </if>
+                <if test="weChatIndexDetailForm.planEndDate!=null and weChatIndexDetailForm.planEndDate!=''">
+                    <![CDATA[
+                                                and plan_time <= #{weChatIndexDetailForm.planEndDate}
+                                        ]]>
+                </if>
+        </where>
 
     </select>
+<!--合同总数-->
+    <select id="totalReceivableSum" resultType="com.ryuntech.saas.api.model.ReceivableContract">
+        select
+        *
+        from
+        ryn_receivable_collection
+        where contract_id in(
+        select
+        contract_id
+        from
+        ryn_receivable_contract
+        <where>
+            staff_id in (
+            select
+            employee_id
+            from
+                ryn_employee
+            <where>
+                department_id in (
+                select
+                department_id
+                from
+                    ryn_employee
+                <where>
+                    <if test="weChatIndexDetailForm.employeeId!=null">
+                        employee_id = #{weChatIndexDetailForm.employeeId}
+                    </if>
+                </where>
+                )
+            </where>
+            )
+            <if test="weChatIndexDetailForm.startDate!=null and weChatIndexDetailForm.startDate!=''">
+                <![CDATA[
+                                           and contract_time >= #{weChatIndexDetailForm.startDate}
+                                        ]]>
+            </if>
+            <if test="weChatIndexDetailForm.endDate!=null and weChatIndexDetailForm.endDate!=''">
+                <![CDATA[
+                                                and contract_time <= #{weChatIndexDetailForm.endDate}
+                                        ]]>
+            </if>
+        </where>
+        )
 
+        <if test="weChatIndexDetailForm.status!=null and weChatIndexDetailForm.status!=''">
+            <![CDATA[
+                                    and status = #{weChatIndexDetailForm.status}
+                            ]]>
+        </if>
+
+
+        <if test="weChatIndexDetailForm.planStartDate!=null and weChatIndexDetailForm.planStartDate!=''">
+            <![CDATA[
+                                           and plan_time >= #{weChatIndexDetailForm.planStartDate}
+                                        ]]>
+        </if>
+        <if test="weChatIndexDetailForm.planEndDate!=null and weChatIndexDetailForm.planEndDate!=''">
+            <![CDATA[
+                                                and plan_time <= #{weChatIndexDetailForm.planEndDate}
+                                        ]]>
+        </if>
+
+    </select>
 </mapper>

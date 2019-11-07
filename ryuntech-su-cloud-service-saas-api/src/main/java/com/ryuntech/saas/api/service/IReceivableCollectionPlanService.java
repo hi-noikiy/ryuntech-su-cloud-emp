@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.form.ReceivableCollectionPlanForm;
 import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -43,4 +44,12 @@ public interface IReceivableCollectionPlanService extends IBaseService<Receivabl
      * @return
      */
     Boolean insertBatch(List<ReceivableCollectionPlan> receivableCollectionPlans);
+
+
+    /**
+     * 查询回款计划
+     * @param receivableCollectionPlanForm
+     * @return
+     */
+    List<ReceivableCollectionPlan> selectByPlan(ReceivableCollectionPlanForm receivableCollectionPlanForm);
 }

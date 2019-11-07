@@ -8,11 +8,13 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.mapper.EmployeeMapper;
 import com.ryuntech.saas.api.model.Employee;
+import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -32,7 +34,20 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         if (StringUtils.isNotBlank(employee.getUserId())){
             queryWrapper.eq("user_id", employee.getUserId());
         }
+
+        if (StringUtils.isNotBlank(employee.getEmployeeId())){
+            queryWrapper.eq("employee_id", employee.getEmployeeId());
+        }
+
         return baseMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public List<Employee> selectByEmployeeList(Employee employee) {
+        if (StringUtils.isNotBlank(employee.getUserId())){
+            queryWrapper.eq("user_id", employee.getUserId());
+        }
+        return baseMapper.selectList(queryWrapper);
     }
 
     @Override
@@ -59,5 +74,17 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         }
         Page<Employee> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
         return m.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public Result<IPage<Employee>> selectPageList(Employee employee, QueryPage queryPage) {
+        Page<Employee> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
+        if (StringUtils.isNotBlank(employee.getEmployeeId())) {
+            queryWrapper.eq("employee_id", employee.getEmployeeId());
+        }
+        if (StringUtils.isNotBlank(employee.getName())) {
+            queryWrapper.eq("name", employee.getName());
+        }
+        return super.pageList(queryWrapper,page);
     }
 }

@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.form.ReceivableCollectionPlanForm;
 import com.ryuntech.saas.api.mapper.ReceivableCollectionPlanMapper;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IReceivableCollectionPlanService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -45,5 +47,12 @@ public class ReceivableCollectionPlanServiceImpl extends BaseServiceImpl<Receiva
             return true;
         }
         return false;
+    }
+
+    @Override
+    public List<ReceivableCollectionPlan> selectByPlan(ReceivableCollectionPlanForm receivableCollectionPlanForm) {
+
+        List<ReceivableCollectionPlan> receivableCollectionPlans = baseMapper.selectByPlan(receivableCollectionPlanForm);
+        return receivableCollectionPlans;
     }
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
+import com.ryuntech.saas.api.form.ReceivableCollectionPlanForm;
 import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -35,5 +36,12 @@ public interface ReceivableCollectionPlanMapper extends IBaseMapper<ReceivableCo
      * @return
      */
     int insertBatch(List<ReceivableCollectionPlan> receivableCollectionPlans);
+
+    /**
+     * 查询合同对应的计划
+     * @param receivableCollectionPlans
+     * @return
+     */
+    List<ReceivableCollectionPlan> selectByPlan(@Param("plan") ReceivableCollectionPlanForm receivableCollectionPlans);
 
 }

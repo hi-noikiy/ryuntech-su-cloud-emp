@@ -6,6 +6,7 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.PaymentResult;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
@@ -32,7 +33,7 @@ public interface IReceivableContractService extends IBaseService<ReceivableContr
      */
     Result<IPage<ReceivableContract>> pageList(ReceivableContract receivableContract, QueryPage queryPage);
 
-    Result<IPage<ReceivableContract>> selectPageList(ReceivableContract receivableContract, QueryPage queryPage);
+    Result<IPage<ReceivableContractDTO>> selectPageList(ReceivableContract receivableContract, QueryPage queryPage);
 
     /**
      * 根据条件查询
@@ -52,11 +53,27 @@ public interface IReceivableContractService extends IBaseService<ReceivableContr
     Boolean addReceivableContract(List<Attachment> attachments,ReceivableContract receivableContract, List<ReceivableCollectionPlan> receivableCollectionPlans);
 
     /**
+     * 修改合同信息
+     * @param attachments
+     * @param receivableContract
+     * @param receivableCollectionPlans
+     * @return
+     */
+    Boolean editReceivableContract(List<Attachment> attachments,ReceivableContract receivableContract, List<ReceivableCollectionPlan> receivableCollectionPlans);
+
+    /**
      * 查询完整的合同对象
      * @param receivableContractDTO
      * @return
      */
     ReceivableContractDTO findByContractId(ReceivableContractDTO receivableContractDTO);
+
+    /**
+     *
+     * @param receivableContractForm
+     * @return
+     */
+    ReceivableContract findByContract(ReceivableContractForm receivableContractForm);
 
     /**
      * 查询统计的合同数据

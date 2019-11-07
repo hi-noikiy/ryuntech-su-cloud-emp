@@ -3,6 +3,8 @@ package com.ryuntech.saas.outcontroller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
+import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -13,10 +15,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -70,6 +69,23 @@ public class MiniCustomerController extends ModuleBaseController{
         }else {
             return new Result<>(OPERATE_ERROR);
         }
+    }
+
+    /**
+     * 根据ID查询用户信息
+     *
+     * @param customerUserInfo
+     * @return
+     */
+    @GetMapping("/outFindById")
+    @ApiOperation(value = "查询详细合同信息", notes = "customerId存在")
+    @ApiImplicitParam(name = "customerId", value = "客户对象", required = true, dataType = "String")
+    public Result<CustomerUserInfoDTO> findById(CustomerUserInfo customerUserInfo) {
+        if (StringUtils.isBlank(customerUserInfo.getCustomerId())){
+            return new Result<>(OPERATE_ERROR,"用户编号为空");
+        }
+        CustomerUserInfoDTO customerUserInfoDTO = customerUserInfoService.selectCustomerUserInfoDTO(customerUserInfo);
+        return new Result<>(customerUserInfoDTO);
     }
 
 

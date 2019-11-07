@@ -3,8 +3,12 @@ package com.ryuntech.saas.outcontroller;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
+import com.ryuntech.saas.api.dto.WeChatIndexDetailDTO;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.helper.constant.PlanConstant;
 import com.ryuntech.saas.api.model.Index;
+import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.model.WeChatIndex;
 import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -54,11 +59,12 @@ public class MiniIndexController extends ModuleBaseController{
      *
      * @return
      */
-    @PostMapping("/reportdata")
+    @PostMapping("/outreportdata")
     @ApiOperation(value = "首页数据简报展示")
     public Result<WeChatIndexDTO> index(WeChatIndexDTO weChatIndexDTO) {
         //获取用户token，从缓存中取出用户数据
-        Object employeeId =   redisTemplate.opsForValue().get(weChatIndexDTO.getToken());
+//        Object employeeId =   redisTemplate.opsForValue().get(weChatIndexDTO.getToken());
+        Object employeeId =   "739747569474732032";
         if (employeeId!=null){
              //获取openid,查询用户数据
             WeChatIndex weChatIndex = new WeChatIndex();
@@ -123,5 +129,38 @@ public class MiniIndexController extends ModuleBaseController{
 
         return new Result();
     }
+    /**
+     * 首页数据展示
+     *
+     * @return
+     */
+    @PostMapping("/outdataDetail")
+    @ApiOperation(value = "首页详情数据展示")
+    public Result<WeChatIndexDetailDTO> dataDetail(WeChatIndexDetailForm weChatIndexDetailForm) {
+        //        Object employeeId =   redisTemplate.opsForValue().get(weChatIndexDTO.getToken());
+        Object employeeId =   "739747569474732032";
+        if (employeeId!=null){
+            //获取openid,查询用户数据
+            WeChatIndexDetailDTO weChatIndexDetailDTO = new WeChatIndexDetailDTO();
+
+//            总待收金额
+            String balanceAmounts = indexService.selectBalanceAmounts(new WeChatIndexDTO().setEmployeeId(employeeId.toString()));
+            weChatIndexDetailDTO.setBalanceAmounts(balanceAmounts);
+//            合同总数
+            Integer allContract = indexService.totalContractNumber(weChatIndexDetailForm);
+            weChatIndexDetailDTO.setAllContract(String.valueOf(allContract));
+//            客户总数
+            Integer allCustomer = indexService.totalCustomerNumber(weChatIndexDetailForm);
+            weChatIndexDetailDTO.setAllCustomer(String.valueOf(allCustomer));
+//            按合同显示数据
+//            ReceivableContractForm receivableContractForm = new ReceivableContractForm();
+            List<ReceivableContract> receivableContracts = indexService.totalReceivableSum(weChatIndexDetailForm);
+            weChatIndexDetailDTO.setOnListContract(receivableContracts);
+            return new Result(weChatIndexDetailDTO);
+        }
+
+        return new Result();
+    }
+
 }
 

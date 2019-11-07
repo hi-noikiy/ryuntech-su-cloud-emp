@@ -17,6 +17,12 @@ import org.apache.ibatis.annotations.Param;
  * @since 2019-09-27
  */
 public interface ReceivableContractMapper extends IBaseMapper<ReceivableContract> {
+    /**
+     * 分页查询合同
+     * @param page
+     * @param receivableContract
+     * @return
+     */
     IPage<ReceivableContract> selectPageList(@Param("pg") Page<ReceivableContract> page, @Param("receivableContract") ReceivableContract receivableContract);
 
 }

@@ -42,6 +42,18 @@ import java.util.Date;
     private String planAmount;
 
     /**
+     * 计划已回金额
+     */
+    @TableField("PLAN_AMOUNT")
+    private String backedAmount;
+
+    /**
+     * 计划剩余金额
+     */
+    @TableField("SURPLUS_AMOUNT")
+    private String surplusAmount;
+
+    /**
      * 备注
      */
     @TableField("REMAKES")
@@ -63,8 +75,8 @@ import java.util.Date;
      * 计划回款时间
      */
     @TableField("PLAN_TIME")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date planTime;
 
 

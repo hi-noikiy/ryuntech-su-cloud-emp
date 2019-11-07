@@ -1,33 +1,30 @@
-package com.ryuntech.saas.api.dto;
+package com.ryuntech.saas.api.form;
 
-import com.ryuntech.common.model.BaseDto;
-import com.ryuntech.saas.api.model.Employee;
-import com.ryuntech.saas.api.model.UserWechat;
+import com.ryuntech.common.model.BaseForm;
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
 import javax.persistence.Id;
-import java.util.List;
+
 
 /**
  * @author EDZ
  */
 @Data
 @Accessors(chain = true)
-public class SysUserDTO extends BaseDto {
+public class SysUserForm extends BaseForm {
 
+
+    @Override
+    public Class getAClass() {
+        return SysUserForm.class;
+    }
 
     /**
      * 主键
      */
-    @Id
     private String id;
-    private String openId;
-
-    /**
-     * 小程序用户对象
-     */
-    private UserWechat userWechat;
 
     /**
      * 用户名
@@ -66,13 +63,4 @@ public class SysUserDTO extends BaseDto {
      * 手机验证码
      */
     private String vcode;
-    /**
-     * 用户状态
-     */
-    private String status;
-
-    /**
-     * 职工列表数据ryn_employee
-     */
-    private List<Employee> employeeList;
 }

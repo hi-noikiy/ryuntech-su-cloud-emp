@@ -2,8 +2,15 @@ package com.ryuntech.saas.api.service;
 
 import com.ryuntech.saas.api.dto.IndexDTO;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
+import com.ryuntech.saas.api.dto.WeChatIndexDetailDTO;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.model.Index;
+import com.ryuntech.saas.api.model.ReceivableContract;
+import com.ryuntech.saas.api.model.WeChatIndex;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  *
@@ -69,18 +76,24 @@ public interface IndexService extends IBaseService<Index> {
 
     /**
      * 合同总数
-     * @param weChatIndexDTO
+     * @param weChatIndexDetailForm
      * @return
      */
-    Integer totalContractNumber(WeChatIndexDTO weChatIndexDTO);
+    Integer totalContractNumber(WeChatIndexDetailForm weChatIndexDetailForm);
 
     /**
      * 客户总数
-     * @param weChatIndexDTO
+     * @param weChatIndexDetailForm
      * @return
      */
-    Integer totalCustomerNumber(WeChatIndexDTO weChatIndexDTO);
+    Integer totalCustomerNumber(WeChatIndexDetailForm weChatIndexDetailForm);
 
 
+    /**
+     * 合同总数
+     * @param weChatIndexDetailForm
+     * @return
+     */
+    List<ReceivableContract> totalReceivableSum(WeChatIndexDetailForm weChatIndexDetailForm);
 
 }

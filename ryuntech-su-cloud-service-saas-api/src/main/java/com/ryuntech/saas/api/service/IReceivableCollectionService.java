@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.ReceivableCollection;
+import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
 
 /**
@@ -31,4 +32,24 @@ public interface IReceivableCollectionService extends IBaseService<ReceivableCol
      * @return
      */
     Result<IPage<ReceivableCollection>> selectPageList(ReceivableCollection receivableCollection, QueryPage queryPage);
+
+    /**
+     * 查询回款数据
+     * @param receivableCollection
+     * @return
+     */
+    ReceivableCollection selectByReceivableCollection(ReceivableCollection receivableCollection);
+
+    /**
+     * 增加回款
+     * @param receivableCollectionPlan
+     * @param receivableCollection
+     * @param receivableContract
+     * @return
+     */
+    Boolean addReceivableCollection(
+            ReceivableCollectionPlan receivableCollectionPlan,
+            ReceivableCollection receivableCollection,
+            ReceivableContract receivableContract
+    );
 }

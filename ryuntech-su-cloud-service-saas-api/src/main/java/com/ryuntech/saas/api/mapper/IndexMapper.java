@@ -3,9 +3,13 @@ package com.ryuntech.saas.api.mapper;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.dto.IndexDTO;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.model.Index;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author EDZ
@@ -73,16 +77,23 @@ public interface IndexMapper extends IBaseMapper<Index> {
 
     /**
      * 合同总数
-     * @param weChatIndexDTO
+     * @param weChatIndexDetailForm
      * @return
      */
-    Integer totalContractNumber(WeChatIndexDTO weChatIndexDTO);
+    Integer totalContractNumber(@Param("weChatIndexDetailForm") WeChatIndexDetailForm weChatIndexDetailForm);
 
     /**
      * 客户总数
-     * @param weChatIndexDTO
+     * @param weChatIndexDetailForm
      * @return
      */
-    Integer totalCustomerNumber(WeChatIndexDTO weChatIndexDTO);
+    Integer totalCustomerNumber(@Param("weChatIndexDetailForm") WeChatIndexDetailForm weChatIndexDetailForm);
+
+    /**
+     * 合同总数列表
+     * @param weChatIndexDetailForm
+     * @return
+     */
+    List<ReceivableContract> totalReceivableSum(@Param("weChatIndexDetailForm")WeChatIndexDetailForm weChatIndexDetailForm);
 
 }

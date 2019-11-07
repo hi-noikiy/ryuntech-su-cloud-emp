@@ -5,7 +5,12 @@ package com.ryuntech.saas.api.helper.constant;
  */
 public class PlanConstant {
 
-//    STATUS	VARCHAR2(4)	Y	回款状态(0逾期1已还款2未开始)
+//    STATUS	VARCHAR2(4)	Y	回款状态(0逾期1已还款2未开始3还款中)
+
+    /**
+     * 还款中
+     */
+    public static final String STARTING ="3";
 
     /**
      * 未开始

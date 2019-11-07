@@ -32,4 +32,26 @@ public interface CustomerUserInfoMapper extends IBaseMapper<CustomerUserInfo> {
      * @return
      */
     List<CustomerUserInfo> selectCustomerMap(@Param("customerUserInfo") CustomerUserInfo customerUserInfo);
+
+    /**
+     * 总待收
+     * @param customerUserInfo
+     * @return
+     */
+    String selectAllBalanceAmounts(@Param("customerUserInfo") CustomerUserInfo customerUserInfo);
+
+
+    /**
+     * 总已回款
+     * @param customerUserInfo
+     * @return
+     */
+    String selectAllCollectionAmount(@Param("customerUserInfo") CustomerUserInfo customerUserInfo);
+
+    /**
+     * 总合同金额
+     * @param customerUserInfo
+     * @return
+     */
+    String selectAllContractAmount(@Param("customerUserInfo") CustomerUserInfo customerUserInfo);
 }

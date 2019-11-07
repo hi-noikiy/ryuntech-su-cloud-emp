@@ -7,8 +7,14 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.mapper.ReceivableCollectionMapper;
+import com.ryuntech.saas.api.mapper.ReceivableCollectionPlanMapper;
+import com.ryuntech.saas.api.mapper.ReceivableContractMapper;
 import com.ryuntech.saas.api.model.ReceivableCollection;
+import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
+import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IReceivableCollectionService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,6 +27,14 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class ReceivableCollectionServiceImpl extends BaseServiceImpl<ReceivableCollectionMapper, ReceivableCollection> implements IReceivableCollectionService {
+
+    @Autowired
+    ReceivableCollectionPlanMapper receivableCollectionPlanMapper;
+
+    @Autowired
+    ReceivableContractMapper receivableContractMapper;
+
+
 
     @Override
     public Result<IPage<ReceivableCollection>> pageList(ReceivableCollection receivableCollection, QueryPage queryPage) {
@@ -35,6 +49,30 @@ public class ReceivableCollectionServiceImpl extends BaseServiceImpl<ReceivableC
     public Result<IPage<ReceivableCollection>> selectPageList(ReceivableCollection receivableCollection, QueryPage queryPage) {
         Page<ReceivableCollection> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
         return new Result(m.selectPageList(page,receivableCollection));
+    }
+
+    @Override
+    public ReceivableCollection selectByReceivableCollection(ReceivableCollection receivableCollection) {
+        return null;
+    }
+
+    @Override
+    public Boolean addReceivableCollection(
+            ReceivableCollectionPlan receivableCollectionPlan,
+            ReceivableCollection receivableCollection,
+            ReceivableContract receivableContract) {
+        if (null!=receivableCollection){
+            baseMapper.insert(receivableCollection);
+        }
+        if (null!=receivableCollectionPlan&& StringUtils.isNotBlank(receivableCollectionPlan.getPlanId())){
+//            更新计划
+            receivableCollectionPlanMapper.updateById(receivableCollectionPlan);
+        }
+//        更改合同表回款金额
+        if (null!=receivableContract&&StringUtils.isNotBlank(receivableContract.getContractId())){
+            receivableContractMapper.updateById(receivableContract);
+        }
+        return true;
     }
 
 }

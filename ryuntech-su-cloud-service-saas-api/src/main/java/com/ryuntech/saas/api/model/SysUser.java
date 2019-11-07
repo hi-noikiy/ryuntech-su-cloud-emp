@@ -47,6 +47,8 @@ public class SysUser extends BaseModel implements UserDetails {
      */
     private String phone;
 
+    private String status;
+
     /**
      * 公司名
      */
@@ -81,6 +83,8 @@ public class SysUser extends BaseModel implements UserDetails {
      * 微信union_id（如果绑定了微信）
      */
     private String unionId;
+
+    private String openId;
 
 
     /**

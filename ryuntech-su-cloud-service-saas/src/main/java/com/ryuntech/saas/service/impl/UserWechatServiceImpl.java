@@ -25,6 +25,9 @@ public class UserWechatServiceImpl extends BaseServiceImpl<UserWechatMapper, Use
         if (StringUtils.isNotBlank(userWechat.getUnionId())){
             queryWrapper.eq("OPEN_ID",userWechat.getUnionId());
         }
+        if (StringUtils.isNotBlank(userWechat.getUserId())){
+            queryWrapper.eq("USER_ID",userWechat.getUserId());
+        }
         return baseMapper.selectOne(queryWrapper);
     }
 }

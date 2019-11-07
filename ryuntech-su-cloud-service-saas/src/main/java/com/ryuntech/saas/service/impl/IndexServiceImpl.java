@@ -3,10 +3,15 @@ package com.ryuntech.saas.service.impl;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.saas.api.dto.IndexDTO;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.mapper.IndexMapper;
 import com.ryuntech.saas.api.model.Index;
+import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IndexService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * @author EDZ
@@ -54,13 +59,18 @@ public class IndexServiceImpl extends BaseServiceImpl<IndexMapper, Index> implem
     }
 
     @Override
-    public Integer totalContractNumber(WeChatIndexDTO weChatIndexDTO) {
-        return baseMapper.totalContractNumber(weChatIndexDTO);
+    public Integer totalContractNumber(WeChatIndexDetailForm weChatIndexDetailForm) {
+        return baseMapper.totalContractNumber(weChatIndexDetailForm);
     }
 
     @Override
-    public Integer totalCustomerNumber(WeChatIndexDTO weChatIndexDTO) {
-        return baseMapper.totalCustomerNumber(weChatIndexDTO);
+    public Integer totalCustomerNumber(WeChatIndexDetailForm weChatIndexDetailForm) {
+        return baseMapper.totalCustomerNumber(weChatIndexDetailForm);
+    }
+
+    @Override
+    public List<ReceivableContract> totalReceivableSum(WeChatIndexDetailForm weChatIndexDetailForm) {
+        return baseMapper.totalReceivableSum(weChatIndexDetailForm);
     }
 
 

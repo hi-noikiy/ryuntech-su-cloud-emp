@@ -8,6 +8,9 @@ import lombok.Data;
  */
 @Data
 public class AttachmentFile extends BaseModel {
+
+
+    private String id;
     private String url;
 
  /*   private File file;

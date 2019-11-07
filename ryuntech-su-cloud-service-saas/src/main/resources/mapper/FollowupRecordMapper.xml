@@ -8,7 +8,10 @@
         <result column="content" property="content" />
         <result column="staff_id" property="staffId" />
         <result column="contract_id" property="contractId" />
+        <result column="contract_name" property="contractName" />
         <result column="staff_name" property="staffName" />
+        <result column="estimate_amount" property="estimateAmount" />
+        <result column="estimate_time" property="estimateTime" />
         <result column="attachment_code" property="attachmentCode" />
         <result column="followup_time" property="followupTime" />
         <result column="updated_at" property="updatedAt" />
@@ -17,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        followup_id, content, staff_id, staff_name, attachment_code, followup_time, updated_at, created_at
+        followup_id, content, staff_id, staff_name, attachment_code, followup_time, updated_at, created_at,estimate_time,estimate_amount,contract_name
     </sql>
 
 </mapper>

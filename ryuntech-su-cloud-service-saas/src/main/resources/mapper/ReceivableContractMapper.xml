@@ -28,9 +28,17 @@
     </sql>
 
 
-    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableContract">
-        select *
-        from ryn_receivable_contract
+    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.ReceivableContractDTO">
+        select
+            ryn_receivable_contract.*,
+            ryn_customer_user_info.company_id COMPANY_ID,
+            ryn_customer_user_info.company_name COMPANY_NAME,
+            ryn_customer_user_info.customer_name CUSTOMER_NAME,
+            ryn_customer_user_info.customer_id CUSTOMER_ID
+        from
+            ryn_receivable_contract
+            left join
+            ryn_customer_user_info on ryn_receivable_contract.customer_id = ryn_customer_user_info.customer_id
         <where>
             <if test="receivableContract.contractId!=null and receivableContract.contractId!=''">
                 contract_id like concat('%',#{receivableContract.contractId},'%')
@@ -38,9 +46,14 @@
             <if test="receivableContract.contractName!=null and receivableContract.contractName!=''">
                 and contract_name like concat('%',#{receivableContract.contractName},'%')
             </if>
-            <if test="receivableContract.status!=null and receivableContract.status!=''">
-                and status = #{receivableContract.status}
+
+            <if test="receivableContract.statusList!=null and receivableContract.statusList.size()>0">
+                and status in
+                <foreach collection="receivableContract.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
             </if>
+
         </where>
     </select>
 

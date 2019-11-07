@@ -68,6 +68,17 @@ import java.io.Serializable;
         @TableField("DEPARTMENT")
     private String department;
 
+    /**
+     * 公司名称
+     */
+    @TableField("COMPANY_NAME")
+    private String companyName;
+    /**
+     * 公司编号
+     */
+    @TableField("COMPANY_ID")
+    private String companyId;
+
         /**
             * 详细地址
             */
