@@ -37,13 +37,13 @@
         <el-table-column align="center" prop="contractTime" label="回款时间" width="200">
           <template slot-scope="scope">
             <i class="el-icon-time" />
-            <span>{{ scope.row.contractTime }}</span>
+            <span>{{ scope.row.time }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" prop="contractAmount" label="备注" width="200">
           <template slot-scope="scope">
-            <span>{{ scope.row.contractAmount }}</span>
+            <span>{{ scope.row.remarks }}</span>
           </template>
         </el-table-column>
 
@@ -55,13 +55,14 @@
 
         <el-table-column align="center" prop="collectionAmount" label="创建人" width="150">
           <template slot-scope="scope">
-            <span>{{ scope.row.collectionAmount }}</span>
+            <span>{{ scope.row.createBy }}</span>
           </template>
         </el-table-column>
 
         <el-table-column align="center" prop="collectionAmount" label="状态" width="150">
           <template slot-scope="scope">
-            <span>{{ scope.row.status }}</span>
+            <span v-if="scope.row.status===0">已作废</span>
+            <span v-if="scope.row.status===1">已收款</span>
           </template>
         </el-table-column>
 

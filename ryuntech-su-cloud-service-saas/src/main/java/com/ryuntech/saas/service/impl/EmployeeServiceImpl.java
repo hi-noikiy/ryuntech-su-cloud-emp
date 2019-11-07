@@ -12,6 +12,7 @@ import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +29,9 @@ import java.util.Map;
 @Slf4j
 @Service
 public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employee> implements IEmployeeService {
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
 
     @Override
     public Employee selectByEmployee(Employee employee) {
@@ -74,6 +78,11 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         }
         Page<Employee> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
         return m.selectPage(page, queryWrapper);
+    }
+
+    @Override
+    public List<Map<String, String>> selectCompanys(String userId) {
+        return employeeMapper.selectCompanys(userId);
     }
 
     @Override

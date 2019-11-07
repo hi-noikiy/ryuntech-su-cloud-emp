@@ -2,6 +2,8 @@
  * Created by PanJiaChen on 16/11/18.
  */
 
+import request from '@/utils/request'
+
 /**
  * Parse the time to string
  * @param {(Object|string|number)} time
@@ -118,4 +120,15 @@ export function resetTemp(temp) {
     temp[prop] = null
   }
   return temp
+}
+
+/**
+ * 根据username获取用户所在的公司
+ *  @param param
+ */
+export function companyListByUserName(param) {
+  return request({
+    url: '/saas/employee/companylist/' + param,
+    method: 'get'
+  })
 }

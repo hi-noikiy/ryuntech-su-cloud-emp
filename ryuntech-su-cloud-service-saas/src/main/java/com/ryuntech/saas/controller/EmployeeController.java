@@ -1,20 +1,22 @@
 package com.ryuntech.saas.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
-
 import com.ryuntech.saas.api.model.Department;
 import com.ryuntech.saas.api.model.Employee;
+import com.ryuntech.saas.api.model.SysUser;
+import com.ryuntech.saas.api.model.UserRoleLimit;
 import com.ryuntech.saas.api.service.IDepartmentService;
 import com.ryuntech.saas.api.service.IEmployeeService;
+import com.ryuntech.saas.api.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
 import java.util.*;
 
@@ -32,6 +34,9 @@ public class EmployeeController extends ModuleBaseController {
     private IEmployeeService iEmployeeService;
     @Autowired
     private IDepartmentService iDepartmentService;
+
+    @Autowired
+    private SysUserService sysUserService;
 
     /**
      * 分页查询列表数据，条件查询
@@ -123,6 +128,87 @@ public class EmployeeController extends ModuleBaseController {
     public Result edit(@RequestBody Employee employee) {
         iEmployeeService.updateById(employee);
         return new Result();
+    }
+
+    /**
+     * 根据用户名获取员工id查询该用户所在的公司的角色及权限
+     * @param username
+     * @return
+     */
+    @GetMapping("/companylist/{username}")
+    @ApiOperation(value = "根据用户名获取员工id查询该用户所在的公司")
+    @ApiImplicitParam(name = "username", value = "用户名", required = true, dataType = "String")
+    public Result<List<UserRoleLimit>> userRolesLimits(@PathVariable("username") String username) {
+        SysUser user = sysUserService.findByName(username);
+        String userId = user.getId();
+
+        // 用户所在公司角色权限信息
+        List<Map<String, String>> companys = iEmployeeService.selectCompanys(userId);
+
+        // 获取公司集合
+        Set<String> companySet = new HashSet<>();
+        for(Map company : companys) {
+            companySet.add((String) company.get("companyName"));
+        }
+
+        // 获取公司相应角色
+        Set<String> roleSet = new HashSet<>();
+        List<Map<String, Set<String>>> listm = new ArrayList<>();
+        Map<String, Set<String>> mm = new HashMap<>();
+        for(String cs : companySet) {
+            for(Map<String, String> company : companys) {
+                if(cs.equals(company.get("companyName"))) {
+                    if(company.get("rval") != null) {
+                        roleSet.add((String) company.get("rval"));
+                    }
+                }
+            }
+            mm.put(cs, roleSet);
+        }
+        listm.add(mm);
+
+        // 获取公司相应权限
+        Set<String> roleSet1 = new HashSet<>();
+        List<Map<String, Set<String>>> listm1 = new ArrayList<>();
+        Map<String, Set<String>> mm1 = new HashMap<>();
+        for(String cs : companySet) {
+            for(Map<String, String> company : companys) {
+                if(cs.equals(company.get("companyName"))) {
+                    if(company.get("permVal") != null) {
+                        roleSet1.add((String) company.get("permVal"));
+                    }
+                }
+            }
+            mm1.put(cs, roleSet1);
+        }
+        listm1.add(mm1);
+
+        // 公司角色权限整合
+        List<UserRoleLimit> listUserrl = new ArrayList<>();
+        UserRoleLimit userRoleLimit = null;
+
+
+        for(String cs : companySet) {
+            userRoleLimit = new UserRoleLimit();
+            userRoleLimit.setCompany(cs);
+            for(Map<String, Set<String>> ms : listm) {
+                for(String key : ms.keySet()) {
+                    if (key.equals(cs)) {
+                        userRoleLimit.setUserRoles(ms.get(cs));
+                    }
+                }
+            }
+            for(Map<String, Set<String>> ms : listm1) {
+                for(String key : ms.keySet()) {
+                    if (key.equals(cs)) {
+                        userRoleLimit.setUserLimit(ms.get(cs));
+                    }
+                }
+            }
+            listUserrl.add(userRoleLimit);
+        }
+
+        return new Result<>(listUserrl);
     }
 
 }

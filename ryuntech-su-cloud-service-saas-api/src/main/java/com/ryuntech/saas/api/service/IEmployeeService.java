@@ -45,4 +45,11 @@ public interface IEmployeeService extends IBaseService<Employee> {
      * @return
      */
     Result<IPage<Employee>> selectPageList(Employee employee, QueryPage queryPage);
+
+    /**
+     * 根据用户id查询该用户所在的公司
+     * @param userId
+     * @return
+     */
+    List<Map<String, String>> selectCompanys(String userId);
 }

@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -60,7 +59,7 @@ import java.util.Date;
     private String remakes;
 
     /**
-     * 回款状态(0逾期1已还款2未开始)
+     * 回款状态(0逾期1已还款2未开始3回款中)
      */
     @TableField("STATUS")
     private String status;

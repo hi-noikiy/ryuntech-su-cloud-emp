@@ -38,4 +38,13 @@ export function del(contractId) {
   })
 }
 
+// 回款计划批量插入
+export function backPlanInsertBatch(data) {
+  return request({
+    url: '/saas/collectionPlan/insertBatch',
+    method: 'post',
+    data
+  })
+}
+
 export const upload = process.env.VUE_APP_BASE_API + '/saas/storage/local/upload'
