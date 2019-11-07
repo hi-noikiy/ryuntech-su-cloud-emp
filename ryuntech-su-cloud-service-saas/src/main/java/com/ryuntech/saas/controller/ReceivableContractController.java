@@ -7,7 +7,7 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
-import com.ryuntech.saas.api.form.ReceivableContractFrom;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.helper.constant.AttachmentConstants;
 import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
 import com.ryuntech.saas.api.model.*;
@@ -63,7 +63,7 @@ public class ReceivableContractController extends ModuleBaseController {
             @ApiImplicitParam(name = "receivableContract", value = "查询条件", dataType = "ReceivableContract", paramType = "body"),
             @ApiImplicitParam(name="queryPage",value="分页信息",dataType="QueryPage", paramType = "body")
     })
-    public Result<IPage<ReceivableContract>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
+    public Result<IPage<ReceivableContractDTO>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
         return iReceivableContractService.selectPageList(receivableContract,queryPage);
     }
 
@@ -76,7 +76,7 @@ public class ReceivableContractController extends ModuleBaseController {
     @PostMapping("/contractadd")
     @ApiOperation(value = "添加合同信息")
     @ApiImplicitParam(name = "receivableContractFrom", value = "合同实体信息", required = true, dataType = "ReceivableContractFrom", paramType = "body")
-    public Result add(@RequestBody ReceivableContractFrom receivableContractFrom) {
+    public Result add(@RequestBody ReceivableContractForm receivableContractFrom) {
 
         if (StringUtils.isBlank(receivableContractFrom.getContractName())){
             return new Result(PARAM_ERROR,"合同名不能为空");

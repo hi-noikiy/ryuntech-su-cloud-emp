@@ -59,6 +59,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
     @Override
     public CustomerUserInfoDTO selectCustomerUserInfoDTO(CustomerUserInfo customerUserInfo) {
         if (customerUserInfo.getCustomerId()!=null) {
+            queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("customer_id", customerUserInfo.getCustomerId());
         }
         CustomerUserInfo cUserInfo = baseMapper.selectOne(queryWrapper);
