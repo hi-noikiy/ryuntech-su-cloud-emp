@@ -1,16 +1,17 @@
 /*
  Navicat Premium Data Transfer
-
  Source Server         : ryuntech
  Source Server Type    : MySQL
  Source Server Version : 80017
  Source Host           : localhost:3306
  Source Schema         : ryuntech_su_receivable
-
  Target Server Type    : MySQL
  Target Server Version : 80017
  File Encoding         : 65001
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
  Date: 06/11/2019 15:40:35
 */
 
@@ -767,4 +768,8 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES ('1002748017179541505', '1002748319131680769');
 INSERT INTO `sys_user_role` VALUES ('986177923098808322', '999999888888777777');
 
+<<<<<<< Updated upstream
 SET FOREIGN_KEY_CHECKS = 1;
+=======
+SET FOREIGN_KEY_CHECKS = 1;
+>>>>>>> Stashed changes

@@ -1,6 +1,5 @@
 package com.ryuntech.saas.api.form;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
@@ -8,9 +7,8 @@ import com.ryuntech.saas.api.model.AttachmentFile;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -19,7 +17,7 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class ReceivableContractForm extends BaseModel {
+public class ReceivableContractFrom extends BaseModel {
     /**
      * 合同编号
      */
@@ -43,10 +41,8 @@ public class ReceivableContractForm extends BaseModel {
     /**
      * 合同日期
      */
-
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date contractTime;
+    private LocalDateTime contractTime;
 
     /**
      * 合同金额

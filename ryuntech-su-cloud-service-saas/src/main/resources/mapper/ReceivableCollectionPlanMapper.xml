@@ -6,17 +6,17 @@
     <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.ReceivableCollectionPlan">
         <id column="PLAN_ID" property="planId" />
         <result column="PLAN_AMOUNT" property="planAmount" />
-        <result column="SURPLUS_AMOUNT" property="surplusAmount" />
-        <result column="BACKED_AMOUNT" property="backedAmount" />
         <result column="REMAKES" property="remakes" />
         <result column="STATUS" property="status" />
         <result column="CONTRACT_ID" property="contractId" />
         <result column="PLAN_TIME" property="planTime" />
+        <result column="BACKED_AMOUNT" property="backedAmount" />
+        <result column="SURPLUS_AMOUNT" property="surplusAmount" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        PLAN_ID, PLAN_AMOUNT, REMAKES, STATUS, CONTRACT_ID,BACKED_AMOUNT,SURPLUS_AMOUNT
+        PLAN_ID, PLAN_AMOUNT, REMAKES, STATUS, CONTRACT_ID, PLAN_TIME, BACKED_AMOUNT, SURPLUS_AMOUNT
     </sql>
 
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollectionPlan">
@@ -37,37 +37,20 @@
     <!--批量插入-->
     <insert id="insertBatch" parameterType="java.util.List" useGeneratedKeys="false">
         insert into ryn_receivable_collection_plan
-         ( plan_id, plan_amount, remakes, status, contract_id, plan_time, backed_amount, surplus_amount)
+        ( plan_id, plan_amount, remakes, status, contract_id, plan_time, backed_amount, surplus_amount)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
-            #{item.planId},
-            #{item.planAmount},
-            #{item.remakes},
-            #{item.status},
-            #{item.contractId},
-            #{item.planTime},
-            #{item.backedAmount},
-            #{item.surplusAmount}
+                #{item.planId},
+                #{item.planAmount},
+                #{item.remakes},
+                #{item.status},
+                #{item.contractId},
+                #{item.planTime},
+                #{item.backedAmount},
+                #{item.surplusAmount}
             )
         </foreach>
     </insert>
-
-    <select id="selectByPlan" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollectionPlan">
-        select * from ryn_receivable_collection_plan
-        <where>
-            <if test="plan.contractId!=null and plan.contractId!=''">
-                contract_id like concat('%',#{plan.contractId},'%')
-            </if>
-
-            <if test="plan.statusList!=null and plan.statusList.size()>0">
-                and status in
-                <foreach collection="plan.statusList" item="status" index="index" open="(" close=")" separator=",">
-                    #{status}
-                </foreach>
-            </if>
-
-        </where>
-    </select>
 
 </mapper>
