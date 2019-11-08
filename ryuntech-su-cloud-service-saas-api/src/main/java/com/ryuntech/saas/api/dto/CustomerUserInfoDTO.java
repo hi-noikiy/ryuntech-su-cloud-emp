@@ -79,5 +79,10 @@ public class CustomerUserInfoDTO {
      */
     List<CustomerRisk> customerRiskList;
 
+    /**
+     * 回款率
+     */
+    private String backRate;
+
 
 }

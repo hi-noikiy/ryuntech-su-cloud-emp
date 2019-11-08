@@ -11,15 +11,7 @@ public class AttachmentFile extends BaseModel {
 
 
     private String id;
+    private String name;
     private String url;
-
- /*   private File file;
-
-
-    @Data
-    class File{
-        private String path;
-        private String size;
-    }*/
 
 }

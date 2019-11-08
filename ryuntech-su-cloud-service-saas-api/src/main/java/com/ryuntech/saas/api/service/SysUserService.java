@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.saas.api.dto.SysUserDTO;
+import com.ryuntech.saas.api.form.SysUserForm;
 import com.ryuntech.saas.api.model.SysUser;
 
 import java.util.List;
@@ -91,9 +92,9 @@ public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 注册方法
-     * @param sysUserDTO
+     * @param sysUserForm
      * @return
      */
-    SysUser register(SysUserDTO sysUserDTO);
+    SysUser register(SysUserForm sysUserForm);
 
 }

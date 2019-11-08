@@ -1,10 +1,15 @@
 package com.ryuntech.saas.outcontroller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.model.BaseDto;
+import com.ryuntech.common.model.BaseForm;
+import com.ryuntech.common.utils.CopyUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
+import com.ryuntech.saas.api.form.CustomerUserInfoForm;
+import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -68,6 +73,32 @@ public class MiniCustomerController extends ModuleBaseController{
             return new Result<>();
         }else {
             return new Result<>(OPERATE_ERROR);
+        }
+    }
+
+    @PostMapping("/outedit")
+    @ApiOperation(value = "修改合同信息")
+    @ApiImplicitParam(name = "receivableContractFrom", value = "合同实体信息", required = true, dataType = "ReceivableContractFrom", paramType = "body")
+    public Result edit(@RequestBody CustomerUserInfoForm receivableContractFrom) {
+        if (StringUtils.isBlank(receivableContractFrom.getCustomerId())){
+            return new Result<>(OPERATE_ERROR,"客户编号为空");
+        }
+        BaseForm baseForm = new BaseForm();
+        baseForm.setAClass(CustomerUserInfoForm.class);
+        baseForm.setT(receivableContractFrom);
+
+        BaseDto baseDto = new BaseDto();
+        baseDto.setAClass(CustomerUserInfo.class);
+        CustomerUserInfo customerUserInfo = new CustomerUserInfo();
+        baseDto.setT(customerUserInfo);
+
+        CopyUtil.copyObject2(baseForm,baseDto);
+//        开始更新
+        boolean b = customerUserInfoService.updateById(customerUserInfo);
+        if (b){
+            return new Result();
+        }else {
+            return new Result(OPERATE_ERROR);
         }
     }
 

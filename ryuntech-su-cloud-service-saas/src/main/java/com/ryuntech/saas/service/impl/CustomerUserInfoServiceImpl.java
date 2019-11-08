@@ -14,9 +14,11 @@ import com.ryuntech.saas.api.model.CustomerRisk;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -90,6 +92,13 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
 //        总合同金额
         String allContractAmount = baseMapper.selectAllContractAmount(customerUserInfo);
         customerUserInfoDTO.setAllContractAmount(allContractAmount);
+
+//        回款率  已回款/合同总额
+        DecimalFormat df=new DecimalFormat("0.0000");
+        if(StringUtils.isNotBlank(collectionAmount)||StringUtils.isNotBlank(allContractAmount)){
+            String format = df.format((float) Float.parseFloat(collectionAmount) / Float.parseFloat(allContractAmount));
+            customerUserInfoDTO.setBackRate(Float.parseFloat(format)*100+"");
+        }
 
         return customerUserInfoDTO;
     }

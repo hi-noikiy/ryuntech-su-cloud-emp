@@ -9,6 +9,7 @@ import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.saas.api.dto.SysUserDTO;
+import com.ryuntech.saas.api.form.SysUserForm;
 import com.ryuntech.saas.api.helper.SecurityUtils;
 import com.ryuntech.saas.api.helper.constant.RoleConstants;
 import com.ryuntech.saas.api.mapper.*;
@@ -136,7 +137,7 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
     }
 
     @Override
-    public SysUser register(SysUserDTO sysUserDTO) {
+    public SysUser register(SysUserForm sysUserForm) {
         //生成用户
         //生成主键
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
@@ -145,10 +146,10 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         SysUser sysUser = new SysUser();
         sysUser.setId(String.valueOf(id));
 //        登陆名默认为手机号
-        sysUser.setUsername(sysUserDTO.getPhone());
-        sysUser.setPhone(sysUserDTO.getPhone());
-        sysUser.setAvatar(sysUserDTO.getAvatar());
-        sysUser.setPassword(sysUserDTO.getPassword());
+        sysUser.setUsername(sysUserForm.getPhone());
+        sysUser.setPhone(sysUserForm.getPhone());
+        sysUser.setAvatar(sysUserForm.getAvatar());
+        sysUser.setPassword(sysUserForm.getPassword());
         sysUser.setCreateTime(new Date());
         sysUser.setUpdatedAt(new Date());
         sysUserMapper.insert(sysUser);
@@ -158,9 +159,9 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         String employeeId = String.valueOf(uniqueIdGenerator.nextId());
         employee.setEmployeeId(employeeId);
         employee.setUserId(sysUser.getId());
-        employee.setCompanyName(sysUserDTO.getCompanyName());
-        employee.setName(sysUserDTO.getName());
-        employee.setMobile(sysUserDTO.getPhone());
+        employee.setCompanyName(sysUserForm.getCompanyName());
+        employee.setName(sysUserForm.getName());
+        employee.setMobile(sysUserForm.getPhone());
 //        账号状态正常
         employee.setStatus(1);
         employee.setCreatedAt(new Date());
@@ -172,7 +173,7 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         Company company = new Company();
         String companyId = String.valueOf(uniqueIdGenerator.nextId());
         company.setCompanyId(companyId);
-        company.setName(sysUserDTO.getCompanyName());
+        company.setName(sysUserForm.getCompanyName());
 //        设置负责员工为当前
         company.setEmployeeId(employee.getEmployeeId());
         company.setCreatedAt(new Date());

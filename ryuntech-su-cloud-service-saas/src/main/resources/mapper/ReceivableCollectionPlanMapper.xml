@@ -53,4 +53,22 @@
         </foreach>
     </insert>
 
+
+    <select id="selectByPlan" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollectionPlan">
+        select * from ryn_receivable_collection_plan
+        <where>
+            <if test="plan.contractId!=null and plan.contractId!=''">
+                contract_id like concat('%',#{plan.contractId},'%')
+            </if>
+
+            <if test="plan.statusList!=null and plan.statusList.size()>0">
+                and status in
+                <foreach collection="plan.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
+
 </mapper>

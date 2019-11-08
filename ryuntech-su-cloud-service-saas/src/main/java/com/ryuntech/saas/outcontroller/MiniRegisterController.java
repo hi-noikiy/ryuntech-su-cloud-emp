@@ -2,11 +2,11 @@ package com.ryuntech.saas.outcontroller;
 
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.SysUserDTO;
-import com.ryuntech.saas.api.dto.WeChatIndexDTO;
-import com.ryuntech.saas.api.model.Company;
-import com.ryuntech.saas.api.model.Index;
-import com.ryuntech.saas.api.model.SysUser;
+import com.ryuntech.saas.api.form.SysUserForm;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICompanyService;
+import com.ryuntech.saas.api.service.IEmployeeService;
+import com.ryuntech.saas.api.service.IUserWechatService;
 import com.ryuntech.saas.api.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -39,6 +41,12 @@ public class MiniRegisterController extends ModuleBaseController {
 
     @Autowired
     ICompanyService companyService;
+
+    @Autowired
+    IEmployeeService iEmployeeService;
+
+    @Autowired
+    IUserWechatService iUserWechatService;
 
 
     /**
@@ -66,14 +74,14 @@ public class MiniRegisterController extends ModuleBaseController {
 
     /**
      * 注册第二步
-      * @param sysUserDTO
+      * @param sysUserForm
      * @return
      */
     @PostMapping("/outsecond")
     @ApiOperation(value = "注册第二步验证手机号")
-    public Result<SysUser> second(@RequestBody SysUserDTO sysUserDTO) {
+    public Result<SysUser> second(@RequestBody SysUserForm sysUserForm) {
 //        验证公司名是否存在
-        String companyName = sysUserDTO.getCompanyName();
+        String companyName = sysUserForm.getCompanyName();
         if (StringUtils.isBlank(companyName)){
             return new Result<>(OPERATE_ERROR,"公司名不能为空");
         }
@@ -82,9 +90,33 @@ public class MiniRegisterController extends ModuleBaseController {
             return new Result<>(OPERATE_ERROR,"公司名已经存在");
         }
         //开始注册操作
-        SysUser register = sysUserService.register(sysUserDTO);
+        SysUser register = sysUserService.register(sysUserForm);
+
+
         if (register!=null){
-            return new Result(register);
+            SysUser sysUser = sysUserService.selectByUser(new SysUser().setPhone(sysUserForm.getPhone()));
+            List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setUserId(sysUser.getId()));
+            //            查询小程序
+            UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getId()));
+            SysUserDTO sysUserDTO = new SysUserDTO();
+            if (null!=employeeList&&employeeList.size()!=0){
+                sysUserDTO.setEmployeeList(employeeList);
+            }
+            if (null!=userWechat){
+                sysUserDTO.setUserWechat(userWechat);
+            }
+
+            sysUserDTO.setUsername(sysUser.getUsername());
+            sysUserDTO.setId(sysUser.getId());
+            sysUserDTO.setAvatar(sysUser.getAvatar());
+            sysUserDTO.setPhone(sysUser.getPhone());
+            sysUserDTO.setStatus(sysUser.getStatus());
+            if (sysUser!=null){
+                //手机号
+                return new Result(sysUserDTO);
+            }else {
+                return new Result(OPERATE_ERROR,"手机号不存在");
+            }
         }else {
             return new Result(OPERATE_ERROR,"数据异常");
         }
