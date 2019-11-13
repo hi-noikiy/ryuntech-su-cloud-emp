@@ -19,14 +19,21 @@
             end-placeholder="结束日期"
             :picker-options="pickerOptions"
           />
-          <el-select v-model="indexDTO.companyName" placeholder="请选择">
+          <!-- <el-select v-model="indexDTO.companyName" placeholder="请选择">
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             />
-          </el-select>
+          </el-select> -->
+          <el-tree
+            :data="departmentData"
+            show-checkbox
+            node-key="id"
+            :default-checked-keys="[0]"
+            :props="defaultProps">
+          </el-tree>
 
         </div>
       </div>
@@ -131,7 +138,7 @@
 <script>
 import echarts from 'echarts'
 
-import { reportdata } from '@/api/dashboard'
+import { reportdata, departrelation } from '@/api/dashboard'
 
 export default {
   name: 'Dashboard',
@@ -148,6 +155,15 @@ export default {
         companyName: '',
         startDate: '',
         endDate: ''
+      },
+      departmentData: [{
+        departmentId: '',
+        departmentName: '',
+        sonDepartment: []
+      }],
+      defaultProps: {
+        children: 'sonDepartment',
+        label: 'departmentName'
       },
       charts: '',
       chart1: '',
@@ -221,6 +237,10 @@ export default {
       console.info(this.value2)
       reportdata(this.indexDTO).then(response => {
         console.info('response:' + response)
+      })
+
+      departrelation().then(response => {
+        this.departmentData = [response.data]
       })
     },
 

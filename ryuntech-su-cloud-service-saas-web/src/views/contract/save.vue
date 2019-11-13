@@ -39,7 +39,7 @@
 
       <el-form-item label="签约客户" prop="customerName">
         <el-select v-model="form.customerId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索客户">
-          <el-option v-for="cus in customerMap" :label="cus.customer_name" :value="cus.customer_id" />
+          <el-option v-for="cus in customerMap" :label="cus.customerName" :value="cus.customerId" />
         </el-select>
       </el-form-item>
 
@@ -49,7 +49,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item style="width: 100%" label="合同附件">
+      <el-form-item style="width: 100%;" label="合同附件">
         <el-upload
           class="avatar-uploader"
           :action="localUpload"
@@ -65,29 +65,29 @@
         </el-upload>
       </el-form-item>
       <el-form-item style="width: 100%" label="回款计划">
-        <el-button type="text" @click="addItem">添加回款计划</el-button>
+        <el-button :disabled="tianJiaHuiKuan" @click="addItem" type="text">添加回款计划</el-button>
       </el-form-item>
 
-      <div v-for="(item, index) in form.planForm" :key="index" class="d-contract-edit-form-div">
-        <el-form-item label="计划日期" :prop="'planForm.' + index + '.planTime'" :rules="formRules.planTime">
-          <el-date-picker
-            v-model="item.planTime"
-            type="datetime"
-            placeholder="请选择计划日期"
-            value-format="yyyy-MM-dd HH:mm:ss"
-            format="yyyy-MM-dd HH:mm:ss"
-            @input="change1($event)"
-          />
-        </el-form-item>
-        <el-form-item label="计划金额" :prop="'planForm.' + index + '.planAmount'" :rules="formRules.planAmount">
-          <el-input v-model="item.planAmount" placeholder="请输入计划金额" @input="change2($event)" />
-        </el-form-item>
-        <el-form-item label="备注" :prop="'planForm.' + index + '.remakes'" :rules="formRules.remakes">
-          <el-input v-model="item.remakes" placeholder="请输入备注" @input="change3($event)" />
-        </el-form-item>
-        <el-form-item>
-          <a class="el-icon-delete" @click="deleteItem(item, index)" />
-        </el-form-item>
+      <div v-for="(item, index) in form.receivableCollectionPlanDTOs" :key="index" class="d-contract-edit-form-div">
+          <el-form-item label="计划日期" :prop="'receivableCollectionPlanDTOs.' + index + '.planTime'" :rules="formRules.planTime">
+              <el-date-picker
+                v-model="item.planTime"
+                type="datetime"
+                placeholder="请选择计划日期"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                format="yyyy-MM-dd HH:mm:ss"
+                @input="change1($event)"
+              />
+            </el-form-item>
+          <el-form-item label="计划金额" :prop="'receivableCollectionPlanDTOs.' + index + '.planAmount'" :rules="formRules.planAmount" style="width: 340px;">
+              <el-input v-model="item.planAmount" placeholder="总额应等于小于合同金额" @input="change2(item)"></el-input>
+          </el-form-item>
+          <el-form-item label="备注" :prop="'receivableCollectionPlanDTOs.' + index + '.remakes'" :rules="formRules.remakes" style="margin-left:-65px;">
+              <el-input v-model="item.remakes" placeholder="请输入备注" @input="change3($event)"></el-input>
+          </el-form-item>
+          <el-form-item style="margin-left:-110px;">
+              <a class="el-icon-delete" @click="deleteItem(item, index)"></a>
+          </el-form-item>
       </div>
 
     </el-form>
@@ -97,6 +97,7 @@
     </div>
   </el-dialog>
 </template>
+
 
 <script>
 import { save, edit, upload, backPlanInsertBatch } from '@/api/contract'
@@ -109,6 +110,7 @@ export default {
   props: ['sonData', 'staffMap', 'customerMap'],
   data() {
     return {
+      tianJiaHuiKuan: false,
       dialogVisible: false,
       dialogTitle: '合同详细信息',
       localUpload: upload,
@@ -131,15 +133,11 @@ export default {
         attachmentCode: '',
         url: '',
         // 回款计划
-        planForm: [{
-          contractId: '',
-          planId: '',
+        receivableCollectionPlanDTOs: [{
           planTime: '',
           planAmount: '',
           status: '',
-          remakes: '',
-          backedAmount: '',
-          surplusAmount: ''
+          remakes: ''
         }]
       },
       formRules: {
@@ -155,11 +153,14 @@ export default {
       rules: {
         contractId: [{ required: false, trigger: 'blur', message: '请输入合同编号' }],
         contractName: [{ required: true, trigger: 'blur', message: '请输入合同名' }],
-        contractCode: [{ required: false, trigger: 'blur', message: '请输入合同编码' }],
-        contractAmount: [{ required: true, trigger: 'blur', message: '请输入合同金额' }],
+        contractCode: [{ required: false, trigger: 'blur', message: '请输入合同编码' },
+                        { pattern: /^([1-9][0-9]*)$/, message: '合同编码为纯数字', trigger: 'blur' }],
+        contractAmount: [{ required: true, trigger: 'blur', message: '请输入合同金额' },
+                          { pattern: /^(([1-9]{1}\d*)|(0{1}))(\.\d{1,2})?$/, message: '请正确输入金额', trigger: 'blur' }],
         contractTime: [{ required: true, trigger: 'blur', message: '请输入签订日期' }],
         contacts: [{ required: true, trigger: 'blur', message: '请输入联系人' }],
-        contactsPhone: [{ required: true, trigger: 'blur', message: '请输入联系电话' }],
+        contactsPhone: [{ required: true, trigger: 'blur', message: '请输入联系电话' },
+                          { pattern: /^1[34578]\d{9}$/, message: '请正确输入电话', trigger: 'blur' }],
         customerId: [{ required: true, trigger: 'blur', message: '请选择客户' }],
         staffId: [{ required: true, trigger: 'blur', message: '请选择负责员工' }]
       }
@@ -178,49 +179,53 @@ export default {
     }
   },
   methods: {
-    change1(e) {
-      this.formRules.planTime = [{ required: false, message: '选择计划日期', trigger: 'blur' }]
+    change1() {
+      this.formRules.planTime = [{required: false, message: '选择计划日期', trigger: 'blur'}]
       this.$forceUpdate()
     },
-    change2() {
-      this.formRules.planAmount = [{ required: false, message: '计划金额', trigger: 'blur' }],
+    change2(item) {
+      this.formRules.planAmount = [{required: false, message: '计划金额', trigger: 'blur'}]
       this.$forceUpdate()
+      let sum = 0
+      this.form.receivableCollectionPlanDTOs.forEach((item) => {
+        sum += parseFloat(item.planAmount)
+        if(parseFloat(sum) > parseFloat(this.form.contractAmount)) {
+          this.tianJiaHuiKuan = true
+          item.planAmount = ''
+        } else if(parseFloat(sum) == parseFloat(this.form.contractAmount)) {
+          this.tianJiaHuiKuan = true
+        } else {
+          this.tianJiaHuiKuan = false
+        }
+      })
     },
     change3() {
-      this.formRules.remakes = [{ required: false, message: '备注', trigger: 'blur' }]
+      this.formRules.remakes = [{required: false, message: '备注', trigger: 'blur'}]
       this.$forceUpdate()
     },
     addItem() {
-      this.formRules.planTime = [{ required: true, message: '选择计划日期', trigger: 'blur' }]
-      this.formRules.planAmount = [{ required: true, message: '计划金额', trigger: 'blur' }],
-      this.formRules.remakes = [{ required: true, message: '备注', trigger: 'blur' }]
-      if (typeof (this.form.planForm) === 'undefined') {
-        this.form.planForm = []
+      this.formRules.planTime = [{required: true, message: '选择计划日期', trigger: 'blur'}]
+      this.formRules.planAmount = [{required: true, message: '计划金额', trigger: 'blur'}],
+      this.formRules.remakes = [{required: true, message: '备注', trigger: 'blur'}]
+      if(typeof(this.form.receivableCollectionPlanDTOs) === 'undefined') {
+        this.form.receivableCollectionPlanDTOs = []
       }
-      this.form.planForm.push({
-        contractId: '',
-        planId: '',
-        planTime: '',
-        planAmount: '',
-        status: '',
-        remakes: '',
-        backedAmount: '',
-        surplusAmount: ''
+      this.form.receivableCollectionPlanDTOs.push({
+          planTime: '',
+          planAmount: '',
+          status: '',
+          remakes: ''
       })
-      this.form.planForm.contractId = this.form.contractId
-      // this.$nextTick(() => {
+      this.form.receivableCollectionPlanDTOs.contractId = this.form.contractId
       this.$forceUpdate()
-      // })
-      console.log(this.form.planForm + '------------------------------------')
     },
     deleteItem(item, index) {
-      console.log(index + '===========================')
-      console.log(item + '==============item=============')
-      index = this.form.planForm.indexOf(item)
-      if (index !== -1) {
-        this.form.planForm.splice(index, 1)
-        this.$forceUpdate()
-      }
+      this.tianJiaHuiKuan = false
+      index = this.form.receivableCollectionPlanDTOs.indexOf(item);
+        if (index !== -1) {
+          this.form.receivableCollectionPlanDTOs.splice(index, 1)
+          this.$forceUpdate()
+        }
     },
     clearForm() {
       this.form.contractId = null
@@ -232,7 +237,7 @@ export default {
       this.form.contactsPhone = null
       this.form.customerId = null
       this.form.staffId = null
-      this.form.attachmentCode = null
+      this.form.attachmentCode= null
       this.form.url = null
       this.form.createTime = parseTime(new Date(), '')
     },
@@ -246,36 +251,16 @@ export default {
         if (valid) {
           if (this.form.contractId === null) {
             save(this.form).then(response => {
-              // if (response.tcode === 200) {
-              //   this._notify(response.msg, 'success')
-              //   this.clearForm()
-              //   this.$emit('sonStatus', true)
-              //   this.dialogVisible = false
-              // } else {
-              //   this._notify(response.msg, 'error')
-              // }
-              backPlanInsertBatch(this.form.planForm).then(response => {
-                if (response.tcode === 200) {
-                  this._notify(response.msg, 'success')
-                  this.clearForm()
-                  this.$emit('sonStatus', true)
-                  this.dialogVisible = false
-                } else {
-                  this._notify(response.msg, 'error')
-                }
-              })
+              if (response.tcode === 200) {
+                this._notify(response.msg, 'success')
+                this.clearForm()
+                this.$emit('sonStatus', true)
+                this.dialogVisible = false
+                this.tianJiaHuiKuan = false
+              } else {
+                this._notify(response.msg, 'error')
+              }
             })
-            // 回款计划
-            // backPlanInsertBatch(this.form.planForm).then(response => {
-            //   if (response.tcode === 200) {
-            //     this._notify(response.msg, 'success')
-            //     this.clearForm()
-            //     this.$emit('sonStatus', true)
-            //     this.dialogVisible = false
-            //   } else {
-            //     this._notify(response.msg, 'error')
-            //   }
-            // })
           } else {
             edit(this.form).then(response => {
               if (response.tcode === 200) {
@@ -283,24 +268,14 @@ export default {
                 this.clearForm()
                 this.$emit('sonStatus', true)
                 this.dialogVisible = false
-              } else {
-                this._notify(response.msg, 'error')
-              }
-            })
-            // 回款计划
-            backPlanInsertBatch(this.form.planForm).then(response => {
-              if (response.tcode === 200) {
-                this._notify(response.msg, 'success')
-                this.clearForm()
-                this.$emit('sonStatus', true)
-                this.dialogVisible = false
+                this.tianJiaHuiKuan = false
               } else {
                 this._notify(response.msg, 'error')
               }
             })
           }
         } else {
-          this.$message('error submit!!')
+          this.$message('请完善合同信息 !')
           return false
         }
       })

@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <el-card>
+      <!-- <template>
+        <div style="margin:10px;font-weight:bold;">
+          <span style="font-size: 24px;">应收合同</span>
+          <div>
+            <a style="padding: 16px;font-weight:bold;" class="el-icon-download">导入</a>
+            <a style="font-weight:bold;" class="el-icon-upload2">导出</a>
+          </div>
+        </div>
+      </template> -->
       <div style="margin-bottom: 10px">
         <el-select v-model="search.belong_type" clearable size="small">
           <el-option label="全部合同" :value="0" />
@@ -79,6 +88,7 @@
 
         <el-table-column align="center" label="操作" width="200">
           <template slot-scope="scope">
+            <el-button type="info" size="mini" icon="el-icon-edit" @click="handleDetail(scope.row.contractId)">查看</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.contractId)">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.contractId)">删除</el-button>
           </template>

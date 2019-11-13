@@ -15,9 +15,16 @@ export function del(collectionId) {
   })
 }
 
+export function zuofei(collectionId) {
+  return request({
+    url: '/saas/collection/collectionzuofei/' + collectionId,
+    method: 'post'
+  })
+}
+
 export function save(data) {
   return request({
-    url: '/saas/collection',
+    url: '/saas/collection/collectionadd',
     method: 'post',
     data
   })

@@ -10,7 +10,7 @@ export function getList(query, data) {
 
 export function save(data) {
   return request({
-    url: '/saas/contract',
+    url: '/saas/contract/contractadd',
     method: 'post',
     data
   })
@@ -18,15 +18,15 @@ export function save(data) {
 
 export function edit(data) {
   return request({
-    url: '/saas/contract/edit',
-    method: 'put',
+    url: '/saas/contract/contractupdate',
+    method: 'post',
     data
   })
 }
 
 export function findById(contractId) {
   return request({
-    url: '/saas/contract/' + contractId,
+    url: '/saas/contract/contractFindById/' + contractId,
     method: 'get'
   })
 }
@@ -38,13 +38,13 @@ export function del(contractId) {
   })
 }
 
-// 回款计划批量插入
-export function backPlanInsertBatch(data) {
-  return request({
-    url: '/saas/collectionPlan/insertBatch',
-    method: 'post',
-    data
-  })
-}
+// // 鍥炴璁″垝鎵归噺鎻掑叆
+// export function backPlanInsertBatch(data) {
+//   return request({
+//     url: '/saas/collectionPlan/insertBatch',
+//     method: 'post',
+//     data
+//   })
+// }
 
 export const upload = process.env.VUE_APP_BASE_API + '/saas/storage/local/upload'

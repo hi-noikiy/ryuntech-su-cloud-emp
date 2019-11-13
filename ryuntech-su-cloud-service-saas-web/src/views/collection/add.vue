@@ -9,9 +9,17 @@
                 </span>
                 <span class="right">●●●</span>
             </div>
+            <template>
+                <div style="margin: 10px 0px -10px 40px;" v-if="contractName">
+                    <span>应收未收金额:</span>
+                    <span style="color:red;font-size:13px;margin:10px;">{{ feige(uncollectedAmount) }}元</span>
+                    <span style="margin-left:220px;">合同金额:</span>
+                    <span style="font-size:13px;">{{ feige(totalContractAmount) }}元</span>
+                </div>
+            </template>
         </div>
 
-        <el-form ref="form" class="form-group add-collect-form" :model="form" label-position="right" label-width="120px">
+        <el-form ref="form" class="form-group add-collect-form" :rules="rules" :model="form" label-position="right" label-width="120px">
             <h3>回款信息</h3>
 
             <el-form-item label="回款金额" prop="amount">
@@ -20,11 +28,11 @@
 
             <el-form-item label="收款方式" prop="type">
                 <el-select v-model="form.type" placeholder="请选择收款方式" style="width: 100%">
-                    <el-option v-for="(value,key) in collectionTypeOptions" :key="key" :label="value" :value="key" />
+                    <el-option v-for="(value,key) in collectionTypeOptions" :key="key" :label="value" :value="value" />
                 </el-select>
             </el-form-item>
 
-            <el-form-item label="收款日期">
+            <el-form-item label="收款日期" prop="time">
                 <el-date-picker
                         v-model="form.time"
                         style="width: 100%"
@@ -35,11 +43,11 @@
                 />
             </el-form-item>
 
-            <el-form-item label="备注">
+            <el-form-item label="备注" prop="remarks">
                 <el-input v-model="form.remarks" type="textarea"></el-input>
             </el-form-item>
 
-            <el-form-item style="width: 100%" label="附件">
+            <el-form-item style="width: 100%" label="附件" prop="url">
                 <el-upload
                         class="avatar-uploader"
                         :action="localUpload"
@@ -58,7 +66,7 @@
         </el-form>
 
         <div class="operate-btn-group">
-            <el-button type="primary" @click="submitAddCollection">　提　交　</el-button>
+            <el-button type="primary" @click="submitAddCollection('form')">　提　交　</el-button>
             <el-button @click="$router.push('/collection/list')">　取　消　</el-button>
         </div>
 
@@ -89,6 +97,12 @@
                         {{ scope.row.contractName }}
                     </template>
                 </el-table-column>
+
+                <!-- <el-table-column align="center" label="客户编号" min-width="100" v-if="false">
+                    <template slot-scope="scope">
+                        {{ scope.row.customerId }}
+                    </template>
+                </el-table-column> -->
 
                 <el-table-column align="center" label="客户名称" min-width="100">
                     <template slot-scope="scope">
@@ -150,6 +164,7 @@
   import { getList as getContractList, upload as uploadUrl } from '@/api/contract'
   import { collectionTypeOptions } from './collection'
   import { contractStatusOptions } from '../contract/contract'
+  import { parseTime } from '@/utils/index'
 
   export default {
     data() {
@@ -159,13 +174,27 @@
         collectionTypeOptions: collectionTypeOptions,
         contractStatusOptions: contractStatusOptions,
         localUpload: uploadUrl,
+        uncollectedAmount: '',
+        totalContractAmount: '',
         form: {
-          contractId: undefined,
-          amount: undefined,
-          type: undefined,
-          time: new Date(),
-          remarks: undefined,
-          url: undefined
+          collectionId: '',
+          customerId: '',
+          customerName: '',
+          contractId: '',
+          amount: '',
+          type: '',
+          time: '',
+          createTime: parseTime(new Date(), ''),
+          remarks: '',
+          url: ''
+        },
+        rules: {
+            amount: [{ required: true, trigger: 'blur', message: '请输入回款金额' },
+                       { pattern: /^(([1-9]{1}\d*)|(0{1}))(\.\d{1,2})?$/, message: '请正确输入金额', trigger: 'blur' }],
+            type: [{ required: true, trigger: 'blur', message: '请输入收款方式' }],
+            time: [{ required: true, trigger: 'blur', message: '请输入回款日期' }],
+            remarks: [{ required: true, trigger: 'blur', message: '请输入备注信息' }],
+            url: [{ required: true, trigger: 'blur', message: '请上传合同附件' }]
         },
         listQuery: {
           page: 1,
@@ -202,7 +231,11 @@
       checkContract() {
         if (!this.checkedContract) this._notify("请先选择合同！",'e')
         this.form.contractId = this.checkedContract.contractId
+        this.form.customerId = this.checkedContract.customerId
+        this.form.customerName = this.checkedContract.customerName
         this.contractName = this.checkedContract.contractId + ' : ' + this.checkedContract.contractName
+        this.uncollectedAmount = this.checkedContract.balanceAmount
+        this.totalContractAmount = this.checkedContract.contractAmount
         this.showSelectContract = false
       },
       // 文件上传成功的钩子函数
@@ -223,16 +256,46 @@
         if (!isLt2M) { this.$message.error('上传图片大小不能超过 2MB!') }
         return (isJPG || isBMP || isGIF || isPNG) && isLt2M
       },
-      submitAddCollection() {
+      submitAddCollection(form) {
         if (!this.form.contractId) { return this.$message.error('请选择应收合同！') }
-        if (!this.form.amount || !/\d[\d\.]+/.test(this.form.amount)) { return this.$message.error('请输入回款金额！') }
-        if (!this.form.type) { return this.$message.error('请选择收款方式！') }
-        if (!this.form.time) { return this.$message.error('请选择收款时间！') }
-        save(this.form).then( res => {
-          console.log(res)
-          this.$message.success('添加成功')
-//          this.$router.push('/collection/list')
-        }).catch( er => console.log(er) )
+        if(parseFloat(this.form.amount) > parseFloat(this.uncollectedAmount)) {
+            return this.$message.error('回款金额应不大于应收未收金额！')
+        }
+        // if (!this.form.amount || !/\d[\d\.]+/.test(this.form.amount)) { return this.$message.error('请输入回款金额！') }
+        // if (!this.form.type) { return this.$message.error('请选择收款方式！') }
+        // if (!this.form.time) { return this.$message.error('请选择收款时间！') }
+        this.$refs[form].validate((valid) => {
+            if (valid) {
+                save(this.form).then( res => {
+                  console.log(res)
+                  this.$message.success('添加成功')
+                  this.$router.push('/collection/list')
+                }).catch( er => console.log(er) )
+            } else {
+        this.$message('请完善回款信息 !')
+        return false
+        }
+        })
+      },
+      //分割金额，加','
+      feige(value) {
+          if(!value) return '0.00'
+        value = parseFloat(value).toFixed(2)
+        var intPart = Math.trunc(value)// 获取整数部分
+        var intPartFormat = intPart.toString().replace(/(\d)(?=(?:\d{3})+$)/g, '$1,') // 将整数部分逢三一断
+        var floatPart = '.00' // 预定义小数部分
+        var value2Array = value.split('.')
+        // =2表示数据有小数位
+        if(value2Array.length === 2) {
+            floatPart = value2Array[1].toString() // 拿到小数部分
+            if(floatPart.length === 1) { // 补0,实际上用不着
+            return intPartFormat + '.' + floatPart + '0'
+            } else {
+            return intPartFormat + '.' + floatPart
+            }
+        } else {
+            return intPartFormat + floatPart
+        }
       }
     }
   }

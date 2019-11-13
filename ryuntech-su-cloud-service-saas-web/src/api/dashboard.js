@@ -14,3 +14,10 @@ export function reportback() {
     method: 'get'
   })
 }
+// 部门层级关系
+export function departrelation() {
+  return request({
+    url: '/saas/index/departrelation',
+    method: 'get'
+  })
+}
