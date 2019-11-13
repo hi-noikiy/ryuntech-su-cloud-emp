@@ -34,4 +34,11 @@ zuul:
     socket-timeout-millis: 60000
     connect-timeout-millis: 60000
 
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+#  MaxAutoRetries: 0
+#  MaxAutoRetriesNextServer: 1
+#  eureka:
+#    enabled: false
 

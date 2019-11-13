@@ -7,6 +7,7 @@ import com.ryuntech.saas.api.model.CustomerUserInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -31,7 +32,7 @@ public interface CustomerUserInfoMapper extends IBaseMapper<CustomerUserInfo> {
      * @param customerUserInfo
      * @return
      */
-    List<CustomerUserInfo> selectCustomerMap(@Param("customerUserInfo") CustomerUserInfo customerUserInfo);
+    List<Map<String, String>> selectCustomerMap(@Param("customerUserInfo") CustomerUserInfo customerUserInfo);
 
     /**
      * 总待收

@@ -7,6 +7,7 @@ import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -39,7 +40,7 @@ public interface ICustomerUserInfoService extends IBaseService<CustomerUserInfo>
      * @param customerUserInfo
      * @return
      */
-    List<CustomerUserInfo> selectCustomerMap(CustomerUserInfo customerUserInfo);
+    List<Map<String, String>> selectCustomerMap(CustomerUserInfo customerUserInfo);
 
     /**
      * 根据客户对象查询详情信息

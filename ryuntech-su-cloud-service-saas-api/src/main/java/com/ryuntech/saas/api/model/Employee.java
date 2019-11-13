@@ -10,9 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Column;
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -60,6 +57,12 @@ import java.util.Date;
      */
     @TableField("DEPARTMENT_ID")
     private String departmentId;
+
+    /**
+     * 所属部门名称
+     */
+    @TableField("DEPARTMENT_NAME")
+    private String departmentName;
 
     /**
      * 手机号（和登录手机号相同）

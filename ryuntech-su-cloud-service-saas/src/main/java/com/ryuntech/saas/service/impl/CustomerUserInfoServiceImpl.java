@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -54,7 +55,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
     }
 
     @Override
-    public List<CustomerUserInfo> selectCustomerMap(CustomerUserInfo customerUserInfo) {
+    public List<Map<String, String>> selectCustomerMap(CustomerUserInfo customerUserInfo) {
         return baseMapper.selectCustomerMap(customerUserInfo);
     }
 

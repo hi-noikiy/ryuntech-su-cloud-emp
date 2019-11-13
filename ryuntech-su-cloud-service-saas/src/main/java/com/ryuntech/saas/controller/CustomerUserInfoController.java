@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
-import com.ryuntech.saas.api.model.ReceivableContract;
-import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
-import com.ryuntech.saas.api.service.IReceivableContractService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -17,8 +14,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -160,15 +155,15 @@ public class CustomerUserInfoController extends ModuleBaseController {
      */
     @PostMapping("/getCustomerMap")
     public Result selectUserMap(@RequestBody CustomerUserInfo customerUserInfo) {
-        List<CustomerUserInfo> list = iCustomerUserInfoService.selectCustomerMap(customerUserInfo);
-        List<Map<String,String>> res = new ArrayList<>();
-        for (CustomerUserInfo customerUserInfo1 : list) {
-            Map<String,String> item = new HashMap<>();
-            item.put("customer_id",customerUserInfo1.getCustomerId());
-            item.put("customer_name",customerUserInfo1.getCustomerName());
-            res.add(item);
-        }
-        return new Result(res);
+        List<Map<String, String>> list = iCustomerUserInfoService.selectCustomerMap(customerUserInfo);
+//        List<Map<String,String>> res = new ArrayList<>();
+//        for (CustomerUserInfo customerUserInfo1 : list) {
+//            Map<String,String> item = new HashMap<>();
+//            item.put("customer_id",customerUserInfo1.getCustomerId());
+//            item.put("customer_name",customerUserInfo1.getCustomerName());
+//            res.add(item);
+//        }
+        return new Result(list);
     }
 
 }

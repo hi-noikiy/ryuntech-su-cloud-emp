@@ -9,6 +9,7 @@ import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.helper.constant.AttachmentConstants;
+import com.ryuntech.saas.api.helper.constant.PlanConstant;
 import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
@@ -63,8 +64,8 @@ public class ReceivableContractController extends ModuleBaseController {
             @ApiImplicitParam(name = "receivableContract", value = "查询条件", dataType = "ReceivableContract", paramType = "body"),
             @ApiImplicitParam(name="queryPage",value="分页信息",dataType="QueryPage", paramType = "body")
     })
-    public Result<IPage<ReceivableContractDTO>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
-        return iReceivableContractService.selectPageList(receivableContract,queryPage);
+    public Result<IPage<ReceivableContract>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
+        return iReceivableContractService.pageList(receivableContract,queryPage);
     }
 
     /**
@@ -149,7 +150,7 @@ public class ReceivableContractController extends ModuleBaseController {
         Boolean aBoolean = iReceivableContractService.addReceivableContract(attachments,receivableContract, receivableCollectionPlans);
         if (aBoolean){
             //更新成功
-            return new Result(receivableContract);
+            return new Result();
         }else {
             return new Result(OPERATE_ERROR);
         }
@@ -157,25 +158,119 @@ public class ReceivableContractController extends ModuleBaseController {
     }
 
     /**
-     * 更新合同信息
+     * 修改合同信息
      *
-     * @param receivableContractDTO
+     * @param receivableContractFrom
      * @return
      */
     @PostMapping("/contractupdate")
-    @ApiOperation(value = "更新合同信息")
-    @ApiImplicitParam(name = "receivableContractDTO", value = "合同实体信息", required = true, dataType = "ReceivableContractDTO", paramType = "body")
-    public Result update(@RequestBody ReceivableContractDTO receivableContractDTO) {
+    @ApiOperation(value = "修改合同信息")
+    @ApiImplicitParam(name = "receivableContractFrom", value = "合同实体信息", required = true, dataType = "ReceivableContractFrom", paramType = "body")
+    public Result update(@RequestBody ReceivableContractForm receivableContractFrom) {
+        if (StringUtils.isBlank(receivableContractFrom.getContractId())){
+            return new Result(PARAM_ERROR,"合同编号不能为空");
+        }
+        ReceivableContract receivableContract = new ReceivableContract();
+//        合同编号
+        String contractId = receivableContractFrom.getContractId();
+        receivableContract.setContractId(contractId);
+//        合同名称
+        receivableContract.setContractName(receivableContractFrom.getContractName());
+        //        待还款金额
+        receivableContract.setBalanceAmount(receivableContractFrom.getContractAmount());
+//        合同总额
+        receivableContract.setContractAmount(receivableContractFrom.getContractAmount());
+//        合同时间
+        receivableContract.setContractTime(receivableContractFrom.getContractTime());
+//        联系人
+        receivableContract.setContacts(receivableContractFrom.getContacts());
+ //        联系人电话
+        receivableContract.setContactsPhone(receivableContractFrom.getContactsPhone());
+//        合同编码
+        receivableContract.setContractCode(receivableContractFrom.getContractCode());
+//        回款余额
+        receivableContract.setCollectionAmount(receivableContractFrom.getCollectionAmount());
+        //       负责人编号
+        receivableContract.setStaffId(receivableContractFrom.getStaffId());
+        //        负责人姓名
+        receivableContract.setStaffName(receivableContractFrom.getStaffName());
 
-        return new Result();
+        String customerId = receivableContractFrom.getCustomerId();
+        if (StringUtils.isNotBlank(customerId)){
+            CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
+            receivableContract.setCustomerName(customerUserInfo.getCustomerName());
+            receivableContract.setCustomerId(customerId);
+        }
+
+        //        合同状态
+        receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
+
+        List<ReceivableCollectionPlan> receivableCollectionPlans = new ArrayList<>();
+        List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractFrom.getReceivableCollectionPlanDTOs();
+        if (receivableCollectionPlanDTOs!=null&&receivableCollectionPlanDTOs.size()!=0){
+            for (ReceivableCollectionPlanDTO receivableCollectionPlanDTO :receivableCollectionPlanDTOs){
+
+
+                ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
+                receivableCollectionPlan.setContractId(contractId);
+//                计划编号， 判断当前计划编码是否存在
+                String planIdDT = receivableCollectionPlanDTO.getPlanId();
+                if (StringUtils.isBlank(planIdDT)){
+                    planIdDT = String.valueOf(generateId());
+                }
+                receivableCollectionPlan.setPlanId(planIdDT);
+//                状态
+                receivableCollectionPlan.setStatus(PlanConstant.NOTSTARTED);
+                receivableCollectionPlan.setPlanAmount(receivableCollectionPlanDTO.getPlanAmount());
+                receivableCollectionPlan.setRemakes(receivableCollectionPlanDTO.getRemakes());
+                receivableCollectionPlan.setPlanTime(DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()));
+                receivableCollectionPlans.add(receivableCollectionPlan);
+
+            }
+        }
+
+        List<AttachmentFile> attachmentFiles = receivableContractFrom.getFiles();
+        List<Attachment> attachments = new ArrayList<>();
+        if (attachmentFiles!=null&&attachmentFiles.size()!=0){
+            //                附件编码
+            String attachmentCode = String.valueOf(generateId());
+            receivableContract.setAttachmentCode(attachmentCode);
+            for (AttachmentFile attachmentFile :attachmentFiles){
+                //                文件编号
+                Attachment attachment = new Attachment();
+                String attachmentId=null;
+                if (StringUtils.isBlank(attachmentFile.getId())){
+                    attachmentId= String.valueOf(generateId());
+                }
+                attachment.setId(attachmentId);
+                attachment.setAttachmentType(AttachmentConstants.TYPE1);
+                attachment.setAttachmentCode(attachmentCode);
+                attachment.setAttachmentUrl(attachmentFile.getUrl());
+                attachment.setStatus(AttachmentConstants.YES);
+                attachment.setUpdatedAt(new Date());
+                attachment.setCreatedAt(new Date());
+                attachments.add(attachment);
+            }
+        }
+
+        Boolean aBoolean = iReceivableContractService.editReceivableContract(attachments,receivableContract, receivableCollectionPlans);
+        if (aBoolean){
+            //更新成功
+            return new Result();
+        }else {
+            return new Result(OPERATE_ERROR);
+        }
+
+
+
     }
 
-    /**
-     * 添加合同信息
-     *
-     * @param receivableContract
-     * @return
-     */
+//    /**
+//     * 添加合同信息
+//     *
+//     * @param receivableContract
+//     * @return
+//     */
 //    @PostMapping
 //    @ApiOperation(value = "添加合同信息")
 //    @ApiImplicitParam(name = "receivableContract", value = "合同实体信息", required = true, dataType = "ReceivableContract", paramType = "body")
@@ -212,48 +307,48 @@ public class ReceivableContractController extends ModuleBaseController {
 //    }
 
 
-    /**
-     * 更新订单信息
-     *
-     * @param receivableContract
-     * @return
-     */
-    @PutMapping("/edit")
-    @ApiOperation(value = "更新合同")
-    @ApiImplicitParam(name = "receivableContract", value = "合同信息", required = true, dataType = "ReceivableContract", paramType = "body")
-    public Result edit(@RequestBody ReceivableContract receivableContract) {
-        if (StringUtils.isBlank(receivableContract.getContractId())){
-            return new Result(PARAM_ERROR,"合同编号不能为空");
-        }
-        if (StringUtils.isBlank(receivableContract.getContractName())){
-            return new Result(PARAM_ERROR,"合同名不能为空");
-        }
-        if (StringUtils.isBlank(receivableContract.getCustomerId())) {
-            return new Result(PARAM_ERROR,"签约客户不能为空");
-        }
-        if (StringUtils.isBlank(receivableContract.getStaffId())) {
-            return new Result(PARAM_ERROR,"负责员工不能为空");
-        }
-        if (StringUtils.isBlank(receivableContract.getAttachmentCode())){
-            return new Result(PARAM_ERROR,"合同附件不能为空");
-        }
-
-        String staffId = receivableContract.getStaffId();
-        SysUser sysUser = sysUserService.getById(staffId);
-        receivableContract.setStaffName(sysUser.getUsername());
-
-        String customerId = receivableContract.getCustomerId();
-        CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
-        receivableContract.setCustomerName(customerUserInfo.getCustomerName());
-
-        boolean b = iReceivableContractService.saveOrUpdate(receivableContract);
-        if (b){
-            //更新成功
-            return new Result();
-        }else {
-            return new Result(OPERATE_ERROR);
-        }
-    }
+//    /**
+//     * 更新订单信息
+//     *
+//     * @param receivableContract
+//     * @return
+//     */
+//    @PutMapping("/edit")
+//    @ApiOperation(value = "更新合同")
+//    @ApiImplicitParam(name = "receivableContract", value = "合同信息", required = true, dataType = "ReceivableContract", paramType = "body")
+//    public Result edit(@RequestBody ReceivableContract receivableContract) {
+//        if (StringUtils.isBlank(receivableContract.getContractId())){
+//            return new Result(PARAM_ERROR,"合同编号不能为空");
+//        }
+//        if (StringUtils.isBlank(receivableContract.getContractName())){
+//            return new Result(PARAM_ERROR,"合同名不能为空");
+//        }
+//        if (StringUtils.isBlank(receivableContract.getCustomerId())) {
+//            return new Result(PARAM_ERROR,"签约客户不能为空");
+//        }
+//        if (StringUtils.isBlank(receivableContract.getStaffId())) {
+//            return new Result(PARAM_ERROR,"负责员工不能为空");
+//        }
+//        if (StringUtils.isBlank(receivableContract.getAttachmentCode())){
+//            return new Result(PARAM_ERROR,"合同附件不能为空");
+//        }
+//
+//        String staffId = receivableContract.getStaffId();
+//        SysUser sysUser = sysUserService.getById(staffId);
+//        receivableContract.setStaffName(sysUser.getUsername());
+//
+//        String customerId = receivableContract.getCustomerId();
+//        CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
+//        receivableContract.setCustomerName(customerUserInfo.getCustomerName());
+//
+//        boolean b = iReceivableContractService.saveOrUpdate(receivableContract);
+//        if (b){
+//            //更新成功
+//            return new Result();
+//        }else {
+//            return new Result(OPERATE_ERROR);
+//        }
+//    }
 
     /**
      * 删除用户信息
@@ -288,11 +383,11 @@ public class ReceivableContractController extends ModuleBaseController {
         }
     }
 
-    /**
-     * 根据合同ID获取合同详情
-     * @param contractId
-     * @return
-     */
+//    /**
+//     * 根据合同ID获取合同详情
+//     * @param contractId
+//     * @return
+//     */
 //    @GetMapping("/{contractId}")
 //    public Result get(@PathVariable String contractId) {
 //        if (StringUtils.isBlank(contractId)){

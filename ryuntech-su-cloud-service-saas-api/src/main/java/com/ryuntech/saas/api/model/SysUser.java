@@ -56,6 +56,12 @@ public class SysUser extends BaseModel implements UserDetails {
     private String companyName;
 
     /**
+     * 用户所在公司职工编号
+     */
+    @TableField(exist = false)
+    private String employeeId;
+
+    /**
      * 头像
      */
     private String avatar;

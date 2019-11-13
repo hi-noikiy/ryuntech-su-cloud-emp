@@ -17,28 +17,30 @@
         <result column="CREATE_TIME" property="createTime" />
         <result column="STATUS" property="status" />
         <result column="REMARKS" property="remarks" />
-        <result column="COLLECTION_DATE" property="collectionDate" />
         <result column="CONTRACT_ID" property="contractId" />
         <result column="PLAN_ID" property="planId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, ATTACHMENT_CODE, CREATE_BY, CREATE_TIME, STATUS, REMARKS, COLLECTION_DATE, CONTRACT_ID, PLAN_ID
+        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, ATTACHMENT_CODE, CREATE_BY, CREATE_TIME, STATUS, REMARKS, CONTRACT_ID, PLAN_ID
     </sql>
 
 
 
-    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollection">
+    <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.form.ReceivableCollectionConditionForm">
         select
             *
         from ryn_receivable_collection
         <where>
-            <if test="receivableCollection.collectionId!=null and receivableCollection.collectionId!=''">
-                collection_id like concat('%',#{receivableCollection.collectionId},'%')
+            <if test="receivableCollectionConditionForm.type!=null and receivableCollectionConditionForm.type!=''">
+                type like concat('%',#{receivableCollectionConditionForm.type},'%')
             </if>
-            <if test="receivableCollection.customerName!=null and receivableCollection.customerName!=''">
-                and customer_name like concat('%',#{receivableCollection.customerName},'%')
+            <if test="receivableCollectionConditionForm.customerName!=null and receivableCollectionConditionForm.customerName!=''">
+                and customer_name like concat('%',#{receivableCollectionConditionForm.customerName},'%')
+            </if>
+            <if test="receivableCollectionConditionForm.startTime!=null || receivableCollectionConditionForm.endTime!=null">
+                and time between #{receivableCollectionConditionForm.startTime} and #{receivableCollectionConditionForm.endTime}
             </if>
         </where>
     </select>

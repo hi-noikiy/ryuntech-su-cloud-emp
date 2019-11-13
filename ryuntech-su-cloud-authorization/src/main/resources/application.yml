@@ -24,7 +24,7 @@ feign:
             enabled: true
           isolation:
             thread:
-              timeoutInMilliseconds: 8000
+              timeoutInMilliseconds: 80000
 
 eureka:
   instance:

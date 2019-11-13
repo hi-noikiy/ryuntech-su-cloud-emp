@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.form.ReceivableCollectionConditionForm;
 import com.ryuntech.saas.api.mapper.ReceivableCollectionMapper;
 import com.ryuntech.saas.api.mapper.ReceivableCollectionPlanMapper;
 import com.ryuntech.saas.api.mapper.ReceivableContractMapper;
@@ -46,9 +47,9 @@ public class ReceivableCollectionServiceImpl extends BaseServiceImpl<ReceivableC
     }
 
     @Override
-    public Result<IPage<ReceivableCollection>> selectPageList(ReceivableCollection receivableCollection, QueryPage queryPage) {
+    public Result<IPage<ReceivableCollection>> selectPageList(ReceivableCollectionConditionForm receivableCollectionConditionForm, QueryPage queryPage) {
         Page<ReceivableCollection> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        return new Result(m.selectPageList(page,receivableCollection));
+        return new Result(m.selectPageList(page,receivableCollectionConditionForm));
     }
 
     @Override
@@ -64,12 +65,12 @@ public class ReceivableCollectionServiceImpl extends BaseServiceImpl<ReceivableC
         if (null!=receivableCollection){
             baseMapper.insert(receivableCollection);
         }
-        if (null!=receivableCollectionPlan&& StringUtils.isNotBlank(receivableCollectionPlan.getPlanId())){
+        if (null!=receivableCollectionPlan && StringUtils.isNotBlank(receivableCollectionPlan.getPlanId())){
 //            更新计划
             receivableCollectionPlanMapper.updateById(receivableCollectionPlan);
         }
 //        更改合同表回款金额
-        if (null!=receivableContract&&StringUtils.isNotBlank(receivableContract.getContractId())){
+        if (null!=receivableContract && StringUtils.isNotBlank(receivableContract.getContractId())){
             receivableContractMapper.updateById(receivableContract);
         }
         return true;

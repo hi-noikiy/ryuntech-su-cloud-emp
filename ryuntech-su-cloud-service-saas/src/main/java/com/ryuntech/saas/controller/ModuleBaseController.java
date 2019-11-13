@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
  */
 public class ModuleBaseController extends BaseController {
 
-    protected long generateId() {
+    protected Long generateId() {
         return UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId()).nextId();
     }
 

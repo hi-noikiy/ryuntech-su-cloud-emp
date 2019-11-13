@@ -10,8 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -31,13 +29,13 @@ import java.util.Date;
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主键
+     * 回款编号（主键）
      */
     @TableId("COLLECTION_ID")
     private String collectionId;
 
     /**
-     * 客户名称
+     * 客户编号
      */
     @TableField("CUSTOMER_ID")
     private String customerId;
@@ -101,7 +99,7 @@ import java.util.Date;
     private Date createTime;
 
     /**
-     * 回款状态(0已作废，1已收款)
+     * 回款状态(0已作废，1已收款，2回款中)
      */
     @TableField("STATUS")
     private String status;
@@ -111,14 +109,6 @@ import java.util.Date;
      */
     @TableField("REMARKS")
     private String remarks;
-
-    /**
-     * 回款日期
-     */
-    @TableField("COLLECTION_DATE")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date collectionDate;
 
     /**
      * 合同编号

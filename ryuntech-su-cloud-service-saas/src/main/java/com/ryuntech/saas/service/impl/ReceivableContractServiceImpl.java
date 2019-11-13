@@ -3,7 +3,6 @@ package com.ryuntech.saas.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.QueryPage;
@@ -54,8 +53,12 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
     @Override
     public Result<IPage<ReceivableContract>> pageList(ReceivableContract receivableContract, QueryPage queryPage) {
         Page<ReceivableContract> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
+        QueryWrapper<ReceivableContract> queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(receivableContract.getContractId())) {
             queryWrapper.eq("contract_id", receivableContract.getContractId());
+        }
+        if (StringUtils.isNotBlank(receivableContract.getStatus())) {
+            queryWrapper.eq("status", receivableContract.getStatus());
         }
         return super.pageList(queryWrapper,page);
     }
@@ -172,7 +175,9 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 receivableContractDTO.setStaffName(receivableContract.getStaffName());
 //                查询公司
                 Employee employee = employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id", receivableContract.getStaffId()));
-                receivableContractDTO.setCompanyName(employee.getCompanyName());
+                if (employee != null) {
+                    receivableContractDTO.setCompanyName(employee.getCompanyName());
+                }
                 receivableContractDTO.setStatus(receivableContract.getStatus());
 //                合同总额
                 receivableContractDTO.setContractAmount(receivableContract.getContractAmount());

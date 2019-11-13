@@ -3,6 +3,7 @@ package com.ryuntech.saas.api.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.form.ReceivableCollectionConditionForm;
 import com.ryuntech.saas.api.model.ReceivableCollection;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -27,11 +28,11 @@ public interface IReceivableCollectionService extends IBaseService<ReceivableCol
 
     /**
      * 分页查询
-     * @param receivableCollection
+     * @param receivableCollectionConditionForm
      * @param queryPage
      * @return
      */
-    Result<IPage<ReceivableCollection>> selectPageList(ReceivableCollection receivableCollection, QueryPage queryPage);
+    Result<IPage<ReceivableCollection>> selectPageList(ReceivableCollectionConditionForm receivableCollectionConditionForm, QueryPage queryPage);
 
     /**
      * 查询回款数据

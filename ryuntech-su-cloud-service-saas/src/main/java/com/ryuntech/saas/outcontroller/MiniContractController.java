@@ -128,8 +128,8 @@ public class MiniContractController extends ModuleBaseController {
         receivableContract.setContractTime(receivableContractFrom.getContractTime());
 //        联系人
         receivableContract.setContacts(receivableContractFrom.getContacts());
-//        合同时间
-        receivableContract.setContractTime(receivableContractFrom.getContractTime());
+//        联系人电话
+        receivableContract.setContactsPhone(receivableContractFrom.getContactsPhone());
 //        合同编码
         receivableContract.setContractCode(receivableContractFrom.getContractCode());
 //        回款余额

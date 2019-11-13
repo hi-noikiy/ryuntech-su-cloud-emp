@@ -38,7 +38,7 @@
         </where>
     </select>
 
-    <select id="selectCustomerMap" resultType="java.lang.String">
+    <select id="selectCustomerMap" resultType="map">
         select CUSTOMER_ID,CUSTOMER_NAME from ryn_customer_user_info
         <where>
             <if test="customerUserInfo.customerName!=null and customerUserInfo.customerName!=''">

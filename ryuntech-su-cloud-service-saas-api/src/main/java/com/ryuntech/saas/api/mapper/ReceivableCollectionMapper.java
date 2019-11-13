@@ -3,9 +3,8 @@ package com.ryuntech.saas.api.mapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
-import com.ryuntech.saas.api.model.CustomerUserInfo;
+import com.ryuntech.saas.api.form.ReceivableCollectionConditionForm;
 import com.ryuntech.saas.api.model.ReceivableCollection;
-import com.ryuntech.saas.api.model.SysRole;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -24,10 +23,10 @@ public interface ReceivableCollectionMapper extends IBaseMapper<ReceivableCollec
     /**
      * 分页查询
      * @param page
-     * @param receivableCollection
+     * @param receivableCollectionConditionForm
      * @return
      */
-    IPage<ReceivableCollection> selectPageList(@Param("pg") Page<ReceivableCollection> page, @Param("receivableCollection") ReceivableCollection receivableCollection);
+    IPage<ReceivableCollection> selectPageList(@Param("pg") Page<ReceivableCollection> page, @Param("receivableCollectionConditionForm") ReceivableCollectionConditionForm receivableCollectionConditionForm);
 
 
     /**

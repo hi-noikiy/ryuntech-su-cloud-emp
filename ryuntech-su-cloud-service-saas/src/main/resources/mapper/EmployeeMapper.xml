@@ -9,6 +9,7 @@
         <result column="NAME" property="name"/>
         <result column="COMPANY_ID" property="companyId"/>
         <result column="DEPARTMENT_ID" property="departmentId"/>
+        <result column="DEPARTMENT_NAME" property="departmentName"/>
         <result column="MOBILE" property="mobile"/>
         <result column="EMAIL" property="email"/>
         <result column="STATUS" property="status"/>
@@ -19,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-         EMPLOYEE_ID, USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
+         EMPLOYEE_ID, USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
     </sql>
 
     <select id="selectCompanys" parameterType="String" resultType="map">
