@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.CustomerRiskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.entity.CustomerRisk">
+        <id column="RISK_ID" property="riskId" />
+        <result column="CUSTOMER_ID" property="customerId" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="RISK_TIME" property="riskTime" />
+        <result column="CREATED" property="created" />
+        <result column="UPDATED" property="updated" />
+        <result column="RISK_CONTENT" property="riskContent" />
+        <result column="RISK_CODE" property="riskCode" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE
+    </sql>
+
+</mapper>

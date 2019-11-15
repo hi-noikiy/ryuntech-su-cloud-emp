@@ -6,11 +6,15 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.ContractRecordDTO;
+import com.ryuntech.saas.api.form.ContractRecordForm;
 import com.ryuntech.saas.api.mapper.FollowupRecordMapper;
 import com.ryuntech.saas.api.model.FinanceUserInfo;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.service.IFollowupRecordService;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -33,5 +37,10 @@ public class FollowupRecordServiceImpl extends BaseServiceImpl<FollowupRecordMap
             queryWrapper.eq("contract_id", followupRecord.getContractId());
         }
         return super.pageList(queryWrapper,page);
+    }
+
+    @Override
+    public List<ContractRecordDTO> contractRecordList(ContractRecordForm contractRecordForm) {
+        return baseMapper.contractRecordList(contractRecordForm);
     }
 }

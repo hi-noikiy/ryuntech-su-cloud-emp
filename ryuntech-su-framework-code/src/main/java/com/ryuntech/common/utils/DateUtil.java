@@ -6,10 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * date util
@@ -169,6 +166,63 @@ public class DateUtil {
         cale.add(Calendar.MONTH, 1);
         cale.set(Calendar.DAY_OF_MONTH, 0);
         return format.format(cale.getTime());
+    }
+
+
+    /**
+     * 获取当前时间月份的最后一天
+     *
+     * @param nowTime
+     * @return
+     */
+    public static String getMonthLastDay(Date nowTime) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar now = Calendar.getInstance();
+        now.setTime(nowTime);
+        now.add(Calendar.DATE, -1);
+        String date = DateUtil.getDay(now.getTime());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateUtil.parse(date, "yyyy-MM-dd"));
+        calendar.add(Calendar.MONTH, 1);
+        calendar.set(Calendar.DATE, 1);
+        calendar.add(Calendar.DATE, -1);
+        String day_last = df.format(calendar.getTime());
+        StringBuffer endStr = new StringBuffer().append(day_last);
+        day_last = endStr.toString();
+        StringBuffer str = new StringBuffer().append(day_last);
+        return str.toString();
+
+    }
+
+
+    private final static SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
+    /**
+     * 获取YYYY-MM-DD格式
+     *
+     * @return
+     */
+    public static String getDay(Date date) {
+        return sdfDay.format(date);
+    }
+
+
+    /**
+     * 获取当前时间月份的第一天
+     *
+     * @param nowTime
+     * @return
+     */
+    public static String getMonthFirstDay(Date nowTime) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(nowTime);
+        Date theDate = calendar.getTime();
+        GregorianCalendar gcLast = (GregorianCalendar) Calendar.getInstance();
+        gcLast.setTime(theDate);
+        gcLast.set(Calendar.DAY_OF_MONTH, 1);
+        String day_first = df.format(gcLast.getTime());
+        StringBuffer str = new StringBuffer().append(day_first);
+        return str.toString();
     }
 
 }

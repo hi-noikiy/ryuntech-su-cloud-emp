@@ -24,6 +24,14 @@ public class WeChatIndexDTO extends BaseModel {
      * 计划状态
      */
     private String status;
+    /**
+     * 合同状态
+     */
+    private String contractStatus;
+    /**
+     * 详情类型
+     */
+    private String type;
 
     /**
      * 合同开始时间

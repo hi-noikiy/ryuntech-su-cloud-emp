@@ -4,8 +4,12 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.ContractRecordDTO;
+import com.ryuntech.saas.api.form.ContractRecordForm;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.Partner;
+
+import java.util.List;
 
 /**
  * <p>
@@ -24,5 +28,12 @@ public interface IFollowupRecordService extends IBaseService<FollowupRecord> {
      * @return
      */
     Result<IPage<FollowupRecord>> pageList(FollowupRecord followupRecord, QueryPage queryPage);
+
+    /**
+     * 合同跟进列表
+     * @param contractRecordForm
+     * @return
+     */
+    List<ContractRecordDTO> contractRecordList(ContractRecordForm contractRecordForm);
 
 }

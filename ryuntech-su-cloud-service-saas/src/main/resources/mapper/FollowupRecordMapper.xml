@@ -18,9 +18,73 @@
         <result column="created_at" property="createdAt" />
     </resultMap>
 
+    <resultMap id="BaseResultMap2" type="com.ryuntech.saas.api.dto.ContractRecordDTO">
+        <id column="CONTRACT_ID" property="contractId" />
+        <result column="CONTRACT_NAME" property="contractName" />
+        <result column="CUSTOMER_ID" property="customerId" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="CONTRACT_TIME" property="contractTime" />
+        <result column="CONTRACT_AMOUNT" property="contractAmount" />
+        <result column="BALANCE_AMOUNT" property="balanceAmount" />
+        <result column="COLLECTION_AMOUNT" property="collectionAmount" />
+        <result column="STATUS" property="status" />
+        <result column="DEPARTMENT" property="department" />
+        <result column="CONTRACT_CODE" property="contractCode" />
+        <result column="CONTACTS" property="contacts" />
+        <result column="CONTACTS_PHONE" property="contactsPhone" />
+        <result column="STAFF_ID" property="staffId" />
+        <result column="STAFF_NAME" property="staffName" />
+        <result column="ATTACHMENT_CODE" property="attachmentCode" />
+
+        <result column="FOLLOWUP_ID" property="followupId" />
+        <result column="CONTENT" property="content" />
+        <result column="CONTRACT_NAME" property="contractName" />
+        <result column="FOLLOWUP_TIME" property="followupTime" />
+        <result column="UPDATED_AT" property="updatedAt" />
+        <result column="CREATED_AT" property="createdAt" />
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         followup_id, content, staff_id, staff_name, attachment_code, followup_time, updated_at, created_at,estimate_time,estimate_amount,contract_name
     </sql>
+
+
+    <select id="contractRecordList" resultMap="BaseResultMap2" resultType="com.ryuntech.saas.api.dto.ContractRecordDTO">
+        select
+            contract.contract_id,
+            contract.contract_name,
+            contract.customer_id,
+            contract.customer_name,
+            contract.contract_time,
+            contract.contract_amount,
+            contract.balance_amount,
+            contract.collection_amount,
+            contract.status,
+            contract.department,
+            contract.contract_code,
+            contract.contacts,
+            contract.contacts_phone,
+            contract.staff_id,
+            contract.staff_name,
+            contract.attachment_code,
+            record.followup_id,
+            record.content,
+            record.contract_name,
+            record.followup_time,
+            record.updated_at,
+            record.created_at
+        from
+            ryn_receivable_contract contract
+        left join ryn_followup_record record on contract.contract_id=record.contract_id
+        <where>
+            <if test="contractRecordForm.staffId!=null and contractRecordForm.staffId!=''">
+                contract.staff_id like concat('%',#{contract.staffId},'%')
+            </if>
+            <if test="contractRecordForm.contractId!=null and contractRecordForm.contractId!=''">
+                contract.contract_id like concat('%',#{contract.contractId},'%')
+            </if>
+        </where>
+    </select>
 
 </mapper>

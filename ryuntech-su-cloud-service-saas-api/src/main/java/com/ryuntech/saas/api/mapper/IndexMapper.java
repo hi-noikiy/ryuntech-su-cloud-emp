@@ -6,6 +6,7 @@ import com.ryuntech.saas.api.dto.WeChatIndexDTO;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.model.Index;
+import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import org.apache.ibatis.annotations.Param;
 
@@ -67,6 +68,14 @@ public interface IndexMapper extends IBaseMapper<Index> {
      * @return
      */
     Integer selectExpireNumber(@Param("weChatIndexDTO") WeChatIndexDTO weChatIndexDTO);
+
+
+    /**
+     * 指定时间内计划列表
+     * @param weChatIndexDTO
+     * @return
+     */
+    List<ReceivableCollectionPlan> selectExpireList(@Param("weChatIndexDTO") WeChatIndexDTO weChatIndexDTO);
 
     /**
      * 指定时间内计划的金额

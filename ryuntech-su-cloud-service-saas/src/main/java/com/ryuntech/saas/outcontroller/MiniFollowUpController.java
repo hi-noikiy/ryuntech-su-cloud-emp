@@ -4,7 +4,9 @@ package com.ryuntech.saas.outcontroller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.ContractRecordDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
+import com.ryuntech.saas.api.form.ContractRecordForm;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.service.IFollowupRecordService;
 import io.swagger.annotations.Api;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -65,7 +68,7 @@ public class MiniFollowUpController extends ModuleBaseController{
             followupRecord.setFollowupTime(new Date());
             followupRecord.setUpdatedAt(new Date());
             followupRecord.setCreatedAt(new Date());
-            boolean save = followupRecordService.save(followupRecord);
+            boolean save = followupRecordService.saveOrUpdate(followupRecord);
             if (save){
                 return new Result();
             }else {
@@ -75,4 +78,42 @@ public class MiniFollowUpController extends ModuleBaseController{
             return new Result(OPERATE_ERROR);
         }
     }
+    /**
+     * 添加合同跟进信息
+     *
+     * @param contractRecordForm
+     * @return
+     */
+    @PostMapping("/contractrecordlist")
+    @ApiOperation(value = "合同跟进列表")
+    @ApiImplicitParam(name = "contractRecordForm", value = "合同跟进信息", required = true, dataType = "ContractRecordForm", paramType = "body")
+    public Result<List<ContractRecordDTO>> contractRecordList(@RequestBody ContractRecordForm contractRecordForm) {
+        List<ContractRecordDTO> followupRecords = followupRecordService.contractRecordList(contractRecordForm);
+        return new Result<>(followupRecords);
+    }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

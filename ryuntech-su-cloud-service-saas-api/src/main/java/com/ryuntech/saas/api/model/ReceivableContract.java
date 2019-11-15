@@ -135,5 +135,12 @@ import java.util.List;
     @TableField(exist = false)
     private List<String> statusList;
 
+    @TableField(exist = false)
+    private List<ReceivableCollectionPlan> receivableCollectionPlans;
+    /**
+     * 逾期计划
+     */
+    @TableField(exist = false)
+    private ReceivableCollectionPlan receivableCollectionPlan;
 
 }

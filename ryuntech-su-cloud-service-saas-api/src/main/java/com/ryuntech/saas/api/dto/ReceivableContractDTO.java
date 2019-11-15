@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
 import com.ryuntech.saas.api.model.AttachmentFile;
 import com.ryuntech.saas.api.model.FollowupRecord;
+import com.ryuntech.saas.api.model.ReceivableContract;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -123,6 +124,10 @@ public class ReceivableContractDTO extends BaseModel {
     * 还款计划
     * */
     List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs;
+    /**
+     * 逾期计划
+     */
+    ReceivableContract receivableContract;
     /**
      * 跟进信息
      */

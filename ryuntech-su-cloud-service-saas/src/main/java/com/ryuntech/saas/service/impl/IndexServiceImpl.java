@@ -7,6 +7,7 @@ import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.mapper.IndexMapper;
 import com.ryuntech.saas.api.model.Index;
+import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IndexService;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,11 @@ public class IndexServiceImpl extends BaseServiceImpl<IndexMapper, Index> implem
     @Override
     public Integer selectExpireNumber(WeChatIndexDTO weChatIndexDTO) {
         return baseMapper.selectExpireNumber(weChatIndexDTO);
+    }
+
+    @Override
+    public List<ReceivableCollectionPlan> selectExpireList(WeChatIndexDTO weChatIndexDTO) {
+        return baseMapper.selectExpireList(weChatIndexDTO);
     }
 
     @Override

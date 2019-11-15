@@ -1,18 +1,17 @@
 /*
  Navicat Premium Data Transfer
+
  Source Server         : ryuntech
  Source Server Type    : MySQL
  Source Server Version : 80017
  Source Host           : localhost:3306
  Source Schema         : ryuntech_su_receivable
+
  Target Server Type    : MySQL
  Target Server Version : 80017
  File Encoding         : 65001
-<<<<<<< Updated upstream
 
-=======
->>>>>>> Stashed changes
- Date: 06/11/2019 15:40:35
+ Date: 14/11/2019 11:25:34
 */
 
 SET NAMES utf8mb4;
@@ -181,6 +180,9 @@ INSERT INTO `ryn_attachment` VALUES ('749893773378453513', '749893773353287681',
 INSERT INTO `ryn_attachment` VALUES ('749893773378453514', '749893773353287681', 'http://tmp/wx3419b4f3c97a90ad.o6zAJs8JVgFqHjzyu2Htlqq1KrdU.NSUxk2JqvRgn3bffdce9155e2f8796a7d9ab907a0239.png', '1', '1', '2019-11-01 15:45:04', '2019-11-01 15:45:04');
 INSERT INTO `ryn_attachment` VALUES ('749907838171611141', '749907838171611140', 'http://tmp/wx3419b4f3c97a90ad.o6zAJs8JVgFqHjzyu2Htlqq1KrdU.DqJ2pTgZShTI8bf64e6545f4a1d4c720b344fc8d7976.png', '1', '1', '2019-11-01 16:13:01', '2019-11-01 16:13:01');
 INSERT INTO `ryn_attachment` VALUES ('749907838179999744', '749907838171611140', 'http://tmp/wx3419b4f3c97a90ad.o6zAJs8JVgFqHjzyu2Htlqq1KrdU.zzoObRykb5Nv3bffdce9155e2f8796a7d9ab907a0239.png', '1', '1', '2019-11-01 16:13:01', '2019-11-01 16:13:01');
+INSERT INTO `ryn_attachment` VALUES ('754932067887742977', '754932067887742976', 'http://wx.ryuntech.com/upload/147632368.png', '1', '1', '2019-11-08 14:35:15', '2019-11-08 14:35:15');
+INSERT INTO `ryn_attachment` VALUES ('754946329251151873', '754946329251151872', 'http://wx.ryuntech.com/upload/109122800.png', '1', '1', '2019-11-08 15:03:36', '2019-11-08 15:03:36');
+INSERT INTO `ryn_attachment` VALUES ('754946329251151874', '754946329251151872', 'http://wx.ryuntech.com/upload/190221404.png', '1', '1', '2019-11-08 15:03:36', '2019-11-08 15:03:36');
 
 -- ----------------------------
 -- Table structure for ryn_company
@@ -218,7 +220,7 @@ CREATE TABLE `ryn_company`  (
   `updated_at` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   `created_at` timestamp(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`company_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ryn_company
@@ -229,6 +231,8 @@ INSERT INTO `ryn_company` VALUES ('741763263720587264', '睿云科技2', '', 0, 
 INSERT INTO `ryn_company` VALUES ('741764732440018944', '睿云科技3', '', 0, 0, 0, 0, '', '', '', '', '', '741764732339355648', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2019-10-21 10:34:07', '2019-10-21 10:34:07');
 INSERT INTO `ryn_company` VALUES ('748475028416233472', '蝙蝠科技', '', 0, 0, 0, 0, '', '', '', '', '', '748475028089077760', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2019-10-30 16:46:16', '2019-10-30 16:46:16');
 INSERT INTO `ryn_company` VALUES ('749875507385860096', '测试1号公司', '', 0, 0, 0, 0, '', '', '', '', '', '749875507142590464', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2019-11-01 15:08:46', '2019-11-01 15:08:46');
+INSERT INTO `ryn_company` VALUES ('755005188556718080', '云开科技2', '', 0, 0, 0, 0, '', '', '', '', '', '755005188045012992', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2019-11-08 17:00:32', '2019-11-08 17:00:32');
+INSERT INTO `ryn_company` VALUES ('755017059259121664', '法本科技', '', 0, 0, 0, 0, '', '', '', '', '', '755017058999074816', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 0, '2019-11-08 17:24:07', '2019-11-08 17:24:07');
 
 -- ----------------------------
 -- Table structure for ryn_company_config
@@ -242,7 +246,23 @@ CREATE TABLE `ryn_company_config`  (
   `updated_at` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
   `created_at` timestamp(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公司系统设置表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = '公司系统设置表' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for ryn_customer_risk
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_customer_risk`;
+CREATE TABLE `ryn_customer_risk`  (
+  `RISK_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '风险编号',
+  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '合同名称',
+  `CUSTOMER_NAME` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '客户名称',
+  `RISK_TIME` datetime(0) NULL DEFAULT NULL COMMENT '风险时间',
+  `CREATED` datetime(0) NULL DEFAULT NULL COMMENT '创建时间',
+  `UPDATED` datetime(0) NULL DEFAULT NULL COMMENT '修改时间',
+  `RISK_CONTENT` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '风险内容',
+  `RISK_CODE` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '风险案号',
+  PRIMARY KEY (`RISK_ID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '客户风险表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ryn_customer_user_info
@@ -269,8 +289,9 @@ CREATE TABLE `ryn_customer_user_info`  (
 -- Records of ryn_customer_user_info
 -- ----------------------------
 INSERT INTO `ryn_customer_user_info` VALUES ('744787700585857024', '瑞云科技', '高江', '18518215883', NULL, NULL, NULL, NULL, NULL, '深圳市', NULL, NULL, NULL);
-INSERT INTO `ryn_customer_user_info` VALUES ('748477685524594688', '测试', '测试1', '15889456648', NULL, NULL, NULL, NULL, NULL, '深圳', NULL, NULL, NULL);
+INSERT INTO `ryn_customer_user_info` VALUES ('748477685524594688', '测试', '测试122', '15889456648', NULL, NULL, NULL, NULL, NULL, '深圳', NULL, NULL, NULL);
 INSERT INTO `ryn_customer_user_info` VALUES ('749763378313953280', 'test', '宋宋', '13530261103', NULL, NULL, NULL, NULL, NULL, '深圳', NULL, NULL, NULL);
+INSERT INTO `ryn_customer_user_info` VALUES ('754791566052163584', '测试客户', '高将', '18518215883', '741755295541231616', '员工2', NULL, '事实上', NULL, '1', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ryn_department
@@ -313,6 +334,8 @@ INSERT INTO `ryn_employee` VALUES ('739747569474732032', '739747569474732032', '
 INSERT INTO `ryn_employee` VALUES ('741755295541231616', '739747569474732032', '员工2', '741762459597012992', '', '18518215883', '', 1, '睿云科技1', '2019-10-30 19:16:51', '2019-10-21 10:15:22');
 INSERT INTO `ryn_employee` VALUES ('748475028089077760', '748475026721734656', '员工3', '748475028416233472', '', '18518215883', '', 1, '蝙蝠科技', '2019-10-31 17:59:21', '2019-10-30 16:46:16');
 INSERT INTO `ryn_employee` VALUES ('749875507142590464', '749875506521833472', NULL, NULL, '', '18518215883', '', 1, '测试1号公司', '2019-11-01 15:08:46', '2019-11-01 15:08:46');
+INSERT INTO `ryn_employee` VALUES ('755005188045012992', '755005186996436992', NULL, NULL, '', '18518215883', '', 1, '云开科技2', '2019-11-08 17:00:32', '2019-11-08 17:00:32');
+INSERT INTO `ryn_employee` VALUES ('755017058999074816', '755017058655141888', NULL, NULL, '', '18618965582', '', 1, '法本科技', '2019-11-08 17:24:07', '2019-11-08 17:24:07');
 
 -- ----------------------------
 -- Table structure for ryn_employee_role
@@ -338,6 +361,22 @@ INSERT INTO `ryn_employee_role` VALUES ('741763263829639168', '74176326365347840
 INSERT INTO `ryn_employee_role` VALUES ('741764732632956928', '741764732339355648', '741764732565848064', '2019-10-21 10:34:07', '2019-10-21 10:34:07');
 INSERT INTO `ryn_employee_role` VALUES ('748475029104099328', '748475028089077760', '748475028726611968', '2019-10-30 16:46:16', '2019-10-30 16:46:16');
 INSERT INTO `ryn_employee_role` VALUES ('749875508174389248', '749875507142590464', '749875507704627200', '2019-11-01 15:08:47', '2019-11-01 15:08:47');
+INSERT INTO `ryn_employee_role` VALUES ('755005189454299136', '755005188045012992', '755005188992925696', '2019-11-08 17:00:32', '2019-11-08 17:00:32');
+INSERT INTO `ryn_employee_role` VALUES ('755017059611443200', '755017058999074816', '755017059418505216', '2019-11-08 17:24:07', '2019-11-08 17:24:07');
+
+-- ----------------------------
+-- Table structure for ryn_feedback
+-- ----------------------------
+DROP TABLE IF EXISTS `ryn_feedback`;
+CREATE TABLE `ryn_feedback`  (
+  `FEEDBACK_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '反馈编号',
+  `FEEDBACK_CONTENT` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '反馈内容',
+  `FEEDBACK_TYPE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '反馈类型',
+  `ATTACHMENT_CODE` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '附件编码',
+  `updated_at` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '更新时间',
+  `created_at` timestamp(0) NOT NULL COMMENT '创建时间',
+  PRIMARY KEY (`FEEDBACK_ID`) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin COMMENT = '反馈信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for ryn_finance_user_info
@@ -539,6 +578,7 @@ INSERT INTO `ryn_receivable_collection` VALUES ('752030184349106176', '744787700
 INSERT INTO `ryn_receivable_collection` VALUES ('752843490924167168', '744787700585857024', '瑞云科技', '30', NULL, NULL, '2019-11-05 17:25:38', NULL, NULL, '2019-11-05', '2019-11-05 17:25:38', NULL, '嘻嘻嘻', NULL, '749293437596991488', '752840458484318208');
 INSERT INTO `ryn_receivable_collection` VALUES ('752855762870468608', '744787700585857024', '瑞云科技', '10', NULL, NULL, '2019-11-05 17:52:17', NULL, NULL, '2019-11-05', '2019-11-05 17:50:04', NULL, 'xxxw', NULL, '749293437596991488', '752840458484318208');
 INSERT INTO `ryn_receivable_collection` VALUES ('752892468399177728', '744787700585857024', '瑞云科技', '23', NULL, NULL, '2019-11-05 19:02:56', NULL, NULL, '2019-11-05', '2019-11-05 19:02:56', NULL, 'xx', NULL, '749894374430605312', NULL);
+INSERT INTO `ryn_receivable_collection` VALUES ('754320664831197184', '744787700585857024', '瑞云科技', '123', NULL, NULL, '2019-11-07 18:20:31', NULL, NULL, '2019-11-07', '2019-11-07 18:20:31', NULL, '', NULL, '749293437596991488', '752840458484318208');
 
 -- ----------------------------
 -- Table structure for ryn_receivable_collection_plan
@@ -553,14 +593,17 @@ CREATE TABLE `ryn_receivable_collection_plan`  (
   `PLAN_TIME` timestamp(0) NOT NULL COMMENT '计划回款时间',
   `BACKED_AMOUNT` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划已回金额',
   `SURPLUS_AMOUNT` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划剩余金额',
+  `PLAN_PERIODES` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL DEFAULT NULL COMMENT '计划期数',
   PRIMARY KEY (`PLAN_ID`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_bin ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of ryn_receivable_collection_plan
 -- ----------------------------
-INSERT INTO `ryn_receivable_collection_plan` VALUES ('752840458484318208', '56', '大大', '2', '749293437596991488', '2019-11-05 00:00:00', NULL, NULL);
-INSERT INTO `ryn_receivable_collection_plan` VALUES ('752851538694635520', '78', 'dds', '2', '749293437596991488', '2019-11-05 00:00:00', NULL, NULL);
+INSERT INTO `ryn_receivable_collection_plan` VALUES ('752840458484318208', '56', '大大', '0', '749293437596991488', '2019-11-05 00:00:00', NULL, NULL, NULL);
+INSERT INTO `ryn_receivable_collection_plan` VALUES ('752851538694635520', '78', 'dds', '2', '749293437596991488', '2019-11-05 00:00:00', NULL, NULL, NULL);
+INSERT INTO `ryn_receivable_collection_plan` VALUES ('754946329234374656', '1', '3232', '2', '754946329167265792', '2019-11-08 00:00:00', NULL, NULL, NULL);
+INSERT INTO `ryn_receivable_collection_plan` VALUES ('754946653512794112', '3', '321xx', '2', '754946653487628288', '2019-11-08 00:00:00', NULL, NULL, NULL);
 
 -- ----------------------------
 -- Table structure for ryn_receivable_contract
@@ -590,7 +633,7 @@ CREATE TABLE `ryn_receivable_contract`  (
 -- Records of ryn_receivable_contract
 -- ----------------------------
 INSERT INTO `ryn_receivable_contract` VALUES ('749006741156397056', '云开合同', '744787700585857024', NULL, '2019-10-31 10:53:21', '2100.00', '1100.00', '1000.00', '2', NULL, '749006741156397057', NULL, NULL, '748475028089077760', '员工3', '749006741223505922');
-INSERT INTO `ryn_receivable_contract` VALUES ('749293437596991488', '测试合同1234', '744787700585857024', '瑞云科技', '2019-10-31 20:01:58', '3471.00', '3461.00', '40.00', '2', NULL, '749293437596991489', '嘎', NULL, '739747569474732032', '员工1', NULL);
+INSERT INTO `ryn_receivable_contract` VALUES ('749293437596991488', '测试合同1234', '744787700585857024', '瑞云科技', '2019-10-31 20:01:58', '3471.00', '3338.00', '163.00', '2', NULL, '749293437596991489', '嘎', NULL, '739747569474732032', '员工1', NULL);
 INSERT INTO `ryn_receivable_contract` VALUES ('749886695255572480', '测试2号合同', '749763378313953280', 'test', NULL, '0.00', '0.00', '0.00', '2', NULL, '749886695255572481', '宋宋', NULL, '', '', NULL);
 INSERT INTO `ryn_receivable_contract` VALUES ('749893773185515520', '测试2号合同', '749763378313953280', 'test', NULL, '1000000.00', '1000000.00', '0.00', '2', NULL, '749893773185515521', '宋宋', NULL, '741755295541231616', '员工2', '749893773353287681');
 INSERT INTO `ryn_receivable_contract` VALUES ('749894374430605312', '测试3号', '744787700585857024', '瑞云科技', NULL, '500000.00', '499977.00', '23', '2', NULL, '749894374430605313', '哈哈', NULL, '741755295541231616', '员工2', NULL);
@@ -601,8 +644,11 @@ INSERT INTO `ryn_receivable_contract` VALUES ('749910864965926912', '43242422434
 INSERT INTO `ryn_receivable_contract` VALUES ('749926160955080704', 'qqqq', '748477685524594688', '测试', NULL, '100000.00.00', '100000.00', '0.00', '2', NULL, '749926160955080705', 'qq', NULL, '741755295541231616', '员工2', NULL);
 INSERT INTO `ryn_receivable_contract` VALUES ('749928463225323520', '采购1000个u盘', '744787700585857024', '瑞云科技', NULL, '10000.00', '10000.00', '0.00', '2', NULL, '749928463225323521', '11', NULL, '748475028089077760', '员工3', NULL);
 INSERT INTO `ryn_receivable_contract` VALUES ('751907661892550656', '测试44号', '744787700585857024', '瑞云科技', NULL, '100000.00', '100000.00', '0.00', '2', NULL, '751907661900939264', '11', NULL, '741755295541231616', '员工2', NULL);
-INSERT INTO `ryn_receivable_contract` VALUES ('752748001042104320', '测试合同', '744787700585857024', '瑞云科技', NULL, '3451.00.00', '3451.00', '0.00', '2', NULL, '752748001050492928', '嘎', NULL, '739747569474732032', '员工1', NULL);
-INSERT INTO `ryn_receivable_contract` VALUES ('752772088208556032', '测试合同', '744787700585857024', '瑞云科技', NULL, '3451.00.00', '3451.00', '0.00', '2', NULL, '752772088208556033', '嘎', NULL, '739747569474732032', '员工1', NULL);
+INSERT INTO `ryn_receivable_contract` VALUES ('752748001042104320', '测试合同', '744787700585857024', '瑞云科技', NULL, '3451.00', '3451.00', '0.00', '2', NULL, '752748001050492928', '嘎', NULL, '739747569474732032', '员工1', NULL);
+INSERT INTO `ryn_receivable_contract` VALUES ('752772088208556032', '测试合同', '744787700585857024', '瑞云科技', NULL, '3451.00', '3451.00', '0.00', '2', NULL, '752772088208556033', '嘎', NULL, '739747569474732032', '员工1', NULL);
+INSERT INTO `ryn_receivable_contract` VALUES ('754932067602530304', '休息休息', '748477685524594688', '测试', NULL, '345', '345', '0.00', '2', NULL, '754932067602530305', '小程序', NULL, '739747569474732032', '员工1', '754932067887742976');
+INSERT INTO `ryn_receivable_contract` VALUES ('754946329167265792', '休息休息吧', '744787700585857024', '瑞云科技', NULL, '345', '345', '0.00', '2', NULL, '754946329167265793', '初显成效', NULL, '741755295541231616', '员工2', '754946329251151872');
+INSERT INTO `ryn_receivable_contract` VALUES ('754946653487628288', '小程序', '748477685524594688', '测试', NULL, '456', '456', '0.00', '2', NULL, '754946653487628289', '操作程序中', NULL, '748475028089077760', '员工3', NULL);
 
 -- ----------------------------
 -- Table structure for ryn_sys_params
@@ -647,7 +693,7 @@ CREATE TABLE `ryn_user_wechat`  (
   `updated_at` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0) COMMENT '最后更新时间',
   `created_at` timestamp(0) NOT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户微信信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci COMMENT = '用户微信信息表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for sys_perm
@@ -674,7 +720,7 @@ CREATE TABLE `sys_role`  (
   `rname` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色名，用于显示',
   `rdesc` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '角色描述',
   `rval` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色值，用于权限判断',
-  `created` timestamp(0) NULL COMMENT '创建时间',
+  `created` timestamp(0) NULL DEFAULT NULL COMMENT '创建时间',
   `updated` timestamp(0) NULL DEFAULT NULL COMMENT '修改时间',
   `company_id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '所属公司',
   `is_admin` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '是否为超级管理员',
@@ -696,6 +742,8 @@ INSERT INTO `sys_role` VALUES ('741763263770918912', '超级管理员', '具有�
 INSERT INTO `sys_role` VALUES ('741764732565848064', '超级管理员', '具有本系统中最高权限', 'root', '2019-10-21 10:34:07', '2019-10-21 10:34:07', '741764732339355648', '1');
 INSERT INTO `sys_role` VALUES ('748475028726611968', '超级管理员', '具有本系统中最高权限', 'root', '2019-10-30 16:46:16', '2019-10-30 16:46:16', '748475028089077760', '1');
 INSERT INTO `sys_role` VALUES ('749875507704627200', '超级管理员', '具有本系统中最高权限', 'root', '2019-11-01 15:08:47', '2019-11-01 15:08:47', '749875507142590464', '1');
+INSERT INTO `sys_role` VALUES ('755005188992925696', '超级管理员', '具有本系统中最高权限', 'root', '2019-11-08 17:00:32', '2019-11-08 17:00:32', '755005188045012992', '1');
+INSERT INTO `sys_role` VALUES ('755017059418505216', '超级管理员', '具有本系统中最高权限', 'root', '2019-11-08 17:24:07', '2019-11-08 17:24:07', '755017058999074816', '1');
 INSERT INTO `sys_role` VALUES ('999999888888777777', '超级管理员', '具有本系统中最高权限', 'root', '2018-04-19 17:34:33', NULL, NULL, NULL);
 
 -- ----------------------------
@@ -744,13 +792,13 @@ CREATE TABLE `sys_user`  (
   `status` varchar(4) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '用户状态(0不可用1可用)',
   `open_id` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '微信的openid',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 749875506521833473 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 755017058655141888 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户表' ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of sys_user
 -- ----------------------------
 INSERT INTO `sys_user` VALUES (748475026721734656, '18518215883', '123456', '18518215883', '', NULL, '2019-10-30 16:46:16', '2019-10-30 16:46:16', '', NULL, NULL);
-INSERT INTO `sys_user` VALUES (749875506521833472, '18518215883', 'ss123456', '18518215883', '', NULL, '2019-11-01 15:08:46', '2019-11-01 15:08:46', '', NULL, NULL);
+INSERT INTO `sys_user` VALUES (755017058655141888, '18618965582', '12323', '18618965582', '', NULL, '2019-11-08 17:24:07', '2019-11-08 17:24:07', '', NULL, NULL);
 
 -- ----------------------------
 -- Table structure for sys_user_role
@@ -768,8 +816,4 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES ('1002748017179541505', '1002748319131680769');
 INSERT INTO `sys_user_role` VALUES ('986177923098808322', '999999888888777777');
 
-<<<<<<< Updated upstream
 SET FOREIGN_KEY_CHECKS = 1;
-=======
-SET FOREIGN_KEY_CHECKS = 1;
->>>>>>> Stashed changes

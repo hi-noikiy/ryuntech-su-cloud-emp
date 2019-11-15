@@ -48,5 +48,13 @@ public interface IDepartmentService extends IBaseService<Department> {
     /**
      * 根据条件删除部门
      */
+    @Override
     boolean remove(Wrapper wrapper);
+
+    /**
+     * 根据部门对象查询
+     * @param department
+     * @return
+     */
+    List<Department> findByDepartment(Department department);
 }

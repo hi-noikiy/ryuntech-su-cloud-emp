@@ -17,11 +17,28 @@ public class WeChatIndexDetailForm extends BaseModel {
      * 员工编号
      */
     private String employeeId;
+    /**
+     * 公司编号
+     */
+    private String companyId;
+    /**
+     * 月份编号
+     */
+    private String monthId;
 
     /**
      * 计划状态
      */
     private String status;
+    /**
+     * 合同状态
+     */
+    private String contractStatus;
+
+    /**
+     * 详情类型
+     */
+    private String type;
 
     /**
      * 合同开始时间

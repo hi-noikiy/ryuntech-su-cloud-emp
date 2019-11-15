@@ -6,6 +6,7 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.saas.api.mapper.DepartmentMapper;
 import com.ryuntech.saas.api.model.Department;
 import com.ryuntech.saas.api.service.IDepartmentService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -82,5 +83,14 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     @Override
     public boolean remove(Wrapper wrapper) {
        return super.remove(wrapper);
+    }
+
+    @Override
+    public List<Department> findByDepartment(Department department) {
+        if (StringUtils.isNotBlank(department.getCompanyId())){
+            queryWrapper.eq("company_id",department.getCompanyId());
+        }
+        List<Department> departments = baseMapper.selectList(queryWrapper);
+        return departments;
     }
 }
