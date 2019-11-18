@@ -1,14 +1,14 @@
 package com.ryuntech.saas.api.model;
 
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -23,10 +23,11 @@ import java.util.Date;
         @EqualsAndHashCode(callSuper = false)
     @Accessors(chain = true)
     @TableName("ryn_followup_record")
-    public class FollowupRecord implements Serializable {
+    public class FollowupRecord extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
+    @TableId("followup_id")
     private String followupId;
 
     /**

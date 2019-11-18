@@ -1,12 +1,15 @@
 package com.ryuntech.saas.api.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -20,7 +23,7 @@ import java.time.LocalDateTime;
         @EqualsAndHashCode(callSuper = false)
     @Accessors(chain = true)
     @TableName("ryn_followup_record_comment")
-    public class FollowupRecordComment implements Serializable {
+    public class FollowupRecordComment extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,18 +45,24 @@ import java.time.LocalDateTime;
     private String staffName;
 
             /**
-            * 附件内容
+            * 评论内容
             */
     private String commentContent;
 
-    private LocalDateTime updatedAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updatedAt;
 
-    private LocalDateTime createdAt;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date createdAt;
 
             /**
             * 评论时间
             */
-    private LocalDateTime commentTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date commentTime;
 
 
 }

@@ -79,10 +79,13 @@
         left join ryn_followup_record record on contract.contract_id=record.contract_id
         <where>
             <if test="contractRecordForm.staffId!=null and contractRecordForm.staffId!=''">
-                contract.staff_id like concat('%',#{contract.staffId},'%')
+                contract.staff_id like concat('%',#{contractRecordForm.staffId},'%')
             </if>
             <if test="contractRecordForm.contractId!=null and contractRecordForm.contractId!=''">
-                contract.contract_id like concat('%',#{contract.contractId},'%')
+                contract.contract_id like concat('%',#{contractRecordForm.contractId},'%')
+            </if>
+            <if test="contractRecordForm.contractId!=null and contractRecordForm.contractId!=''">
+                contract.contract_id like concat('%',#{contractRecordForm.contractId},'%')
             </if>
         </where>
     </select>

@@ -5,6 +5,7 @@ import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
 import com.ryuntech.saas.api.form.ContractRecordForm;
 import com.ryuntech.saas.api.model.FollowupRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -24,5 +25,5 @@ public interface FollowupRecordMapper extends IBaseMapper<FollowupRecord> {
      * @param contractRecordForm
      * @return
      */
-    List<ContractRecordDTO> contractRecordList(ContractRecordForm contractRecordForm);
+    List<ContractRecordDTO> contractRecordList(@Param("contractRecordForm") ContractRecordForm contractRecordForm);
 }

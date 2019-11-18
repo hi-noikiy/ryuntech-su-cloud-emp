@@ -1,7 +1,7 @@
 package com.ryuntech.saas.outcontroller;
 
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.model.Feedback;
+import com.ryuntech.saas.api.model.FeedBack;
 import com.ryuntech.saas.api.service.IFeedbackService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -43,7 +43,7 @@ public class MiniFeedBackController extends ModuleBaseController{
     @PostMapping("/outadd")
     @ApiOperation(value = "添加反馈信息")
     @ApiImplicitParam(name = "feedBack", value = "反馈信息", required = true, dataType = "FeedBack", paramType = "body")
-    public Result add(@RequestBody Feedback feedBack) {
+    public Result add(@RequestBody FeedBack feedBack) {
         if (StringUtils.isBlank(feedBack.getFeedbackContent())){
             return new Result<>(OPERATE_ERROR,"反馈内容不能为空");
         }

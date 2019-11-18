@@ -2,7 +2,7 @@ package com.ryuntech.saas.service.impl;
 
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.saas.api.mapper.FeedbackMapper;
-import com.ryuntech.saas.api.model.Feedback;
+import com.ryuntech.saas.api.model.FeedBack;
 import com.ryuntech.saas.api.service.IFeedbackService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
@@ -16,10 +16,10 @@ import org.springframework.stereotype.Service;
  * @since 2019-11-14
  */
 @Service
-public class FeedbackServiceImpl extends BaseServiceImpl<FeedbackMapper, Feedback> implements IFeedbackService {
+public class FeedbackServiceImpl extends BaseServiceImpl<FeedbackMapper, FeedBack> implements IFeedbackService {
 
     @Override
-    public Feedback selectByFeedback(Feedback feedback) {
+    public FeedBack selectByFeedback(FeedBack feedback) {
         if (StringUtils.isNotBlank(feedback.getFeedbackId())){
             queryWrapper.eq("feedback_id",feedback.getFeedbackId());
         }

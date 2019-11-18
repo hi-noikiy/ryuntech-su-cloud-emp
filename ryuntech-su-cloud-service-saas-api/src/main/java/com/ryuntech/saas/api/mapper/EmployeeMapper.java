@@ -18,7 +18,7 @@ public interface EmployeeMapper extends IBaseMapper<Employee> {
 
     /**
      * 根据用户id查询该用户所在的公司
-     * @param companyId
+     * @param userId
      * @return
      */
     List<Map<String, String>> selectCompanys(String userId);

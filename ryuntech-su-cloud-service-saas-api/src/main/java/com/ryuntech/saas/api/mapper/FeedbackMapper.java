@@ -1,7 +1,7 @@
 package com.ryuntech.saas.api.mapper;
 
 import com.ryuntech.common.mapper.IBaseMapper;
-import com.ryuntech.saas.api.model.Feedback;
+import com.ryuntech.saas.api.model.FeedBack;
 
 /**
  * <p>
@@ -11,6 +11,6 @@ import com.ryuntech.saas.api.model.Feedback;
  * @author antu
  * @since 2019-11-14
  */
-public interface FeedbackMapper extends IBaseMapper<Feedback> {
+public interface FeedbackMapper extends IBaseMapper<FeedBack> {
 
 }

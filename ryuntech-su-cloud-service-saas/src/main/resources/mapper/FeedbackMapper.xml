@@ -3,7 +3,7 @@
 <mapper namespace="com.ryuntech.saas.api.mapper.FeedbackMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.Feedback">
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.FeedBack">
         <id column="FEEDBACK_ID" property="feedbackId" />
         <result column="FEEDBACK_CONTENT" property="feedbackContent" />
         <result column="FEEDBACK_TYPE" property="feedbackType" />

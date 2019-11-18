@@ -1,6 +1,8 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.FinanceOrder;
 import com.ryuntech.saas.api.model.FollowupRecordComment;
 
 /**
@@ -13,4 +15,11 @@ import com.ryuntech.saas.api.model.FollowupRecordComment;
  */
 public interface IFollowupRecordCommentService extends IBaseService<FollowupRecordComment> {
 
+
+    /**
+     * 添加跟进评论信息
+     * @param followupRecordComment
+     * @return
+     */
+    Boolean addFollowupRecordComment(FollowupRecordComment followupRecordComment);
 }

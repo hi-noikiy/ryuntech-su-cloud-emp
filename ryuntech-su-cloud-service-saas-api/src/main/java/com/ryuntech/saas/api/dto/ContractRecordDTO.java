@@ -2,14 +2,20 @@ package com.ryuntech.saas.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
+import com.ryuntech.saas.api.model.FollowupRecordComment;
+import lombok.Data;
+import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
  * @author EDZ
  */
+@Data
+@Accessors(chain = true)
 public class ContractRecordDTO{
     private static final long serialVersionUID = 1L;
 
@@ -61,6 +67,10 @@ public class ContractRecordDTO{
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date followupTime;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date contractTime;
+
     private String customerId;
     private String customerName;
     private String contractAmount;
@@ -71,4 +81,9 @@ public class ContractRecordDTO{
     private String contractCode;
     private String contacts;
     private String contactsPhone;
+
+    /**
+     * 跟进评论
+     */
+    private List<FollowupRecordComment> followupRecordComments;
 }

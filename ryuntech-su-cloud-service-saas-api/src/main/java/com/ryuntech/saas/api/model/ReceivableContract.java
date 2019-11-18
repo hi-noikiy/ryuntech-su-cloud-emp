@@ -4,14 +4,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +25,7 @@ import java.util.List;
         @EqualsAndHashCode(callSuper = false)
     @Accessors(chain = true)
     @TableName("ryn_receivable_contract")
-    public class ReceivableContract implements Serializable {
+    public class ReceivableContract extends BaseModel {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -142,5 +140,24 @@ import java.util.List;
      */
     @TableField(exist = false)
     private ReceivableCollectionPlan receivableCollectionPlan;
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this==obj){
+            return true;
+        }
+        if (obj==null){
+            return false;
+        }
+        if (getClass()!=obj.getClass()){
+            return false;
+        }
+        ReceivableContract other = (ReceivableContract) obj;
+        if (other.getContractId().equals(this.getContractId())){
+            return true;
+        }
+
+        return true;
+    }
 
 }

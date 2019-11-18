@@ -1,9 +1,6 @@
 package com.ryuntech.saas.api.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.ryuntech.saas.api.dto.FinanceOrder;
-import com.ryuntech.saas.api.model.Feedback;
-import com.ryuntech.saas.api.model.FinanceUserInfo;
+import com.ryuntech.saas.api.model.FeedBack;
 
 /**
  * <p>
@@ -13,12 +10,12 @@ import com.ryuntech.saas.api.model.FinanceUserInfo;
  * @author antu
  * @since 2019-11-14
  */
-public interface IFeedbackService extends IBaseService<Feedback> {
+public interface IFeedbackService extends IBaseService<FeedBack> {
 
     /**
      * 根据反馈对象查询
      * @param feedback
      * @return
      */
-    Feedback selectByFeedback(Feedback feedback);
+    FeedBack selectByFeedback(FeedBack feedback);
 }

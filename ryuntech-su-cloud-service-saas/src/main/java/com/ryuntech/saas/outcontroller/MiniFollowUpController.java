@@ -2,13 +2,20 @@ package com.ryuntech.saas.outcontroller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.model.BaseDto;
+import com.ryuntech.common.model.BaseForm;
+import com.ryuntech.common.utils.CopyUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
-import com.ryuntech.saas.api.form.ContractRecordForm;
-import com.ryuntech.saas.api.model.FollowupRecord;
+import com.ryuntech.saas.api.form.*;
+import com.ryuntech.saas.api.helper.constant.PlanConstant;
+import com.ryuntech.saas.api.model.*;
+import com.ryuntech.saas.api.service.IFollowupRecordCommentService;
 import com.ryuntech.saas.api.service.IFollowupRecordService;
+import com.ryuntech.saas.api.service.IReceivableCollectionPlanService;
+import com.ryuntech.saas.api.service.IReceivableContractService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -21,8 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -38,6 +44,16 @@ public class MiniFollowUpController extends ModuleBaseController{
 
     @Autowired
     private IFollowupRecordService followupRecordService;
+
+    @Autowired
+    private IReceivableCollectionPlanService iReceivableCollectionPlanService;
+
+    @Autowired
+    private IReceivableContractService iReceivableContractService;
+
+
+    @Autowired
+    private IFollowupRecordCommentService iFollowupRecordCommentService;
 
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询用户列表信息")
@@ -84,13 +100,78 @@ public class MiniFollowUpController extends ModuleBaseController{
      * @param contractRecordForm
      * @return
      */
-    @PostMapping("/contractrecordlist")
+    @PostMapping("/outcontractrlist")
     @ApiOperation(value = "合同跟进列表")
     @ApiImplicitParam(name = "contractRecordForm", value = "合同跟进信息", required = true, dataType = "ContractRecordForm", paramType = "body")
-    public Result<List<ContractRecordDTO>> contractRecordList(@RequestBody ContractRecordForm contractRecordForm) {
+    public Result<Map<String,Object>> contractRecordList(@RequestBody ContractRecordForm contractRecordForm) {
+
+//        总待跟进
         List<ContractRecordDTO> followupRecords = followupRecordService.contractRecordList(contractRecordForm);
-        return new Result<>(followupRecords);
+//       今天待跟进，获取提醒类型 type=1为今日到期
+        ReceivableCollectionPlanForm receivableCollectionPlanForm = new ReceivableCollectionPlanForm();
+        receivableCollectionPlanForm.setPlanTime(new Date());
+        receivableCollectionPlanForm.setStatus(PlanConstant.OVERDUED);
+        List<ReceivableCollectionPlan> receivableCollectionPlans = iReceivableCollectionPlanService.selectByPlan(receivableCollectionPlanForm);
+
+        List<ReceivableContract> receivableContracts = new ArrayList<>();
+
+        for (ReceivableCollectionPlan receivableCollectionPlan :receivableCollectionPlans){
+            String contractId = receivableCollectionPlan.getContractId();
+            ReceivableContract byContract = iReceivableContractService.findByContract(new ReceivableContractForm().setContractId(contractId));
+//            去除重复的合同
+            boolean contains = receivableContracts.contains(byContract);
+            if (!contains&&byContract!=null){
+                receivableContracts.add(byContract);
+            }
+        }
+        Map<String,Object> resultMap = new HashMap<>();
+//        今日待跟进
+        resultMap.put("followupRecords",followupRecords);
+//        合同列表
+        resultMap.put("receivableContracts",receivableContracts);
+
+
+        return new Result<>(resultMap);
     }
+
+//    addfrecordcomments添加评论信息
+
+    /**
+     * 添加合同跟进评论信息
+     *
+     * @param fRecordCommentForm
+     * @return
+     */
+    @PostMapping("/outaddfrecordcs")
+    @ApiOperation(value = "合同跟进列表")
+    @ApiImplicitParam(name = "contractRecordForm", value = "合同跟进信息", required = true, dataType = "ContractRecordForm", paramType = "body")
+    public Result<Map<String,Object>> addfrecordcomments(@RequestBody FRecordCommentForm fRecordCommentForm) {
+        BaseForm baseForm = new BaseForm();
+        baseForm.setAClass(FRecordCommentForm.class);
+        baseForm.setT(fRecordCommentForm);
+
+        BaseDto baseDto = new BaseDto();
+        baseDto.setAClass(FollowupRecordComment.class);
+        FollowupRecordComment followupRecordComment = new FollowupRecordComment();
+        baseDto.setT(followupRecordComment);
+
+        CopyUtil.copyObject2(baseForm,baseDto);
+
+
+//        生成主键
+        followupRecordComment.setCommentId(String.valueOf(generateId()));
+        followupRecordComment.setCreatedAt(new Date());
+        followupRecordComment.setUpdatedAt(new Date());
+        followupRecordComment.setCommentTime(new Date());
+
+        Boolean aBoolean = iFollowupRecordCommentService.addFollowupRecordComment(followupRecordComment);
+        if (aBoolean){
+            return new Result<>();
+        }else {
+            return new Result<>(OPERATE_ERROR);
+        }
+    }
+
 
 }
 
