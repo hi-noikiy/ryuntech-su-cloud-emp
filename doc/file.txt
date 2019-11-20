@@ -22,3 +22,9 @@ github仓库
 
 小程序地址:git@github.com:gjjbase/yktech-received-mini.git
 后台地址:git@github.com:gjjbase/ryuntech-su-cloud-emp.git
+
+
+
+企查查接口平台  https://openapi.qichacha.com
+用户名：13120698711
+密码：3c9dbab1

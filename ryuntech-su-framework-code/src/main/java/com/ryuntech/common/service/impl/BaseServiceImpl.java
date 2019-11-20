@@ -9,6 +9,9 @@ import com.ryuntech.common.service.IBaseService;
 import com.ryuntech.common.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * @author EDZ
+ */
 public    class BaseServiceImpl<M extends IBaseMapper<T>, T> extends ServiceImpl<M, T>  implements IBaseService<T> {
 
     @Autowired

@@ -7,6 +7,7 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
+import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.mapper.CustomerRiskMapper;
 import com.ryuntech.saas.api.mapper.CustomerUserInfoMapper;
 import com.ryuntech.saas.api.mapper.ReceivableContractMapper;
@@ -102,5 +103,18 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         }
 
         return customerUserInfoDTO;
+    }
+
+    @Override
+    public List<CustomerUserInfo> selectByCustomer(CustomerUserInfoForm customerUserInfoForm) {
+        if (StringUtils.isNotBlank(customerUserInfoForm.getCustomerId())){
+            queryWrapper.eq("customer_id",customerUserInfoForm.getCustomerId());
+        }
+
+        if (StringUtils.isNotBlank(customerUserInfoForm.getCustomerName())){
+            queryWrapper.eq("customer_name",customerUserInfoForm.getCustomerName());
+        }
+        List<CustomerUserInfo> customerUserInfoList = baseMapper.selectList(queryWrapper);
+        return customerUserInfoList;
     }
 }

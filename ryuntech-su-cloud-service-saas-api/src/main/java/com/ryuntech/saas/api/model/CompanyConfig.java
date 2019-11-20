@@ -8,6 +8,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -43,12 +44,12 @@ import java.time.LocalDateTime;
             /**
             * 更新时间
             */
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
 
             /**
             * 创建时间
             */
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
 
 }

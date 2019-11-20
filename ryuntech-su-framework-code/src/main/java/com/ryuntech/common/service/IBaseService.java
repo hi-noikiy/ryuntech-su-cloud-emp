@@ -22,5 +22,11 @@ public interface IBaseService<T> extends IService<T> {
      */
     Result<IPage<T>> pageList(QueryWrapper<T> queryWrapper, Page<T> page);
 
+    /**
+     * 更新后返回该对象
+     * @param t
+     * @param queryWrapper
+     * @return
+     */
     T saveOrUpdateReturn(T t, QueryWrapper<T> queryWrapper);
 }

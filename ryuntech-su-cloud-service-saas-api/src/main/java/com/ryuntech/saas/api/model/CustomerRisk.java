@@ -3,13 +3,16 @@ package com.ryuntech.saas.api.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -49,19 +52,23 @@ import java.time.LocalDateTime;
             * 风险时间
             */
         @TableField("RISK_TIME")
-    private LocalDateTime riskTime;
+    private Date riskTime;
 
             /**
             * 创建时间
             */
         @TableField("CREATED")
-    private LocalDateTime created;
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date created;
 
             /**
             * 修改时间
             */
         @TableField("UPDATED")
-    private LocalDateTime updated;
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    private Date updated;
 
             /**
             * 风险内容
@@ -74,6 +81,18 @@ import java.time.LocalDateTime;
             */
         @TableField("RISK_CODE")
     private String riskCode;
+
+    /**
+     * 风险小类
+     */
+    @TableField("RISK_TYPE")
+    private String riskType;
+
+    /**
+     * 风险大类
+     */
+    @TableField("RISK_MTYPE")
+    private String riskMType;
 
 
 }

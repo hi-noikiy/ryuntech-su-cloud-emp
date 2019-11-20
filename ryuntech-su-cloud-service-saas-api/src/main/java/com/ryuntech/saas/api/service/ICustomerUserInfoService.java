@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
+import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 
 import java.util.List;
@@ -48,4 +49,11 @@ public interface ICustomerUserInfoService extends IBaseService<CustomerUserInfo>
      * @return
      */
     CustomerUserInfoDTO selectCustomerUserInfoDTO(CustomerUserInfo customerUserInfo);
+
+    /**
+     * 查询客户列表
+     * @param customerUserInfoForm
+     * @return
+     */
+    List<CustomerUserInfo> selectByCustomer(CustomerUserInfoForm customerUserInfoForm);
 }

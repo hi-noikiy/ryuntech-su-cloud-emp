@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -55,10 +56,10 @@ import java.time.LocalDateTime;
     private String pid;
 
     @TableField("UPDATED_AT")
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
 
     @TableField("CREATED_AT")
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
 
 }
