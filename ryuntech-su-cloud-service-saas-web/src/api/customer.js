@@ -46,4 +46,13 @@ export function getCustomerMap(name) {
   })
 }
 
+export function getEmployeeList(query, data) {
+  return request({
+    url: '/saas/employee/limitList?pageCode=' + query.page + '&pageSize=' + query.limit,
+    method: 'post',
+    data
+  })
+}
+
+
 export const upload = process.env.VUE_APP_BASE_API + '/saas/storage/local/upload'

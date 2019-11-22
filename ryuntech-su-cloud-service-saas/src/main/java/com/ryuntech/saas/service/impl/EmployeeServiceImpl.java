@@ -8,7 +8,6 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.mapper.EmployeeMapper;
 import com.ryuntech.saas.api.model.Employee;
-import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -83,6 +82,29 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     @Override
     public List<Map<String, String>> selectCompanys(String userId) {
         return employeeMapper.selectCompanys(userId);
+    }
+
+    @Override
+    public List<String> queryEmployeeIds(List<String> departmentIdList) {
+        return employeeMapper.queryEmployeeIds(departmentIdList);
+    }
+
+    @Override
+    public List<Map<String, String>> queryRoleLimitEmployeeIds(List<String> employeeIdList) {
+        return employeeMapper.queryRoleLimitEmployeeIds(employeeIdList);
+    }
+
+    @Override
+    public IPage<Employee> queryListByLimitSearch(Map map, QueryPage queryPage) {
+        Page<Employee> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
+        QueryWrapper<Employee> queryWrapper = new QueryWrapper<>();
+//        if (StringUtils.isNotBlank((String) map.get("name"))) {
+//            queryWrapper.eq("name", map.get("name"));
+//        }
+//        if (map.get("employeeIdList") != null) {
+//            queryWrapper.eq("employeeIdList", map.get("employeeIdList"));
+//        }
+        return super.page(page, queryWrapper);
     }
 
     @Override

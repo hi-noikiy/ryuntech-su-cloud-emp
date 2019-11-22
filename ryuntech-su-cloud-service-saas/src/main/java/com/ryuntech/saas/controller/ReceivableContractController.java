@@ -23,9 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 import static com.ryuntech.common.constant.enums.CommonEnums.PARAM_ERROR;
@@ -91,24 +89,47 @@ public class ReceivableContractController extends ModuleBaseController {
         receivableContract.setContractId(contractId);
 //        合同名称
         receivableContract.setContractName(receivableContractFrom.getContractName());
+        //        合同编码
+        String contractCode = String.valueOf(generateId());
+        receivableContract.setContractCode(contractCode);
         //        合同金额
-        receivableContract.setBalanceAmount(receivableContractFrom.getContractAmount());
+        receivableContract.setContractAmount(receivableContractFrom.getContractAmount());
+        // 合同日期
+        receivableContract.setContractTime(receivableContractFrom.getContractTime());
 //        回款余额
         receivableContract.setCollectionAmount("0.00");
-//       负责人编号
-        String staffId = receivableContractFrom.getStaffId();
-        if (StringUtils.isNotBlank(staffId)){
-            SysUser sysUser = sysUserService.getById(staffId);
-            receivableContract.setStaffName(sysUser.getUsername());
-        }
-        //       客户编号
-        String customerId = receivableContractFrom.getCustomerId();
-        if (StringUtils.isNotBlank(customerId)){
-            CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
-            receivableContract.setCustomerName(customerUserInfo.getCustomerName());
-        }
+        //应收未还
+        receivableContract.setBalanceAmount(receivableContract.getContractAmount());
 //        合同状态
         receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
+//        //附件编码
+//        receivableContract.setAttachmentCode(receivableContractFrom.getAttachmentCode());
+        //客户编号
+        receivableContract.setCustomerId(receivableContractFrom.getCustomerId());
+        //客户名称
+        receivableContract.setCustomerName(receivableContractFrom.getCustomerName());
+        //联系人
+        receivableContract.setContacts(receivableContractFrom.getContacts());
+        //联系人电话
+        receivableContract.setContactsPhone(receivableContractFrom.getContactsPhone());
+//       负责人编号
+        receivableContract.setStaffId(receivableContractFrom.getStaffId());
+        //负责人姓名
+        receivableContract.setStaffName(receivableContractFrom.getStaffName());
+        //部门
+        receivableContract.setDepartment(receivableContractFrom.getDepartment());
+//        //负责人编号
+//        String staffId = receivableContractFrom.getStaffId();
+//        if (StringUtils.isNotBlank(staffId)){
+//            SysUser sysUser = sysUserService.getById(staffId);
+//            receivableContract.setStaffName(sysUser.getUsername());
+//        }
+//        //       客户编号
+//        String customerId = receivableContractFrom.getCustomerId();
+//        if (StringUtils.isNotBlank(customerId)){
+//            CustomerUserInfo customerUserInfo = iCustomerUserInfoService.getById(customerId);
+//            receivableContract.setCustomerName(customerUserInfo.getCustomerName());
+//        }
 
         List<ReceivableCollectionPlan> receivableCollectionPlans = new ArrayList<>();
         List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractFrom.getReceivableCollectionPlanDTOs();
@@ -380,6 +401,24 @@ public class ReceivableContractController extends ModuleBaseController {
             ReceivableContractDTO receivableContractDTO = new ReceivableContractDTO();
             receivableContractDTO.setContractId(contractId);
             return new Result<>(iReceivableContractService.findByContractId(receivableContractDTO));
+        }
+    }
+
+    /**
+     * 根据合同客户编号查询合同信息
+     * @param customerId
+     * @return
+     */
+    @GetMapping("/byCustomerId/{customerId}")
+    @ApiOperation(value = "查询合同信息", notes = "customerId存在")
+    @ApiImplicitParam(name = "customerId", value = "客户编号", required = true, dataType = "String")
+    public Result findByCustomerId(@PathVariable String customerId) {
+        if (StringUtils.isBlank(customerId)) {
+            return new Result<>();
+        } else {
+            Map<String, Object> map = new HashMap<>();
+            map.put("customer_id", customerId);
+            return new Result<>(iReceivableContractService.listByMap(map));
         }
     }
 

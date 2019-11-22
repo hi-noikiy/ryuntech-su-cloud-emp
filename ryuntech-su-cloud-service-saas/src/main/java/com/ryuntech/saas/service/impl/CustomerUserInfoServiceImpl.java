@@ -40,6 +40,9 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
     @Autowired
     private CustomerRiskMapper customerRiskMapper;
 
+    @Autowired
+    private CustomerUserInfoMapper customerUserInfoMapper;
+
     @Override
     public Result<IPage<CustomerUserInfo>> pageList(CustomerUserInfo customerUserInfo, QueryPage queryPage) {
         Page<CustomerUserInfo> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
@@ -116,5 +119,10 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         }
         List<CustomerUserInfo> customerUserInfoList = baseMapper.selectList(queryWrapper);
         return customerUserInfoList;
+    }
+
+    @Override
+    public List<String> customerNameLimit(String customerName) {
+        return customerUserInfoMapper.customerNameLimit(customerName);
     }
 }

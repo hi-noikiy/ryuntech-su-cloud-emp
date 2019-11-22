@@ -77,7 +77,7 @@
             <!--<a v-for="(item,index) in companyList" :key="index">{{item}}</a>-->
             <ul id="companycss">
               <li v-for="(item,index) in companyList" @click="handleLink(item)">
-                <span v-if="item.company">{{ item.company }}</span>
+                <span v-if='item.company'>{{ item.company }}</span>
               </li>
             </ul>
           </div>
@@ -102,7 +102,7 @@ export default {
       userDetail: null,
       date: parseTime(new Date().getTime(), ''),
       loginForm: {
-        username: 'ryuntech',
+        username: '18518215882',
         password: '12345678'
       },
       loginRules: {
@@ -112,7 +112,7 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
-      editRolesDialogVisible: false
+      editRolesDialogVisible:false
     }
   },
   watch: {
@@ -159,8 +159,9 @@ export default {
               this.$message({
                 type: 'error',
                 message: '用户所在公司查询失败！'
-              })
+              });
             })
+
           }).catch(() => {
             this.loading = false
           })
@@ -177,8 +178,10 @@ export default {
     },
     // 选择公司事件
     handleLink(data) {
+
       this.$store.dispatch('user/getInfo').then(responses => {
         this.userDetail = responses
+
         // 如果选中公司和查询到的该用户信息中的公司一样，将该公司对应的权限添加到路由表中
         if (data.company == responses.companyName) {
           this.$router.addRoutes(responses.perms)
@@ -188,8 +191,9 @@ export default {
         this.$message({
           type: 'error',
           message: '用户所在公司相应权限信息查询失败！'
-        })
+        });
       })
+
     }
   }
 }

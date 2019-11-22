@@ -22,7 +22,8 @@
 
         <el-input v-model="search.contractId" clearable size="small" style="width: 200px;" placeholder="请输入合同号查询" />
         <el-button size="mini" style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
-        <el-button size="mini" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新增合同</el-button>
+        <!-- <el-button size="mini" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新增合同</el-button> -->
+        <el-button size="mini" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="$router.push('/contract/add')">新增合同</el-button>
       </div>
 
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -88,14 +89,14 @@
 
         <el-table-column align="center" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="info" size="mini" icon="el-icon-edit" @click="handleDetail(scope.row.contractId)">查看</el-button>
+            <el-button type="info" size="mini" icon="el-icon-search" @click="handleDetail(scope.row.contractId)">查看</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.contractId)">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.contractId)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <save :son-data="form" :staff-map="staffMap" :customer-map="customerMap" @sonStatus="status" />
+      <!-- <save :son-data="form" :staff-map="staffMap" :customer-map="customerMap" @sonStatus="status" /> -->
 
       <pagination
         v-show="total>0"
@@ -117,7 +118,7 @@ import { parseTime } from '@/utils/index'
 import { contractStatusOptions } from './contract'
 
 export default {
-  components: { Save },
+  // components: { Save },
   data() {
     return {
       contractStatusOptions: contractStatusOptions,
@@ -171,9 +172,28 @@ export default {
       this.form = { contractId: null, createTime: parseTime(new Date()) }
       this.dialogVisible = true
     },
+    handleDetail(id) {
+      findById(id).then(response => {
+        this.form = response.data
+        this.$router.push({
+          name: '合同详情',
+          params: {
+            title: '合同详情',
+            data: this.form
+          }
+        })
+      })
+    },
     handleEdit(id) {
       findById(id).then(response => {
         this.form = response.data
+        this.$router.push({
+          name: '编辑合同',
+          params: {
+            title: '编辑客户',
+            data: this.form
+          }
+        })
       })
     },
 

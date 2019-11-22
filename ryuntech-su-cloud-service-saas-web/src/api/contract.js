@@ -38,6 +38,13 @@ export function del(contractId) {
   })
 }
 
+export function getContractListByCustomerId(customerId) {
+  return request({
+    url: '/saas/contract/byCustomerId/' + customerId,
+    method: 'get',
+  })
+}
+
 // // 回款计划批量插入
 // export function backPlanInsertBatch(data) {
 //   return request({

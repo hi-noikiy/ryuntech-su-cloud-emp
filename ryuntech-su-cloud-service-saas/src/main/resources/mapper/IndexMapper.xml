@@ -9,6 +9,49 @@
 
     </resultMap>
 
+    <!--查询部门内的合同编号集合-->
+    <select id="queryContractIdList" resultType="java.lang.String" parameterType="java.util.List">
+        select ryn_receivable_contract.contract_id as contractId
+        from ryn_receivable_contract
+        where department in
+        <foreach collection="departmentNameList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <!--数据简报本月回款-->
+    <select id="queryBackMoney" resultType="java.lang.String" parameterType="com.ryuntech.saas.api.form.IndexDataBriefingForm">
+        select concat(sum(ryn_receivable_collection.amount), '') as backMoney
+        from ryn_receivable_collection
+        <where>
+            <if test="indexDataBriefingForm.contractIds !=null and indexDataBriefingForm.contractIds.size()>0">
+                ryn_receivable_collection.contract_id in
+                <foreach collection="indexDataBriefingForm.contractIds" item="contractId" index="index" open="(" close=")" separator=",">
+                    #{contractId}
+                </foreach>
+            </if>
+            <if test="indexDataBriefingForm.sameMonth !=null">
+                and DATE_FORMAT(time, '%Y-%m' ) = DATE_FORMAT(#{indexDataBriefingForm.sameMonth}, '%Y-%m' )
+            </if>
+        </where>
+    </select>
+
+    <!--数据简报本月销售额和应收未回款-->
+    <select id="queryAmountMoney" resultType="java.util.Map" parameterType="com.ryuntech.saas.api.form.IndexDataBriefingForm">
+        select sum(ryn_receivable_contract.contract_amount) as salesVolume, sum(ryn_receivable_contract.balance_amount) as noRepayment
+        from ryn_receivable_contract
+        <where>
+            <if test="indexDataBriefingForm.departmentNames !=null and indexDataBriefingForm.departmentNames.size()>0">
+                ryn_receivable_contract.department in
+                <foreach collection="indexDataBriefingForm.departmentNames" item="department" index="index" open="(" close=")" separator=",">
+                    #{department}
+                </foreach>
+            </if>
+            <if test="indexDataBriefingForm.sameMonth !=null">
+                and DATE_FORMAT(contract_time, '%Y-%m' ) = DATE_FORMAT(#{indexDataBriefingForm.sameMonth}, '%Y-%m' )
+            </if>
+        </where>
+    </select>
 
     <!--统计数据简报信息-->
     <select id="selectBulletin" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.Index">

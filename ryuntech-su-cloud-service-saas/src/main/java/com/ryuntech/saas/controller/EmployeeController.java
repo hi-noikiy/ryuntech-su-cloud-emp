@@ -1,13 +1,16 @@
 package com.ryuntech.saas.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.constant.enums.CommonEnums;
+import com.ryuntech.common.model.BaseDto;
+import com.ryuntech.common.model.BaseForm;
+import com.ryuntech.common.utils.CopyUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.model.Department;
-import com.ryuntech.saas.api.model.Employee;
-import com.ryuntech.saas.api.model.SysUser;
-import com.ryuntech.saas.api.model.UserRoleLimit;
+import com.ryuntech.saas.api.dto.EmployeeDTO;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.IDepartmentService;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import com.ryuntech.saas.api.service.SysUserService;
@@ -46,7 +49,7 @@ public class EmployeeController extends ModuleBaseController {
     @PostMapping("/list")
     @ApiOperation(value = "分页、条件查询员工帐号列表")
     @ApiImplicitParam(name = "param", value = "查询条件", required = true, dataType = "Map", paramType = "body")
-    public Result<IPage<Employee>> list(@RequestBody Map param, QueryPage queryPage) {
+    public Result<IPage<Employee>> limitList(@RequestBody Map param, QueryPage queryPage) {
         //todo: 获取当前登录公司ID
         String company_id = "1";
 //        param.put("companyId",company_id);
@@ -70,6 +73,90 @@ public class EmployeeController extends ModuleBaseController {
         }
         return  new Result<>(iPage);
     }
+
+    /**
+     * 选择员工
+     * @param param
+     * @param queryPage
+     * @return
+     */
+    @PostMapping("/limitList")
+    @ApiOperation(value = "分页、条件查询当前用户所属职位及下属员工信息列表")
+    @ApiImplicitParam(name = "param", value = "查询条件", required = true, dataType = "Map", paramType = "body")
+    public Result<IPage<EmployeeDTO>> list(@RequestBody Map param, QueryPage queryPage) {
+        String username = getUserName();
+        SysUser user = sysUserService.findByName(username);
+        //当前用户所属公司职工编号
+        String employeeId = user.getEmployeeId();
+        Employee employee = iEmployeeService.getById("749875506521833470");
+        List<String> employeeIdList = new ArrayList<>();
+        List<String> departmentIdList = null;
+        String departmentId = null;
+        if(employee != null) {
+            departmentId = employee.getDepartmentId();
+        }
+        departmentIdList = getBack(departmentId);
+        if(departmentIdList == null) {
+            departmentIdList = new ArrayList<>();
+        }
+        departmentIdList.add(departmentId);
+        //查询部门id集合下的所有员工id
+        employeeIdList = iEmployeeService.queryEmployeeIds(departmentIdList);
+        param.put("employeeIdList", employeeIdList);
+        IPage<Employee> ipage = iEmployeeService.queryListByLimitSearch(param, queryPage);
+        List<Map<String, String>> lsm = iEmployeeService.queryRoleLimitEmployeeIds(employeeIdList);
+        List<Employee> employeeList = ipage.getRecords();
+        List<EmployeeDTO> employeeDTOList = new ArrayList<>();
+        BaseForm baseForm = new BaseForm();
+        baseForm.setAClass(Employee.class);
+        BaseDto baseDto = new BaseDto();
+        baseDto.setAClass(EmployeeDTO.class);
+        for(Employee em : employeeList) {
+            baseForm.setT(em);
+            EmployeeDTO employeeDTO = new EmployeeDTO();
+            baseDto.setT(employeeDTO);
+            CopyUtil.copyObject2(baseForm, baseDto);
+            for(Map<String, String> m : lsm) {
+                String employId = em.getEmployeeId();
+                String employIdd = m.get("employeeId");
+                if(employId.equals(employIdd)) {
+                    employeeDTO.setRname((String)m.get("rname"));
+                }
+            }
+            employeeDTOList.add(employeeDTO);
+        }
+        long total = ipage.getTotal();
+        long size = ipage.getSize();
+        long current = ipage.getCurrent();
+        String[] ascs = ipage.ascs();
+        String[] descs = ipage.descs();
+        boolean optimizeCountSql = ipage.optimizeCountSql();
+        Page<EmployeeDTO> page = new Page<>();
+        page.setRecords(employeeDTOList);
+        page.setTotal(total);
+        page.setSize(size);
+        page.setCurrent(current);
+        page.setAsc(ascs);
+        page.setDesc(descs);
+        page.setOptimizeCountSql(optimizeCountSql);
+        return new Result<>(page);
+    }
+    // 递归遍历当前用户对应职工所属部门下所有子部门id
+    public List<String> getBack(String departmentId) {
+        List<Department> departmentList = iDepartmentService.list(new QueryWrapper<Department>().eq("pid",departmentId));
+        List<String> departmentIdList = new ArrayList<>();
+        if(departmentList != null) {
+            for(Department department : departmentList) {
+                String departmentNumber = department.getDepartmentId();
+                departmentIdList.add(departmentNumber);
+                departmentIdList.addAll(getBack(departmentNumber));
+            }
+        } else {
+            return null;
+        }
+        return departmentIdList;
+    }
+
 
     /**
      * 更新员工状态 0-正常 1-禁用

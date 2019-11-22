@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.Employee;
-import com.ryuntech.saas.api.model.ReceivableContract;
 
 import java.util.List;
 import java.util.Map;
@@ -52,4 +51,26 @@ public interface IEmployeeService extends IBaseService<Employee> {
      * @return
      */
     List<Map<String, String>> selectCompanys(String userId);
+
+    /**
+     * 根据部门id集合查询集合下的所有员工id
+     * @param departmentIdList
+     * @return
+     */
+    List<String> queryEmployeeIds(List<String> departmentIdList);
+
+    /**
+     * 根据员工id集合查询对应的员工角色
+     * @param departmentIdList
+     * @return
+     */
+    List<Map<String, String>> queryRoleLimitEmployeeIds(List<String> employeeIdList);
+
+    /**
+     * 根据员工id集合查询集合下的所有员工列表
+     * @param map
+     * @param page
+     * @return
+     */
+    IPage<Employee> queryListByLimitSearch(Map map, QueryPage page);
 }

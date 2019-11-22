@@ -1,6 +1,15 @@
 <template>
   <div class="app-container">
     <el-card>
+      <!-- <template>
+        <div style="margin:10px;font-weight:bold;">
+          <span style="font-size: 24px;">回款管理</span>
+          <div>
+            <a style="padding: 16px;font-weight:bold;" class="el-icon-download">导入</a>
+            <a style="font-weight:bold;" class="el-icon-upload2">导出</a>
+          </div>
+        </div>
+      </template> -->
       <div>
         <el-select v-model="search.type" clearable placeholder="全部方式">
           <el-option v-for="(value,key) in collectionTypeOptions" :key="key" :label="value" :value="key" />
@@ -106,12 +115,12 @@ export default {
     return {
       collectionTypeOptions: collectionTypeOptions,
       list: null,
-      backCollectionTime: '',
+      backCollectionTime: null,
       search: {
         type: '',
         customerName: '',
-        startTime: null,
-        endTime: null
+        startTime: '',
+        endTime: ''
 
       },
       listLoading: true,
@@ -161,10 +170,13 @@ export default {
   },
   methods: {
     fetchData() {
-      if(this.backCollectionTime !== '') {
+      if(this.backCollectionTime !== null ) {
         let backTime = (this.backCollectionTime + '').split(',')
         this.search.startTime = backTime[0]
         this.search.endTime = backTime[1]
+      } else {
+        this.search.startTime = ''
+        this.search.endTime = ''
       }
       this.listLoading = true
       console.info('fetchData')

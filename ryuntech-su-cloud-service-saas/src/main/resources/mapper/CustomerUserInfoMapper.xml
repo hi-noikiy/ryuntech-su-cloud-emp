@@ -13,7 +13,6 @@
         <result column="DEPARTMENT" property="department" />
         <result column="COMPANY_ID" property="companyId" />
         <result column="COMPANY_NAME" property="companyName" />
-        <result column="DEPARTMENT" property="department" />
         <result column="ADDRESS" property="address" />
         <result column="PROVINCE_ID" property="provinceId" />
         <result column="CITY_ID" property="cityId" />
@@ -22,7 +21,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        CUSTOMER_ID, CUSTOMER_NAME, CONTACTS, CONTACTS_PHONE, STAFF_ID, STAFF_NAME, DEPARTMENT, ADDRESS, PROVINCE_ID, CITY_ID, DISTRICT_ID
+        CUSTOMER_ID, CUSTOMER_NAME, CONTACTS, CONTACTS_PHONE, STAFF_ID, STAFF_NAME, DEPARTMENT, COMPANY_ID, COMPANY_NAME, ADDRESS, PROVINCE_ID, CITY_ID, DISTRICT_ID
     </sql>
 
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.CustomerUserInfo">
@@ -78,6 +77,11 @@
             </if>
         </where>
         group by customer_id
+    </select>
+
+    <!-- 根据当前用户所在公司名称查询公司所有客户名称 -->
+    <select id="customerNameLimit" resultType="java.lang.String" parameterType="java.lang.String">
+        select CUSTOMER_NAME from ryn_customer_user_info where COMPANY_NAME = #{companyName}
     </select>
 
 </mapper>

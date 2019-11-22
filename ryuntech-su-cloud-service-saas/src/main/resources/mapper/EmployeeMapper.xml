@@ -35,4 +35,45 @@
         where rynem.USER_ID = #{userId, jdbcType=VARCHAR}
     </select>
 
+    <select id="queryEmployeeIds" resultType="java.lang.String" parameterType="java.util.List">
+        select employee_id
+        from ryn_employee
+        where department_id in
+        <foreach collection="departmentIdList" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="queryListByLimitSearch" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.Employee">
+        select * from ryn_employee
+        <where>
+            <if test="name != null and name != ''">
+                and contract_name like concat('%',#{name},'%')
+            </if>
+            <if test="employeeIdList != null and employeeIdList.size()>0">
+                and employee_id in
+                <foreach collection="employeeIdList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
+
+    <select id="queryRoleLimitEmployeeIds" resultType="java.util.Map" parameterType="java.util.List">
+        select rer.employee_id, sr.rname
+        from ryn_employee_role rer
+        left join sys_role sr
+        on rer.role_id = sr.rid
+        <where>
+            <if test="employeeIdList != null and employeeIdList.size()>0">
+                rer.employee_id in
+                <foreach collection="employeeIdList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+
+        </where>
+    </select>
+
 </mapper>

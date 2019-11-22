@@ -4,7 +4,7 @@
       <el-form-item v-if="form.contractId != null" label="客户编号" prop="contractId" label-width="120px">
         <el-input v-model="form.contractId" :disabled="true" />
       </el-form-item>
-      <el-form-item label="客户名称" prop="contractName" label-width="120px">
+      <el-form-item label="客户名称" prop="customerName" label-width="120px">
         <el-input v-model="form.customerName" placeholder="请输入客户名称" />
       </el-form-item>
 
@@ -16,16 +16,16 @@
         <el-input v-model="form.contactsPhone" placeholder="请输入联系电话" />
       </el-form-item>
 
-      <el-form-item label="省市区" prop="city" label-width="120px">
-        <el-input v-model="form.city" placeholder="请输入省市区" />
+      <el-form-item label="省市区" prop="cityId" label-width="120px">
+        <el-input v-model="form.cityId" placeholder="请输入省市区" />
       </el-form-item>
 
       <el-form-item label="详细地址" prop="address" label-width="120px">
         <el-input v-model="form.address" placeholder="请输入详细地址" />
       </el-form-item>
 
-      <el-form-item label="跟进员工" prop="staffId" label-width="120px">
-        <el-select v-model="form.staffId" placeholder="请选择跟进员工">
+      <el-form-item label="负责员工" prop="staffId" label-width="120px">
+        <el-select v-model="form.staffId" placeholder="请选择负责员工员工">
           <i slot="prefix" class="el-input__icon el-icon-goods" />
           <el-option label="橙势科技" value="0" />
           <el-option label="睿云科技" value="1" />
@@ -51,7 +51,7 @@ export default {
   // 父组件向子组件传值，通过props获取。
   // 一旦父组件改变了`sonData`对应的值，子组件的`sonData`会立即改变，通过watch函数可以实时监听到值的变化
   // `props`不属于data，但是`props`中的参数可以像data中的参数一样直接使用
-  props: ['sonData'],
+  // props: ['sonData'],
 
   data() {
     return {
@@ -62,24 +62,25 @@ export default {
         customerName: '',
         contacts: '',
         contactsPhone: '',
-        city: '',
+        cityId: '',
         address: '',
         staffId: ''
       },
       rules: {
         customerName: [{ required: true, trigger: 'blur', message: '请输入客户名称' }],
         contacts: [{ required: true, trigger: 'blur', message: '请输入联系人' }],
-        contactsPhone: [{ required: true, trigger: 'blur', message: '请输入联系电话' }],
-        city: [{ required: true, trigger: 'blur', message: '请输入城市' }],
+        contactsPhone: [{ required: true, trigger: 'blur', message: '请输入联系电话' },
+                          { pattern: /^1[34578]\d{9}$/, message: '请正确输入电话', trigger: 'blur' }],
+        cityId: [{ required: true, trigger: 'blur', message: '请输入城市' }],
         address: [{ required: true, trigger: 'blur', message: '请输入详细地址' }],
-        staffId: [{ required: true, trigger: 'blur', message: '请选择跟进员工' }]
+        staffId: [{ required: true, trigger: 'blur', message: '请选择负责员工' }]
       }
     }
   },
   watch: {
     'sonData': function(newVal, oldVal) {
       this.form = newVal
-      this.dialogVisible = true
+      // this.dialogVisible = true
       if (newVal.contractId != null) {
         this.dialogTitle = '编辑客户'
       } else {
@@ -99,7 +100,7 @@ export default {
       this.form.contacts = null
       this.form.contractName = null
       this.form.contactsPhone = null
-      this.form.city = null
+      this.form.cityId = null
       this.form.address = null
       this.form.staffId = null
     },

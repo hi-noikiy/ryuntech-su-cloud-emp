@@ -2,25 +2,40 @@ package com.ryuntech.saas.api.service;
 
 import com.ryuntech.saas.api.dto.IndexDTO;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
-import com.ryuntech.saas.api.dto.WeChatIndexDetailDTO;
-import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.IndexDataBriefingForm;
 import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.model.Index;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
-import com.ryuntech.saas.api.model.WeChatIndex;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *
  * @author EDZ
  */
 public interface IndexService extends IBaseService<Index> {
+
+    /**
+     * 数据简报本月回款
+     */
+    String queryBackMoney(IndexDataBriefingForm indexDataBriefingForm);
+
+    /**
+     * 本月销售额和应收未回款
+     */
+    Map<String, Object> queryAmountMoney(IndexDataBriefingForm indexDataBriefingForm);
+
+    /**
+     * 根据部门集合查询该合同编号集合
+     * @param departmentNameList
+     * @return
+     */
+    List<String> queryContractIdList(List<String> departmentNameList);
+
     /**
      * 数据简报统计
-     * @param indexDTO
      * @return
      */
     Index selectBulletin( IndexDTO indexDTO);

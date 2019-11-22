@@ -1,17 +1,26 @@
 <template>
   <div class="app-container">
     <el-card>
+      <!-- <template>
+        <div style="margin:10px;font-weight:bold;">
+          <span style="font-size: 24px;">客户管理</span>
+          <div>
+            <a style="padding: 16px;font-weight:bold;" class="el-icon-download">导入</a>
+            <a style="font-weight:bold;" class="el-icon-upload2">导出</a>
+          </div>
+        </div>
+      </template> -->
       <div>
-        <el-select v-model="search.paymentStatus" placeholder="全部客户">
-          <!-- 合同状态(0已逾期,1已完成，2执行中)-->
+        <!-- <el-select v-model="search.paymentStatus" clearable placeholder="全部客户">
           <el-option label="销售一部" value="0" />
           <el-option label="销售二部" value="1" />
           <el-option label="销售三部" value="2" />
-        </el-select>
+        </el-select> -->
 
-        <el-input v-model="search.customerName" style="width: 200px;" placeholder="请输入客户名称" />
+        <el-input v-model="search.customerName" style="width: 200px;" clearable placeholder="请输入客户名称" />
         <el-button style="margin-left: 10px;" type="success" icon="el-icon-search" @click="fetchData">查询</el-button>
         <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleSave">新建客户</el-button>
+        <!-- <el-button style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="$router.push('/customer/save')">新建客户</el-button> -->
       </div>
       <br>
       <el-table v-loading="listLoading" :data="list" element-loading-text="Loading" border fit highlight-current-row>
@@ -39,7 +48,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column align="center" prop="staffName" label="负责人" width="200">
+        <el-table-column align="center" prop="staffName" label="负责员工" width="200">
           <template slot-scope="scope">
             <span>{{ scope.row.staffName }}</span>
           </template>
@@ -53,13 +62,15 @@
 
         <el-table-column align="center" label="操作">
           <template slot-scope="scope">
+            <el-button type="success" size="mini" icon="el-icon-search" @click="handleDetail(scope.row.customerId)">详情</el-button>
             <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.customerId)">编辑</el-button>
             <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.customerId)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
-      <save :son-data="form" @sonStatus="status" />
+      <!-- <save :son-data="form" @sonStatus="status" />
+      <add :son-data="form" @sonStatus="status" /> -->
 
       <pagination
         v-show="total>0"
@@ -75,11 +86,13 @@
 <script>
 import { getList, findById, del } from '@/api/customer'
 import Pagination from '@/components/Pagination'
-import Save from './save'
+// import Save from './save'
+// import Add from './add'
 import { parseTime } from '@/utils/index'
 
 export default {
-  components: { Pagination, Save },
+  // components: { Pagination, Save, Add },
+  components: { Pagination },
   data() {
     return {
       list: null,
@@ -120,12 +133,37 @@ export default {
       })
     },
     handleSave() {
-      this.form = { contractId: null, createTime: parseTime(new Date()) }
-      this.dialogVisible = true
+      this.$router.push({
+        name: '新增客户',
+        params: {
+          title: '新增客户',
+          // data: this.form
+        }
+      })
+      // this.dialogVisible = true
     },
     handleEdit(id) {
       findById(id).then(response => {
         this.form = response.data
+        this.$router.push({
+          name: '编辑客户',
+          params: {
+            title: '编辑客户',
+            data: this.form
+          }
+        })
+      })
+    },
+    handleDetail(id) {
+      findById(id).then(response => {
+        this.form = response.data
+        this.$router.push({
+          name: '客户详情',
+          params: {
+            title: '客户详情',
+            data: this.form
+          }
+        })
       })
     },
 

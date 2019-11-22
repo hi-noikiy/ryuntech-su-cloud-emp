@@ -62,5 +62,11 @@ public class EmployeeDTO {
     /**
      * 状态
      */
-    private String status;
+    private Integer status;
+
+    /**
+     * 角色名
+     */
+    private String rname;
+
 }

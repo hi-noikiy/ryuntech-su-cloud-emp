@@ -38,13 +38,18 @@
       </el-form-item>
 
       <el-form-item label="签约客户" prop="customerName">
-        <el-select v-model="form.customerId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索客户">
-          <el-option v-for="cus in customerMap" :label="cus.customerName" :value="cus.customerId" />
+        <el-select v-model="form.customerName" filterable style="width: 100%" clearable size="small" :disabled="form.contractId === null ? false : true" placeholder="请选择或搜索客户">
+          <el-option v-for="cus in customerMap" :label="cus.customerName" :value="cus.customerName" />
         </el-select>
       </el-form-item>
+      <!-- <el-form-item label="签约客户" prop="customerName">
+        <el-select v-model="form.customerId" filterable style="width: 100%" clearable size="small" :disabled="form.contractId === null ? false : true" placeholder="请选择或搜索客户">
+          <el-option v-for="cus in customerMap" :label="cus.customerName" :value="cus.customerId" />
+        </el-select>
+      </el-form-item> -->
 
       <el-form-item label="负责员工" prop="staffName">
-        <el-select v-model="form.staffId" filterable style="width: 100%" clearable size="small" placeholder="请选择或搜索员工">
+        <el-select v-model="form.staffId" filterable style="width: 100%" clearable size="small" :disabled="form.contractId === null ? false : true" placeholder="请选择或搜索员工">
           <el-option v-for="item in staffMap" :label="item.username" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -176,6 +181,19 @@ export default {
       } else {
         this.dialogTitle = '合同详细信息'
       }
+      let sum = 0
+      this.form.receivableCollectionPlanDTOs.forEach((item) => {
+        console.log(sum + '===============')
+        sum += parseFloat(item.planAmount)
+        if(parseFloat(sum) > parseFloat(this.form.contractAmount)) {
+          this.tianJiaHuiKuan = true
+          item.planAmount = ''
+        } else if(parseFloat(sum) == parseFloat(this.form.contractAmount)) {
+          this.tianJiaHuiKuan = true
+        } else {
+          this.tianJiaHuiKuan = false
+        }
+      })
     }
   },
   methods: {

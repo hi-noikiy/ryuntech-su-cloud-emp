@@ -3,7 +3,7 @@ package com.ryuntech.saas.api.mapper;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.dto.IndexDTO;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
-import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.IndexDataBriefingForm;
 import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.model.Index;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
@@ -11,12 +11,33 @@ import com.ryuntech.saas.api.model.ReceivableContract;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author EDZ
  */
 public interface IndexMapper extends IBaseMapper<Index> {
 
+    /**
+     * 数据简报本月回款
+     * @param indexDataBriefingForm
+     * @return
+     */
+    String queryBackMoney(@Param("indexDataBriefingForm") IndexDataBriefingForm indexDataBriefingForm);
+
+    /**
+     * 本月销售额和应收未回款
+     * @param indexDataBriefingForm
+     * @return
+     */
+    Map<String, Object> queryAmountMoney(@Param("indexDataBriefingForm") IndexDataBriefingForm indexDataBriefingForm);
+
+    /**
+     * 根据部门集合查询该合同编号集合
+     * @param departmentNameList
+     * @return
+     */
+    List<String> queryContractIdList(@Param("departmentNameList") List<String> departmentNameList);
 
     /**
      * 数据简报统计

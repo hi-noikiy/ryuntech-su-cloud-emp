@@ -3,20 +3,21 @@ package com.ryuntech.saas.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.IndexDTO;
+import com.ryuntech.saas.api.dto.IndexDataBriefingDTO;
 import com.ryuntech.saas.api.dto.IndexDepartmentDTO;
+import com.ryuntech.saas.api.form.IndexDataBriefingForm;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 首页控制器
@@ -74,6 +75,32 @@ public class IndexControllerOne extends ModuleBaseController {
         index.setBalanceAmounts("8.00");
         index.setContractId("66666666");
         return new Result(index);
+    }
+
+    @PostMapping("/dataBriefing")
+    @ApiOperation(value = "首页数据简报展示")
+    @ApiImplicitParam(name = "indexDataBriefingForm", value = "数据简报请求参数", required = true, dataType = "IndexDataBriefingForm", paramType = "body")
+    public Result<IndexDataBriefingDTO> indexDataBriefing(@RequestBody IndexDataBriefingForm indexDataBriefingForm) {
+        List<String> departmentNameList = indexDataBriefingForm.getDepartmentNames();
+        List<String> contractIdList = indexService.queryContractIdList(departmentNameList);
+        if(contractIdList != null) {
+            indexDataBriefingForm.setContractIds(contractIdList);
+        }
+        String backMoney = indexService.queryBackMoney(indexDataBriefingForm);
+        IndexDataBriefingDTO indexDataBriefingDTO = new IndexDataBriefingDTO();
+        indexDataBriefingDTO.setBackMoney(backMoney);
+        Map<String, Object> amountMoneyMap = indexService.queryAmountMoney(indexDataBriefingForm);
+        if(amountMoneyMap != null) {
+            for(String amm : amountMoneyMap.keySet()) {
+                if("noRepayment".equals(amm)) {
+                    indexDataBriefingDTO.setNoRepayment(String.valueOf(amountMoneyMap.get(amm)));
+                }
+                if("salesVolume".equals(amm)) {
+                    indexDataBriefingDTO.setSalesVolume(String.valueOf(amountMoneyMap.get(amm)));
+                }
+            }
+        }
+        return new Result(indexDataBriefingDTO);
     }
 
     /**

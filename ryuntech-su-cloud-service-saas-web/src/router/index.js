@@ -111,7 +111,28 @@ export const constantRoutes = [
         name: '应收合同',
         component: () => import('@/views/contract/index'),
         meta: { title: '应收合同', icon: 'documentation' }
-      }
+      },
+      {
+        path: 'add',
+        hidden: true,
+        name: '新增合同',
+        component: () => import('@/views/contract/add'),
+        meta: { title: '新增合同', icon: 'documentation' }
+      },
+      {
+        path: 'edit',
+        hidden: true,
+        name: '编辑合同',
+        component: () => import('@/views/contract/add'),
+        meta: { title: '编辑合同', icon: 'documentation' }
+      },
+      {
+        path: 'detail',
+        hidden: true,
+        name: '合同详情',
+        component: () => import('@/views/contract/detail'),
+        meta: { title: '合同详情', icon: 'documentation' }
+      },
     ]
   },
   {
@@ -148,6 +169,27 @@ export const constantRoutes = [
         name: '客户管理',
         component: () => import('@/views/customer/index'),
         meta: { title: '客户管理', icon: 'documentation' }
+      },
+      {
+        path: 'add',
+        hidden: true,
+        name: '新增客户',
+        component: () => import('@/views/customer/add'),
+        meta: { title: '新增客户', icon: 'documentation' }
+      },
+      {
+        path: 'edit',
+        hidden: true,
+        name: '编辑客户',
+        component: () => import('@/views/customer/add'),
+        meta: { title: '编辑客户', icon: 'documentation' }
+      },
+      {
+        path: 'detail',
+        hidden: true,
+        name: '客户详情',
+        component: () => import('@/views/customer/detail'),
+        meta: { title: '客户详情', icon: 'documentation' }
       }
     ]
   },

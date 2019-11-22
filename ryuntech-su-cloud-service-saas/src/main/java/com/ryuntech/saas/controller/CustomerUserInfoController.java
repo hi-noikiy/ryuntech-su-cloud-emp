@@ -5,7 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
+import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
+import com.ryuntech.saas.api.service.SysUserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
@@ -35,6 +37,9 @@ public class CustomerUserInfoController extends ModuleBaseController {
     @Autowired
     private ICustomerUserInfoService iCustomerUserInfoService;
 
+    @Autowired
+    private SysUserService sysUserService;
+
     /**
      * 分页查询列表数据，条件查询
      *
@@ -51,8 +56,6 @@ public class CustomerUserInfoController extends ModuleBaseController {
         return iCustomerUserInfoService.selectPageList(customerUserInfo,queryPage);
     }
 
-
-
     /**
      * 添加客户信息
      *
@@ -66,6 +69,17 @@ public class CustomerUserInfoController extends ModuleBaseController {
 
         if (StringUtils.isBlank(customerUserInfo.getCustomerName())){
             return new Result(PARAM_ERROR,"客户名不能为空");
+        } else {
+            String username = getUserName();
+            SysUser user = sysUserService.findByName(username);
+            //当前用户所属公司名称
+            String companyName = user.getCompanyName();
+//            List<String> customerNames = iCustomerUserInfoService.customerNameLimit(companyName);
+            List<String> customerNames = iCustomerUserInfoService.customerNameLimit("公司a");
+            boolean isSuccess = customerNames.contains(customerUserInfo.getCustomerName());
+            if (isSuccess){
+                return new Result(PARAM_ERROR,"客户名已存在");
+            }
         }
         if (StringUtils.isBlank(customerUserInfo.getContacts())){
             return new Result(PARAM_ERROR,"联系人不能为空");
@@ -96,6 +110,22 @@ public class CustomerUserInfoController extends ModuleBaseController {
     public Result edit(@RequestBody CustomerUserInfo customerUserInfo) {
         if (StringUtils.isBlank(customerUserInfo.getCustomerId())){
             return new Result(PARAM_ERROR,"客户不能为空");
+        } else {
+            CustomerUserInfo customerUserInfo1 = iCustomerUserInfoService.getById(customerUserInfo.getCustomerId());
+            String customerName1 = customerUserInfo1.getCustomerName();
+            String customerName2 = customerUserInfo.getCustomerName();
+            if(!customerName1.equals(customerName2)) {
+                String username = getUserName();
+                SysUser user = sysUserService.findByName(username);
+                //当前用户所属公司名称
+                String companyName = user.getCompanyName();
+//            List<String> customerNames = iCustomerUserInfoService.customerNameLimit(companyName);
+                List<String> customerNames = iCustomerUserInfoService.customerNameLimit("公司a");
+                boolean isSuccess = customerNames.contains(customerUserInfo.getCustomerName());
+                if (isSuccess){
+                    return new Result(PARAM_ERROR,"客户名称已存在");
+                }
+            }
         }
         if (StringUtils.isBlank(customerUserInfo.getCustomerName())){
             return new Result(PARAM_ERROR,"联系人不能为空");

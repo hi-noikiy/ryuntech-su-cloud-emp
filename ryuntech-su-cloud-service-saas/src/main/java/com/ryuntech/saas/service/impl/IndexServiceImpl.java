@@ -3,7 +3,7 @@ package com.ryuntech.saas.service.impl;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.saas.api.dto.IndexDTO;
 import com.ryuntech.saas.api.dto.WeChatIndexDTO;
-import com.ryuntech.saas.api.form.ReceivableContractForm;
+import com.ryuntech.saas.api.form.IndexDataBriefingForm;
 import com.ryuntech.saas.api.form.WeChatIndexDetailForm;
 import com.ryuntech.saas.api.mapper.IndexMapper;
 import com.ryuntech.saas.api.model.Index;
@@ -13,12 +13,29 @@ import com.ryuntech.saas.api.service.IndexService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author EDZ
  */
 @Service
 public class IndexServiceImpl extends BaseServiceImpl<IndexMapper, Index> implements IndexService {
+
+    @Override
+    public String queryBackMoney(IndexDataBriefingForm indexDataBriefingForm) {
+        return m.queryBackMoney(indexDataBriefingForm);
+    }
+
+    @Override
+    public Map<String, Object> queryAmountMoney(IndexDataBriefingForm indexDataBriefingForm) {
+        return m.queryAmountMoney(indexDataBriefingForm);
+    }
+
+    @Override
+    public List<String> queryContractIdList(List<String> departmentNameList) {
+        return m.queryContractIdList(departmentNameList);
+    }
+
     @Override
     public Index selectBulletin(IndexDTO indexDTO) {
         return m.selectBulletin(indexDTO);
