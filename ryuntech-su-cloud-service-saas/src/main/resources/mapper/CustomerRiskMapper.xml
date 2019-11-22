@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.CustomerRiskMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.CustomerRisk">
+        <id column="RISK_ID" property="riskId" />
+        <result column="CUSTOMER_ID" property="customerId" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="RISK_TIME" property="riskTime" />
+        <result column="CREATED" property="created" />
+        <result column="UPDATED" property="updated" />
+        <result column="RISK_CONTENT" property="riskContent" />
+        <result column="RISK_CODE" property="riskCode" />
+        <result column="RISK_TYPE" property="riskType" />
+        <result column="RISK_MTYPE" property="riskMtype" />
+        <result column="FALG" property="falg" />
+    </resultMap>
+
+
+    <resultMap id="BaseResultMap2" type="com.ryuntech.saas.api.dto.CustomerRiskDTO">
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="RISK_TYPES" property="riskTypes" />
+        <result column="RISK_TIME" property="riskTime" />
+        <result column="FALG" property="falg" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE
+    </sql>
+
+    <select id="selectGroupConcat" resultMap="BaseResultMap2"  resultType="com.ryuntech.saas.api.dto.CustomerRiskDTO">
+        SELECT
+            group_concat(risk_type) AS risk_types,
+            customer_name,
+            risk_time,
+            falg
+        FROM
+            ryn_customer_risk
+        <where>
+            <if test="customerRiskForm.customerName!=null and customerRiskForm.customerName!=''">
+                customer_name like '%'||#{customerRiskForm.customerName}||'%'
+            </if>
+
+            <if test="customerRiskForm.riskTime!=null">
+                date_format(risk_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskTime}, '%Y-%m-%d')
+            </if>
+
+        </where>
+        GROUP BY
+            customer_name
+    </select>
+
+    <select id="selectGroupConcatByTime" resultMap="BaseResultMap2"  resultType="com.ryuntech.saas.api.dto.CustomerRiskDTO">
+        SELECT
+            risk_time
+        FROM
+            ryn_customer_risk
+        <where>
+            <if test="customerRiskForm.customerName!=null and customerRiskForm.customerName!=''">
+                customer_name like '%'||#{customerRiskForm.customerName}||'%'
+            </if>
+        </where>
+        GROUP BY
+            risk_time
+    </select>
+
+</mapper>

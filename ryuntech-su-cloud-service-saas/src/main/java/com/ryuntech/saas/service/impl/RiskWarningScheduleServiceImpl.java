@@ -1,15 +1,17 @@
 package com.ryuntech.saas.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.HttpUtils;
-import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.helper.ApiConstant;
 import com.ryuntech.saas.api.helper.constant.RiskWarnConstants;
+import com.ryuntech.saas.api.mapper.CustomerMonitorMapper;
+import com.ryuntech.saas.api.mapper.CustomerRiskMapper;
+import com.ryuntech.saas.api.mapper.CustomerUserInfoMapper;
 import com.ryuntech.saas.api.model.*;
-import com.ryuntech.saas.api.service.ICustomerUserInfoService;
 import com.ryuntech.saas.api.service.RiskWarningScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -21,6 +23,7 @@ import java.util.*;
 
 import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHCOURTNOTICE;
 import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
+import static com.ryuntech.saas.api.helper.ApiConstant.SEARCH;
 import static com.ryuntech.saas.api.helper.ApiConstant.PRRSTOCKHOLDERCHANGE;
 import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHSHIXIN;
 import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHZHIXING;
@@ -53,10 +56,13 @@ import static com.ryuntech.saas.api.helper.ApiConstant.GETOPEXCEPTION;
 public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleService {
 
     @Autowired
-    private ICustomerUserInfoService iCustomerUserInfoService;
+    private CustomerUserInfoMapper customerUserInfoMapper;
 
     @Autowired
-    private CustomerRiskServiceImpl customerRiskService;
+    private CustomerRiskMapper customerRiskMapper;
+
+    @Autowired
+    private CustomerMonitorMapper customerMonitorMapper;
 
     private List<String> urlList=new ArrayList<>(Arrays.asList(
             /**
@@ -76,7 +82,6 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
             SEARCHCOURTANNOUNCEMENT+"?key="+APPKEY,
             CASEFILING+"?key="+APPKEY,
             SEARCHCOURTNOTICE+"?key="+APPKEY,
-
             /**
              * 经营风险
              */
@@ -101,10 +106,22 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
     @Scheduled(cron = "0 31 15 ? * *")
     public void riskWarning() {
         /**
-         * 轮询客户列表
+         * 轮询客户风险监控列表
          */
         log.info("riskWarning=");
-        List<CustomerUserInfo> customerUserInfoList = iCustomerUserInfoService.selectByCustomer(new CustomerUserInfoForm());
+//        查询监控数据
+        List<CustomerMonitor> customerMonitors = customerMonitorMapper.selectList(new QueryWrapper<>());
+        if (customerMonitors.isEmpty()){
+            log.info("没有待监控的企业");
+            return;
+        }
+
+        log.info("开始监控");
+        List<String> stringList = new ArrayList<>();
+        for (CustomerMonitor customerMonitor :customerMonitors){
+            stringList.add(customerMonitor.getCustomerId());
+        }
+        List<CustomerUserInfo> customerUserInfoList = customerUserInfoMapper.selectBatchIds(stringList);
         for (CustomerUserInfo customerUserInfo :customerUserInfoList){
             String customerName = customerUserInfo.getCustomerName();
             for (String urlName :urlList){
@@ -130,7 +147,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                     customerRisk.setRiskType(RiskWarnConstants.INDUSTRIALANDCOMMERCIALCHANGE);
 //                                风险小类
                                     customerRisk.setRiskMType(RiskWarnConstants.TYPE1);
-                                    customerRiskService.saveOrUpdate(customerRisk);
+                                    customerRiskMapper.insert(customerRisk);
                                 }
 
                             }
@@ -149,10 +166,10 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.INDUSTRIALANDCOMMERCIALCHANGE);
     //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE3);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
-                    }else if (urlName.contains(PRRSTOCKHOLDERCHANGE)) {
+                    }else if (urlName.contains(SEARCH)) {
 
                     } else if (urlName.contains(SEARCHSHIXIN)) {
 //                           失信被执行人
@@ -170,7 +187,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.ACTIONATLAW);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE4);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(SEARCHZHIXING)) {
@@ -188,7 +205,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.ACTIONATLAW);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE5);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETJUDICIALASSISTANCE)){
@@ -206,7 +223,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.ACTIONATLAW);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE6);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(SEARCHCOURTANNOUNCEMENT)){
@@ -223,7 +240,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.ACTIONATLAW);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE7);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(CASEFILING)){
@@ -240,7 +257,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.ACTIONATLAW);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE8);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(SEARCHCOURTNOTICE)){
@@ -257,7 +274,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.ACTIONATLAW);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE9);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETJUDICIALSALELIST)){
@@ -273,7 +290,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE10);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETLANDMORTGAGELIST)){
@@ -290,7 +307,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE11);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETENVPUNISHMENTLIST)){
@@ -307,7 +324,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE12);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETCHATTELMORTGAGE)){
@@ -324,7 +341,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE13);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETSERIOUSVIOLATIONLIST)){
@@ -341,7 +358,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE14);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETTAXOWENOTICELIST)){
@@ -359,7 +376,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE15);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(TAXILLEGALLIST)){
@@ -376,7 +393,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE16);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETGSADMINISTRATIVEPENALTYLIST)){
@@ -394,7 +411,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE17);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }else if (urlName.contains(GETOPEXCEPTION)){
@@ -412,12 +429,14 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskType(RiskWarnConstants.OPERATINGRISK);
 //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE18);
-                                customerRiskService.saveOrUpdate(customerRisk);
+                                customerRiskMapper.insert(customerRisk);
                             }
                         }
                     }
+                    log.info("结束监控");
                 } catch (Exception e) {
                     e.printStackTrace();
+                    log.info("监控异常"+e.toString());
                 }
             }
         }

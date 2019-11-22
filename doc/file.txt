@@ -21,7 +21,10 @@ github仓库
 密码：gaojiangjian@139
 
 小程序地址:git@github.com:gjjbase/yktech-received-mini.git
+API文档https://taro-ui.jd.com/#/docs/introduction
+
 后台地址:git@github.com:gjjbase/ryuntech-su-cloud-emp.git
+API文档https://element.faas.ele.me/#/zh-CN/
 
 
 
