@@ -63,7 +63,9 @@ public class MiniLoginController extends ModuleBaseController{
             //判断手机号是否已经存在
             SysUser sysUser = sysUserService.selectByUser(new SysUser().setPhone(sysUserForm.getPhone()));
 //          查询对应的职工
+            log.info("开始查询对应的职工");
             List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setUserId(sysUser.getId()));
+            log.info("结束查询对应的职工");
 //            查询小程序
             UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getId()));
             SysUserDTO sysUserDTO = new SysUserDTO();
