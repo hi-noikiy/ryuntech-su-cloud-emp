@@ -3,7 +3,6 @@ package com.ryuntech.saas.api.form;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -15,7 +14,6 @@ import java.util.Date;
  * @author EDZ
  */
 @Data
-@EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 public class ReceivableCollectionConditionForm extends BaseModel {
 

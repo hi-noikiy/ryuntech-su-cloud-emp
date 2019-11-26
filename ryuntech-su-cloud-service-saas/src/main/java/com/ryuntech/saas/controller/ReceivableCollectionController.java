@@ -2,9 +2,13 @@ package com.ryuntech.saas.controller;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.model.BaseDto;
+import com.ryuntech.common.model.BaseForm;
+import com.ryuntech.common.utils.CopyUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.form.ReceivableCollectionConditionForm;
+import com.ryuntech.saas.api.form.ReceivableCollectionForm;
 import com.ryuntech.saas.api.model.ReceivableCollection;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -14,6 +18,8 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.math.BigDecimal;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -90,17 +96,35 @@ public class ReceivableCollectionController extends ModuleBaseController {
     /**
      * 添加回款信息
      *
-     * @param receivableCollection
+     * @param receivableCollectionForm
      * @return
      */
     @PostMapping("/collectionadd")
     @ApiOperation(value = "添加回款信息")
     @ApiImplicitParam(name = "receivableCollection", value = "回款实体信息", required = true, dataType = "ReceivableCollection", paramType = "body")
-    public Result add(@RequestBody ReceivableCollection receivableCollection) {
-        receivableCollection.setCollectionId(String.valueOf(generateId()));
-        receivableCollection.setCreateBy(getUserName());
+    public Result add(@RequestBody ReceivableCollectionForm receivableCollectionForm) {
+        receivableCollectionForm.setCollectionId(String.valueOf(generateId()));
+        receivableCollectionForm.setCreateBy(getUserName());
         ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
         ReceivableContract receivableContract = new ReceivableContract();
+        ReceivableCollection receivableCollection = new ReceivableCollection();
+        // 将receivableCollectionForm相应字段数据copy到receivableCollection中
+        BaseForm baseForm = new BaseForm();
+        baseForm.setAClass(ReceivableCollectionForm.class);
+        baseForm.setT(receivableCollectionForm);
+        BaseDto baseDto = new BaseDto();
+        baseDto.setAClass(ReceivableCollection.class);
+        baseDto.setT(receivableCollection);
+        CopyUtil.copyObject2(baseForm, baseDto);
+        receivableContract.setContractId(receivableCollectionForm.getContractId());
+        BigDecimal balAmount = new BigDecimal(receivableCollectionForm.getBalanceAmount());
+        BigDecimal collAmount = new BigDecimal(receivableCollectionForm.getCollectionAmount());
+        BigDecimal amount = new BigDecimal(receivableCollectionForm.getAmount());
+        BigDecimal balanceAmount = balAmount.subtract(amount);
+        BigDecimal collectionAmount = collAmount.add(amount);
+        receivableContract.setContractId(receivableCollectionForm.getContractId());
+        receivableContract.setBalanceAmount(balanceAmount.toString());
+        receivableContract.setCollectionAmount(collectionAmount.toString());
         boolean b = iReceivableCollectionService.addReceivableCollection(receivableCollectionPlan, receivableCollection, receivableContract);
         if(b) {
             return new Result();
