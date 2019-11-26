@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80018
 File Encoding         : 65001
 
-Date: 2019-11-26 10:01:49
+Date: 2019-11-26 10:29:38
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -389,6 +389,7 @@ CREATE TABLE `ryn_employee` (
   `NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '职工姓名',
   `COMPANY_ID` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci DEFAULT NULL COMMENT '公司编号',
   `DEPARTMENT_ID` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '所属部门ID',
+  `DEPARTMENT_NAME` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '所属部门名称',
   `MOBILE` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '手机号（和登录手机号相同）',
   `EMAIL` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '邮箱',
   `STATUS` tinyint(4) NOT NULL DEFAULT '0' COMMENT '帐号状态 0-正常 1-禁用',
@@ -401,12 +402,11 @@ CREATE TABLE `ryn_employee` (
 -- ----------------------------
 -- Records of ryn_employee
 -- ----------------------------
-INSERT INTO `ryn_employee` VALUES ('739747569474732032', '739747569474732032', '员工1', '741750735594586112', '', '18518215883', '', '1', '睿云科技', '2019-10-30 19:16:49', '2019-10-21 10:06:16');
-INSERT INTO `ryn_employee` VALUES ('741755295541231616', '739747569474732032', '员工2', '741762459597012992', '', '18518215883', '', '1', '睿云科技1', '2019-10-30 19:16:51', '2019-10-21 10:15:22');
-INSERT INTO `ryn_employee` VALUES ('748475028089077760', '748475026721734656', '员工3', '748475028416233472', '', '18518215883', '', '1', '蝙蝠科技', '2019-10-31 17:59:21', '2019-10-30 16:46:16');
-INSERT INTO `ryn_employee` VALUES ('749875507142590464', '749875506521833472', null, null, '', '18518215883', '', '1', '测试1号公司', '2019-11-01 15:08:46', '2019-11-01 15:08:46');
-INSERT INTO `ryn_employee` VALUES ('755005188045012992', '755005186996436992', null, null, '', '18518215883', '', '1', '云开科技2', '2019-11-08 17:00:32', '2019-11-08 17:00:32');
-INSERT INTO `ryn_employee` VALUES ('755017058999074816', '755017058655141888', null, null, '', '18618965582', '', '1', '法本科技', '2019-11-08 17:24:07', '2019-11-08 17:24:07');
+INSERT INTO `ryn_employee` VALUES ('741755295541231616', '739747569474732032', '员工2', '741762459597012992', '749875236521833474', '销售a部', '18518215883', '', '1', '睿云科技1', '2019-11-21 16:06:52', '2019-10-21 10:15:22');
+INSERT INTO `ryn_employee` VALUES ('748475028089077760', '748475026721734656', '员工3', '748475028416233472', '749875236521833472', '销售1部', '18518215883', '', '1', '蝙蝠科技', '2019-11-21 16:06:43', '2019-10-30 16:46:16');
+INSERT INTO `ryn_employee` VALUES ('749875506521833470', '749875506521833471', '员工4', null, '749875236521833471', '销售部门', '18518215882', '', '1', '测试1号公司', '2019-11-21 16:26:30', '2019-11-01 15:08:46');
+INSERT INTO `ryn_employee` VALUES ('749875506521833471', '739747569474732032', '员工1', '741750735594586112', '749875236521833473', '销售3部', '18518215883', '', '1', '睿云科技', '2019-11-21 16:26:40', '2019-10-21 10:06:16');
+INSERT INTO `ryn_employee` VALUES ('749875506521833475', '749875506521833473', '兰兰', '741750735594586112', '749875236521833473', '销售2部', '18518215883', '', '1', '云开', '2019-11-21 16:06:24', '2019-11-21 16:04:41');
 
 -- ----------------------------
 -- Table structure for ryn_employee_role
@@ -678,8 +678,8 @@ CREATE TABLE `ryn_payment_result` (
 -- ----------------------------
 DROP TABLE IF EXISTS `ryn_receivable_collection`;
 CREATE TABLE `ryn_receivable_collection` (
-  `COLLECTION_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户编号',
-  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户名称',
+  `COLLECTION_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '回款编号',
+  `CUSTOMER_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '客户编号',
   `CUSTOMER_NAME` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '客户名称',
   `AMOUNT` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '回款金额',
   `CARD_NO` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '回款账户',
@@ -691,7 +691,6 @@ CREATE TABLE `ryn_receivable_collection` (
   `CREATE_TIME` datetime DEFAULT NULL COMMENT '创建时间',
   `STATUS` varchar(4) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '回款状态(0已作废，1已收款，2回款中)',
   `REMARKS` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '备注',
-  `COLLECTION_DATE` datetime DEFAULT NULL COMMENT '回款日期',
   `CONTRACT_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '合同编号',
   `PLAN_ID` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL COMMENT '计划编号',
   PRIMARY KEY (`COLLECTION_ID`) USING BTREE
@@ -700,11 +699,27 @@ CREATE TABLE `ryn_receivable_collection` (
 -- ----------------------------
 -- Records of ryn_receivable_collection
 -- ----------------------------
-INSERT INTO `ryn_receivable_collection` VALUES ('752030184349106176', '744787700585857024', null, '1000', null, null, '2019-11-04 14:29:44', null, null, '2019-11-04', '2019-11-04 14:29:44', null, 're', null, '749006741156397056', '749006741223505920');
-INSERT INTO `ryn_receivable_collection` VALUES ('752843490924167168', '744787700585857024', '瑞云科技', '30', null, null, '2019-11-05 17:25:38', null, null, '2019-11-05', '2019-11-05 17:25:38', null, '嘻嘻嘻', null, '749293437596991488', '752840458484318208');
-INSERT INTO `ryn_receivable_collection` VALUES ('752855762870468608', '744787700585857024', '瑞云科技', '10', null, null, '2019-11-05 17:52:17', null, null, '2019-11-05', '2019-11-05 17:50:04', null, 'xxxw', null, '749293437596991488', '752840458484318208');
-INSERT INTO `ryn_receivable_collection` VALUES ('752892468399177728', '744787700585857024', '瑞云科技', '23', null, null, '2019-11-05 19:02:56', null, null, '2019-11-05', '2019-11-05 19:02:56', null, 'xx', null, '749894374430605312', null);
-INSERT INTO `ryn_receivable_collection` VALUES ('754320664831197184', '744787700585857024', '瑞云科技', '123', null, null, '2019-11-07 18:20:31', null, null, '2019-11-07', '2019-11-07 18:20:31', null, '', null, '749293437596991488', '752840458484318208');
+INSERT INTO `ryn_receivable_collection` VALUES ('752030184349106176', '744787700585857024', '瑞云科技', '1000', null, '微信支付', '2019-11-04 14:29:44', null, null, '云开1', '2019-11-04 14:29:44', '0', 're', '749006741156397056', '749006741223505920');
+INSERT INTO `ryn_receivable_collection` VALUES ('752843490924167168', '744787700585857024', '瑞云科技', '3000', null, '招商银行', '2019-11-05 17:25:38', null, null, '云开2', '2019-11-05 17:25:38', '0', '嘻嘻嘻', '749293437596991488', '752840458484318208');
+INSERT INTO `ryn_receivable_collection` VALUES ('752855762870468608', '744787700585857024', '瑞云科技', '100000', null, '工商银行', '2019-11-05 17:52:17', null, null, '云开3', '2019-11-05 17:50:04', '0', 'xxxw', '749293437596991488', '752840458484318208');
+INSERT INTO `ryn_receivable_collection` VALUES ('752892468399177728', '744787700585857024', '瑞云科技', '2300000', null, '支付宝', '2019-11-05 19:02:56', null, null, '云开4', '2019-11-05 19:02:56', '0', 'xx', '749894374430605312', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754831209774710784', '744787700585857024', '瑞云科技', '90000', null, '工商银行', '2019-11-08 11:14:11', null, null, '18518215882', null, '0', '工商银行', '753620600378884096', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754849909693218816', '744787700585857024', '瑞云科技', '1', null, '工商银行', '2019-11-08 11:51:30', null, null, '18518215882', '2019-11-08 11:50:29', '0', '工商银行', '753620600378884096', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754918274860318720', '744787700585857024', '瑞云科技', '54', null, '工商银行', '2019-11-08 14:07:50', null, null, '18518215882', '2019-11-08 14:07:16', '0', '', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754920081556766720', '744787700585857024', '瑞云科技', '54', null, '工商银行', '2019-11-08 14:11:24', null, null, '18518215882', '2019-11-08 14:09:25', '0', '', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754920320875364352', '744787700585857024', '瑞云科技', '', null, '', '2019-03-01 14:48:46', null, null, '18518215882', '2019-11-08 14:11:47', '0', '', '749910864965926912', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754920337652580352', '744787700585857024', '瑞云科技', '', null, '', '2019-05-01 14:48:56', null, null, '18518215882', '2019-11-08 14:11:47', '0', '', '749910864965926912', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754920342039822336', '744787700585857024', '瑞云科技', '', null, '', '2019-04-01 14:49:00', null, null, '18518215882', '2019-11-08 14:11:47', '2', '', '749910864965926912', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754920832614006784', '744787700585857024', '瑞云科技', '', null, '', '2019-10-01 14:49:06', null, null, '18518215882', '2019-11-08 14:11:47', '1', '', '749910864965926912', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754921210789232640', '744787700585857024', '瑞云科技', '240000', null, '工商银行', '2019-11-08 14:13:40', null, null, '18518215882', '2019-11-08 14:13:05', '2', '', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754951306547822592', '744787700585857024', '瑞云科技', '2100.01', null, '工商银行', '2019-11-08 15:13:17', null, null, '18518215882', '2019-11-08 15:12:53', '2', '没钱了', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754951812028563456', '744787700585857024', '瑞云科技', '2102', null, '工商银行', '2019-11-08 15:14:19', null, null, '18518215882', '2019-11-08 15:14:05', '2', '有钱', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754955319330734080', '744787700585857024', '瑞云科技', '2100.00', null, '工商银行', '2019-11-08 15:20:41', null, null, '18518215882', '2019-11-08 15:20:25', '2', '有钱', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754955677725622272', '744787700585857024', 'aa', '2100', null, '工商银行', '2019-11-08 15:21:59', null, null, '18518215882', '2019-11-08 15:21:42', '1', '没钱了', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('754957951986302976', '748477685524594688', '测试', '1.11', null, '微信支付', '2019-11-08 15:26:34', null, null, '18518215882', '2019-11-08 15:26:15', '1', '范德萨发生', '749926160955080704', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('758007003325923328', '744787700585857024', 'cc', '2100.00', null, '现金', '2019-11-12 20:24:23', null, null, '18518215882', '2019-11-12 20:23:59', '0', '好了', '749006741156397056', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('763695913548906496', '749763378313953280', 'test', '10000', null, '现金', '2019-11-20 16:46:59', null, null, '18518215882', '2019-11-20 16:46:31', null, '已还清', '749893773185515520', null);
+INSERT INTO `ryn_receivable_collection` VALUES ('767384658131288064', '767368493434667008', '深圳市蝙蝠科技', '30000', null, '现金', '2019-11-25 00:00:00', null, null, '18518215882', '2019-11-25 18:54:53', null, '1212121', '767369790070194176', null);
 
 -- ----------------------------
 -- Table structure for ryn_receivable_collection_plan
