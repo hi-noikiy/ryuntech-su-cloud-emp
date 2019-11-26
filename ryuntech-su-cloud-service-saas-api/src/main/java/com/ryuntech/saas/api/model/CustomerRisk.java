@@ -95,4 +95,11 @@ import java.util.Date;
     private String riskMType;
 
 
+    /**
+     * 未读已读标记
+     */
+    @TableField("FALG")
+    private String falg;
+
+
 }
