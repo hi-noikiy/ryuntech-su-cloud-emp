@@ -87,9 +87,16 @@
 
         <el-table-column align="center" label="操作" width="200">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleZuoFei(scope.row.collectionId)">作废</el-button>
-            <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.collectionId)">编辑</el-button>
-            <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.collectionId)">删除</el-button>
+            <div v-if="scope.row.status === '0'">
+              <el-button type="primary" size="mini" icon="el-icon-edit" disabled @click="handleZuoFei(scope.row.collectionId)">已作废</el-button>
+              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.collectionId)">编辑</el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" @click="handleDel(scope.row.collectionId)">删除</el-button>
+            </div>
+            <div v-else>
+              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleZuoFei(scope.row.collectionId)">作废</el-button>
+              <el-button type="primary" size="mini" icon="el-icon-edit" @click="handleEdit(scope.row.collectionId)">编辑</el-button>
+              <el-button type="danger" icon="el-icon-delete" size="mini" disabled @click="handleDel(scope.row.collectionId)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>

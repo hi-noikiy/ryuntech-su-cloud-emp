@@ -190,7 +190,9 @@
           time: '',
           createTime: parseTime(new Date(), ''),
           remarks: '',
-          url: ''
+          url: '',
+          balanceAmount: '',
+          collectionAmount: ''
         },
         rules: {
             amount: [{ required: true, trigger: 'blur', message: '请输入回款金额' },
@@ -213,6 +215,19 @@
         contractTotal: 0,
         checkedContract: undefined,
       }
+    },
+    created(){
+        if(typeof(this.$route.params.data) !== "undefined") {
+            this.checkedContract = this.$route.params.data
+            this.form.contractId = this.checkedContract.contractId
+            this.form.customerId = this.checkedContract.customerId
+            this.form.customerName = this.checkedContract.customerName
+            this.form.balanceAmount = this.checkedContract.balanceAmount
+            this.form.collectionAmount = this.checkedContract.collectionAmount
+            this.contractName = this.checkedContract.contractId + ' : ' + this.checkedContract.contractName
+            this.uncollectedAmount = this.checkedContract.balanceAmount
+            this.totalContractAmount = this.checkedContract.contractAmount
+        }
     },
     methods: {
       handleCurrentChange(val) {
@@ -237,6 +252,8 @@
         this.form.contractId = this.checkedContract.contractId
         this.form.customerId = this.checkedContract.customerId
         this.form.customerName = this.checkedContract.customerName
+        this.form.balanceAmount = this.checkedContract.balanceAmount
+        this.form.collectionAmount = this.checkedContract.collectionAmount
         this.contractName = this.checkedContract.contractId + ' : ' + this.checkedContract.contractName
         this.uncollectedAmount = this.checkedContract.balanceAmount
         this.totalContractAmount = this.checkedContract.contractAmount

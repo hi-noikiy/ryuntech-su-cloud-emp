@@ -190,7 +190,7 @@ export default {
         this.$router.push({
           name: '编辑合同',
           params: {
-            title: '编辑客户',
+            title: '编辑合同',
             data: this.form
           }
         })
