@@ -27,7 +27,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE
+        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE,FALG
     </sql>
 
     <select id="selectGroupConcat" resultMap="BaseResultMap2"  resultType="com.ryuntech.saas.api.dto.CustomerRiskDTO">

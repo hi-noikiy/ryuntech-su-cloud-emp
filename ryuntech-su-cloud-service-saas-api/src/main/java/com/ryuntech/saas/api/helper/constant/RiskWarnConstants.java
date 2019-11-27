@@ -140,5 +140,9 @@ public class RiskWarnConstants {
      * 企业经营异常
      */
     public static final String TYPE18 ="18";
+    /**
+     * 获取工商快照
+     */
+    public static final String TYPE19 ="19";
 
 }

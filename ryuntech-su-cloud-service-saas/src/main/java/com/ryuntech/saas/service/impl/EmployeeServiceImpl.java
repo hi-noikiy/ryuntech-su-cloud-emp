@@ -47,10 +47,11 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public List<Employee> selectByEmployeeList(Employee employee) {
+        queryWrapper=new QueryWrapper<>();
         if (StringUtils.isNotBlank(employee.getUserId())){
             queryWrapper.eq("user_id", employee.getUserId());
         }
-        return baseMapper.selectList(queryWrapper);
+        return employeeMapper.selectList(queryWrapper);
     }
 
     @Override

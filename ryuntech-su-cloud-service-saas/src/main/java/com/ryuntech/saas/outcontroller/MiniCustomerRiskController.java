@@ -123,4 +123,42 @@ public class MiniCustomerRiskController {
         objectObjectHashMap.put("totleFalgLength",totleFalgLength);
         return new Result(objectObjectHashMap);
     }
+
+
+    /*@PostMapping("/outdetaillist")
+    @ApiOperation(value = "分页、条件查询预警详情列表信息")
+    @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType = "body")
+    public Result detailList(@RequestBody CustomerRiskForm customerRiskForm, QueryPage queryPage) {
+
+    }*/
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

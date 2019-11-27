@@ -98,4 +98,9 @@ public class ApiConstant {
      */
     public static final String GETOPEXCEPTION="http://api.qichacha.com/ECIException/GetOpException";
 
+    /**
+     * 获取工商快照
+     */
+    public static final String GETECIIMAGE="http://api.qichacha.com/ECIImage/GetEciImage";
+
 }

@@ -7,6 +7,7 @@ import com.ryuntech.saas.api.mapper.UserWechatMapper;
 import com.ryuntech.saas.api.model.UserWechat;
 import com.ryuntech.saas.api.service.IUserWechatService;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -20,6 +21,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserWechatServiceImpl extends BaseServiceImpl<UserWechatMapper, UserWechat> implements IUserWechatService {
 
+    @Autowired
+    UserWechatMapper userWechatMapper;
+
+
     @Override
     public UserWechat selectByUserWeChat(UserWechat userWechat) {
         if (StringUtils.isNotBlank(userWechat.getUnionId())){
@@ -28,6 +33,6 @@ public class UserWechatServiceImpl extends BaseServiceImpl<UserWechatMapper, Use
         if (StringUtils.isNotBlank(userWechat.getUserId())){
             queryWrapper.eq("USER_ID",userWechat.getUserId());
         }
-        return baseMapper.selectOne(queryWrapper);
+        return userWechatMapper.selectOne(queryWrapper);
     }
 }

@@ -64,6 +64,7 @@ public class MiniLoginController extends ModuleBaseController{
             SysUser sysUser = sysUserService.selectByUser(new SysUser().setPhone(sysUserForm.getPhone()));
 //          查询对应的职工
             log.info("开始查询对应的职工");
+            log.info("开始查询对应的USERID"+sysUser.getId());
             List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setUserId(sysUser.getId()));
             log.info("结束查询对应的职工");
 //            查询小程序
