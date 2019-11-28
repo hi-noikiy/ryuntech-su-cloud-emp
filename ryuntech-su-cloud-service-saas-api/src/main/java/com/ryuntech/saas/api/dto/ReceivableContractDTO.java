@@ -3,13 +3,11 @@ package com.ryuntech.saas.api.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
 import com.ryuntech.saas.api.model.AttachmentFile;
-import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -120,10 +118,11 @@ public class ReceivableContractDTO extends BaseModel {
      */
     private List<AttachmentFile> files;
 
-    /*
+    /**
     * 还款计划
     * */
     List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs;
+
     /**
      * 逾期计划
      */
@@ -131,9 +130,9 @@ public class ReceivableContractDTO extends BaseModel {
     /**
      * 跟进信息
      */
-    List<FollowupRecord> followUpRecords;
+    List<FollowupRecordDTO> followUpRecords;
     /**
      * 跟进的第一个信息
      */
-    FollowupRecord followupRecord;
+    FollowupRecordDTO followUpRecord;
 }

@@ -1,6 +1,7 @@
 package com.ryuntech.saas.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.model.BaseDto;
 import com.ryuntech.common.model.BaseForm;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -130,6 +132,27 @@ public class ReceivableCollectionController extends ModuleBaseController {
             return new Result();
         } else {
             return new Result(OPERATE_ERROR);
+        }
+
+    }
+
+    /**
+     * 根据合同编号查询回款记录
+     *
+     * @param receivableCollectionForm
+     * @return
+     */
+    @PostMapping("/listByContractId/{contractId}")
+    @ApiOperation(value = "根据合同编号查询回款记录")
+    @ApiImplicitParam(name = "receivableCollection", value = "回款实体信息", required = true, dataType = "String")
+    public Result listByContractId(@PathVariable String contractId) {
+        QueryWrapper<ReceivableCollection> queryWrapper =new QueryWrapper<>();
+        queryWrapper.eq("contract_id", contractId);
+        List<ReceivableCollection> receivableCollectionList = iReceivableCollectionService.list(queryWrapper);
+        if(receivableCollectionList == null) {
+            return new Result();
+        } else {
+            return new Result(receivableCollectionList);
         }
 
     }

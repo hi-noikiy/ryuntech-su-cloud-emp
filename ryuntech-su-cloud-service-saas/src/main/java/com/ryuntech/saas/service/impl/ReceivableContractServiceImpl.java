@@ -3,10 +3,14 @@ package com.ryuntech.saas.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ryuntech.common.model.BaseDto;
+import com.ryuntech.common.model.BaseForm;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
+import com.ryuntech.common.utils.CopyUtil;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.FollowupRecordDTO;
 import com.ryuntech.saas.api.dto.ReceivableCollectionPlanDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
@@ -47,7 +51,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
     @Autowired
     EmployeeMapper employeeMapper;
 
-
+    @Autowired
+    FollowupRecordCommentMapper followupRecordCommentMapper;
 
 
     @Override
@@ -191,8 +196,29 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
 //        跟进记录
         List<FollowupRecord> followupRecord2 = followupRecordMapper.selectList(new QueryWrapper<FollowupRecord>().eq("contract_id", receivableContractDTO.getContractId()));
         if (followupRecord2!=null&&followupRecord2.size()!=0){
-            FollowupRecord followupRecord = followupRecord2.get(0);
-            receivableContractDTO.setFollowupRecord(followupRecord);
+            // 将followupRecord2中的跟进记录复制到followupRecordDTOList中用于输出到页面
+            List<FollowupRecordDTO> followupRecordDTOList = new ArrayList<>();
+            BaseForm baseForm = new BaseForm();
+            baseForm.setAClass(FollowupRecord.class);
+            BaseDto baseDto = new BaseDto();
+            baseDto.setAClass(FollowupRecordDTO.class);
+            for(FollowupRecord followupRecord : followupRecord2) {
+                baseForm.setT(followupRecord);
+                FollowupRecordDTO followupRecordDTO = new FollowupRecordDTO();
+                baseDto.setT(followupRecordDTO);
+                CopyUtil.copyObject2(baseForm,baseDto);
+                QueryWrapper<FollowupRecordComment> queryWrapper =new QueryWrapper<>();
+                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId());
+                List<FollowupRecordComment> followupRecordCommentList = followupRecordCommentMapper.selectList(queryWrapper);
+                if(followupRecordCommentList != null && followupRecordCommentList.size() != 0) {
+                    followupRecordDTO.setFollowupRecordComments(followupRecordCommentList);
+                }
+                followupRecordDTOList.add(followupRecordDTO);
+            }
+
+            FollowupRecordDTO followupRecordDTO = followupRecordDTOList.get(0);
+            receivableContractDTO.setFollowUpRecord(followupRecordDTO);
+            receivableContractDTO.setFollowUpRecords(followupRecordDTOList);
         }
         return receivableContractDTO;
     }

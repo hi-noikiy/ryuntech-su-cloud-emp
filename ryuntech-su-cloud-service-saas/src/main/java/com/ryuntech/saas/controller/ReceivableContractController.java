@@ -281,9 +281,6 @@ public class ReceivableContractController extends ModuleBaseController {
         }else {
             return new Result(OPERATE_ERROR);
         }
-
-
-
     }
 
 //    /**
