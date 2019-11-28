@@ -29,3 +29,10 @@ export function save(data) {
     data
   })
 }
+
+export function getListByContractId(contractId) {
+  return request({
+    url: '/saas/collection/listByContractId/' + contractId,
+    method: 'post',
+  })
+}

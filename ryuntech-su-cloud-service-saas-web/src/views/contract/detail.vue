@@ -1,13 +1,15 @@
 <template>
   <div class="add-customer-center">
-    <div style="border:1px solid #dddddd;width:16%;">
-      <div style="float:right;margin: 28px;border:1px solid #dddddd;border-radius: 4px;background:#53FF53;">
-        <span v-if='contractDetail.status==0'>已逾期</span>
-        <span v-if='contractDetail.status==1'>已完成</span>
-        <span v-if='contractDetail.status==2'>执行中</span>
-      </div>
-      <div>
-        <h1>{{ contractDetail.contractName }}</h1>
+    <div style="border:1px solid #dddddd;">
+      <div style="border:1px solid #cccccc;">
+        <div style="display: flex;">
+          <h1>{{ contractDetail.contractName }}</h1>
+          <div style="margin: 28px;border:1px solid #dddddd;border-radius: 4px;background:#53FF53;">
+            <span v-if='contractDetail.status==0'>已逾期</span>
+            <span v-if='contractDetail.status==1'>已完成</span>
+            <span v-if='contractDetail.status==2'>执行中</span>
+          </div>
+        </div>
         <h4>合同编号：{{ contractDetail.contractId }}</h4>
       </div>
     </div>
@@ -133,10 +135,9 @@
 
               <el-table-column align="center" prop="status" label="状态" width="100%">
                 <template slot-scope="scope">
-                  <span v-if='scope.row.status==0'>已逾期</span>
-                  <span v-if='scope.row.status==1'>已还款</span>
-                  <span v-if='scope.row.status==2'>未开始</span>
-                  <span v-if='scope.row.status==3'>回款中</span>
+                  <span v-if='scope.row.status==0'>已作废</span>
+                  <span v-if='scope.row.status==1'>已收款</span>
+                  <span v-if='scope.row.status==2'>还款中</span>
                 </template>
               </el-table-column>
 
@@ -173,22 +174,37 @@
         </div>
       </div>
 
-      <div style="float:right;border:1px solid #dddddd;margin: 0px 20px;width:45%;;">
+      <div style="float:right;border:1px solid #dddddd;margin: 0px 20px;width:45%;">
         <div style="margin: 0px 20px;">
-          <h3>根据记录</h3>
+          <h3>跟进记录</h3>
         </div>
-        <div style="margin: 0px 20px;" v-if="contractDetail.followupRecord !== null">
-          <span>{{ contractDetail.followupRecord.updatedAt }}</span>
-          <span>{{ contractDetail.followupRecord.staffName }}</span>
-          <span>({{ contractDetail.followupRecord.staffName }})</span>
-          <span>{{ contractDetail.followupRecord.content }}</span>
-        </div>
-        <div style="margin: 0px 20px;" v-if="contractDetail.followUpRecords !== null" >
-          <div v-for="(item, index) in contractDetail.followupRecords" :key="index">
+        <div style="margin: 0px 20px;border:1px solid #dddddd;" v-if="followUpRecords !== null" >
+          <div v-for="(item, index) in followUpRecords" :key="index">
             <span>{{ item.updatedAt }}</span>
             <span>{{ item.staffName }}</span>
             <span>({{ item.staffName }})</span>
-            <span>{{ item.content }}</span>
+            <br/>
+            <span>添加跟进记录</span>
+            <div style="border:1px solid #dddddd;padding:4px;">
+              <span>销售回款预测：</span>
+              <span v-if="item.estimateTime !== null">预计{{ item.estimateTime }}回款{{ item.estimateAmount }}元</span>
+              <span v-else>未填写</span>
+              <br/>
+              <span>{{ item.content }}</span>
+              <div style="border:1px solid #dddddd;display:flex;width: 100%;height: 50px;margin:4px;">
+                <div v-if="item.attachmentCode !== null" class="block" style="width: 8%;height: 100%;margin-left:1%;">
+                  <img src="../../assets/liucheng.jpg" class="avatar" style="width:100%;height:100%">
+                </div>
+                <div v-if="item.attachmentCode !== null" class="block" style="width: 8%;height: 100%;margin-left:1%;">
+                  <img src="../../assets/liucheng.jpg" class="avatar" style="width:100%;height:100%;">
+                </div>
+              </div>
+              <div v-if="item.followupRecordComments !== null" style="background:#E0E0E0;border:1px solid #dddddd;width:98%;margin:4px;">
+                <div v-for="(subItem, index) in item.followupRecordComments" :key="index" style="margin:3px;">
+                  <span>{{ subItem.staffName }}：{{ subItem.commentContent }}</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -197,7 +213,7 @@
 </template>
 
 <script>
-import { del, zuofei } from '@/api/collection'
+import { getListByContractId, del, zuofei } from '@/api/collection'
 
 export default {
   data() {
@@ -220,40 +236,44 @@ export default {
       contractDetail: null,
       collectionPlans: null,
       collectionRecords: null,
+      followUpRecords: null,
+      followupRecordComments: null
     }
   },
   created(){
     if(typeof(this.$route.params.data) !== "undefined") {
       this.contractDetail = this.$route.params.data
       this.collectionPlans = this.contractDetail.receivableCollectionPlanDTOs
-      this.collectionRecords = this.contractDetail.receivableCollectionDTOS
+      this.followUpRecords = this.contractDetail.followUpRecords
+      this.showCollections()
     }
   },
   methods: {
 
-    handleClick(tab, event) {
-      this.tabName = tab.name
-      console.log(this.activeName + '-------------------' + this.tabName)
+    showCollections() {
+      getListByContractId(this.contractDetail.contractId).then(response => {
+        this.collectionRecords = response.data
+      })
     },
 
     editCollectionPlan() {
       this.$router.push({
-          name: '编辑合同',
-          params: {
-            title: '编辑合同',
-            data: this.contractDetail
-          }
-        })
+        name: '编辑合同',
+        params: {
+          title: '编辑合同',
+          data: this.contractDetail
+        }
+      })
     },
 
     addCollection() {
       this.$router.push({
-          name: '添加回款',
-          params: {
-            title: '添加回款',
-            data: this.contractDetail
-          }
-        })
+        name: '添加回款',
+        params: {
+          title: '添加回款',
+          data: this.contractDetail
+        }
+      })
     },
 
     handleZuoFei(id) {
@@ -268,7 +288,7 @@ export default {
           } else {
             this._notify(response.msg, 'error')
           }
-          this.$forceUpdate()
+          this.showCollections()
         })
       }).catch(() => {
         this._notify('作废已取消', 'info')
@@ -287,7 +307,7 @@ export default {
           } else {
             this._notify(response.msg, 'error')
           }
-          this.fetchData()
+          this.showCollections()
         })
       }).catch(() => {
         this._notify('已取消删除', 'info')
