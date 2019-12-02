@@ -107,7 +107,7 @@
             <el-button style="margin:0px 10px 0px 72%;" type="text" @click="addCollection">快速回款</el-button>
           </div>
           <div style="width:100%;">
-            <el-table :data="collectionRecords" width="100%">
+            <el-table :data="collectionRecords" width="100%" height="300">
               <el-table-column align="center" prop="time" label="日期" width="100%">
                 <template slot-scope="scope">
                   <span>{{ jiequ(scope.row.time) }}</span>
@@ -178,7 +178,7 @@
         <div style="margin: 0px 20px;">
           <h3>跟进记录</h3>
         </div>
-        <div style="margin: 0px 20px;border:1px solid #dddddd;" v-if="followUpRecords !== null" >
+        <div style="margin: 0px 20px;border:1px solid #dddddd;height:700px;overflow-y: auto" v-if="followUpRecords !== null" >
           <div v-for="(item, index) in followUpRecords" :key="index">
             <span>{{ item.updatedAt }}</span>
             <span>{{ item.staffName }}</span>
@@ -207,6 +207,7 @@
             </div>
           </div>
         </div>
+        <div v-else style="margin: 0px 20px;border:1px solid #dddddd;text-align:center;">暂无跟进记录</div>
       </div>
     </div>
   </div>

@@ -2,7 +2,7 @@
   <div class="add-customer-center">
     <div>
       <h1>{{ customerName }}</h1>
-      <span v-if="tabName === 'first'">
+      <span v-if="activeName === 'first'">
         <h4>负责员工：{{ correspondingStaff }}</h4>
       </span>
       <span v-else>
@@ -16,7 +16,7 @@
       <el-tab-pane :disabled="false" label="客户资料" name="third"></el-tab-pane>
     </el-tabs>
 
-    <div v-if="tabName === 'first'">
+    <div v-if="activeName === 'first'">
       <div class="aaa">
         <h2>￥{{ feige(receivableBalance) }}</h2>
         <h4>应收余额</h4>
@@ -36,7 +36,7 @@
       
     </div>
 
-    <el-table v-if="tabName === 'first'" v-loading="listLoading" :data="customerContractList" element-loading-text="Loading" border fit highlight-current-row>
+    <el-table v-if="activeName === 'first'" v-loading="listLoading" :data="customerContractList" element-loading-text="Loading" border fit highlight-current-row>
       <el-table-column align="center" prop="contractId" label="合同编号" width="180">
         <template slot-scope="scope">
           {{ scope.row.contractId }}
@@ -94,7 +94,7 @@
       </el-table-column>
     </el-table>
 
-    <div v-if="tabName === 'third'">
+    <div v-if="activeName === 'third'">
       <div>
         <h3>联系人</h3>
         <span>姓名：{{customerList.contacts}}</span>

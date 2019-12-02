@@ -54,5 +54,12 @@ export function getEmployeeList(query, data) {
   })
 }
 
+export function riskByCustomerId(customerId) {
+  return request({
+    url: '/saas/employee/limitList?pageCode=' + query.page + '&pageSize=' + query.limit,
+    method: 'post',
+    data
+  })
+}
 
 export const upload = process.env.VUE_APP_BASE_API + '/saas/storage/local/upload'
