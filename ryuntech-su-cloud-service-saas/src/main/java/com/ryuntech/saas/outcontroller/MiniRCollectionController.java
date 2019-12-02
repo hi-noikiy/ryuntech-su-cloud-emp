@@ -40,7 +40,7 @@ import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 @RestController
 @RequestMapping("/minicollection")
 @Api(value = "MiniReceivableCollection", tags = {"小程序收款接口"})
-public class MiniReceivableCollection  extends ModuleBaseController{
+public class MiniRCollectionController extends ModuleBaseController{
 
 
     @Autowired
