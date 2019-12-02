@@ -1,19 +1,21 @@
 package com.ryuntech.saas.api.model;
 
 
-import com.ryuntech.common.model.BaseApi;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
-/**
- * @author EDZ
- */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class ApiGetEciImage extends BaseApi {
+public class DoctorReplyMsgData {
+    private KeyNote keyword1;
 
+    private KeyNote keyword2;
 
-    private String Result;
+    private KeyNote keyword3;
+
+    private KeyNote keyword4;
+
+    private KeyNote keyword5;
 }

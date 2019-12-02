@@ -79,7 +79,7 @@ public class MiniRegisterController extends ModuleBaseController {
      */
     @PostMapping("/outsecond")
     @ApiOperation(value = "注册第二步验证手机号")
-    public Result<SysUser> second(@RequestBody SysUserForm sysUserForm) {
+    public Result<SysUser> second(@RequestBody SysUserForm sysUserForm) throws Exception {
 //        验证公司名是否存在
         String companyName = sysUserForm.getCompanyName();
         if (StringUtils.isBlank(companyName)){

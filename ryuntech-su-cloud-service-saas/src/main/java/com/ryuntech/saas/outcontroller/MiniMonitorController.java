@@ -3,15 +3,12 @@ package com.ryuntech.saas.outcontroller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.gson.Gson;
-import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.dto.CustomerMonitorDTO;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.form.CustomerMonitorForm;
 import com.ryuntech.saas.api.helper.ApiConstant;
-import com.ryuntech.saas.api.helper.constant.RiskWarnConstants;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerMonitorService;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
@@ -42,6 +39,7 @@ import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
 @RequestMapping("/minimonitor")
 @Api(value = "MiniMonitorController", tags = {"小程序登录接口"})
 public class MiniMonitorController extends ModuleBaseController{
+
     @Autowired
     private ICustomerMonitorService iCustomerMonitorService;
 
@@ -75,7 +73,7 @@ public class MiniMonitorController extends ModuleBaseController{
      */
     @PostMapping("/outadd")
     @ApiOperation(value = "添加客户监控信息")
-    @ApiImplicitParam(name = "customerMonitor", value = "客户监控信息", required = true, dataType = "CustomerMonitor", paramType = "body")
+    @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
     public Result add(@RequestBody CustomerMonitorForm customerMonitorForm) throws Exception {
         if (null!=customerMonitorForm){
             List<String> customerIds = customerMonitorForm.getCustomerIds();
@@ -95,14 +93,18 @@ public class MiniMonitorController extends ModuleBaseController{
                 String urlName=geteciImage+"&keyWord="+customerName;
                 String content = HttpUtils.Get(urlName,reqHeader);
                 ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
-
-                if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getResult())) {
-                    String status = apiGetEciImage.getApiHeader().getStatus();
+                if (null==apiGetEciImage){
+                    return new Result();
+                }
+                if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
+                    String status = apiGetEciImage.getStatus();
                     if (status.equals("201")){
                         return new Result(OPERATE_ERROR,"没有查询到对应的公司");
                     }
+                    if (status.equals("214")){
+                        return new Result(OPERATE_ERROR,"您还未购买过该接口，请先购买");
+                    }
                 }
-
 
                 String  monitorId = String.valueOf(generateId());
                 CustomerMonitor customerM = new CustomerMonitor();

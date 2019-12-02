@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
 * <p>
@@ -55,7 +56,7 @@ import java.time.LocalDateTime;
             /**
             * 用户是否关注公众号 0-未关注 1-已关注
             */
-    private Boolean subscribe;
+    private Integer subscribe;
 
             /**
             * 昵称
@@ -65,7 +66,7 @@ import java.time.LocalDateTime;
             /**
             * 性别 1 男，2女，0未知
             */
-    private Boolean sex;
+    private Integer sex;
 
             /**
             * 省
@@ -130,12 +131,12 @@ import java.time.LocalDateTime;
             /**
             * 最后更新时间
             */
-    private LocalDateTime updatedAt;
+    private Date updatedAt;
 
             /**
             * 创建时间
             */
-    private LocalDateTime createdAt;
+    private Date createdAt;
 
 
 }

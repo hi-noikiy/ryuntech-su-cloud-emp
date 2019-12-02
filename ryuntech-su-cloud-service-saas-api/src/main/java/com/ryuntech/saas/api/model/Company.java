@@ -186,6 +186,9 @@ import java.util.Date;
             @TableId("INVOICE_BANK_ACCOUNT")
     private String invoiceBankAccount;
 
+            @TableId("IS_QICHACHA")
+    private String isQichacha;
+
             /**
             * 服务热线
             */

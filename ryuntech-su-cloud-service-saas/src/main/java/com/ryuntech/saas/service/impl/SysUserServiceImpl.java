@@ -4,17 +4,22 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
+import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
+import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
+import com.ryuntech.saas.api.helper.ApiConstant;
 import com.ryuntech.saas.api.helper.SecurityUtils;
 import com.ryuntech.saas.api.helper.constant.RoleConstants;
 import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.SysUserService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -22,7 +27,11 @@ import org.springframework.stereotype.Service;
 
 import javax.xml.crypto.Data;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+
+import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
+import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
 
 /**
  * @author antu
@@ -119,6 +128,12 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         if (userDTO.getPhone()!=null) {
             queryWrapper.eq("phone", userDTO.getPhone());
         }
+        if (StringUtils.isNotBlank(userDTO.getId())){
+            queryWrapper.eq("id", userDTO.getId());
+        }
+        if (userDTO.getOpenId()!=null) {
+            queryWrapper.eq("open_id", userDTO.getOpenId());
+        }
         return sysUserMapper.selectOne(queryWrapper);
     }
 
@@ -133,11 +148,22 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         if (user.getPhone()!=null) {
             queryWrapper.eq("phone", user.getPhone());
         }
-        return sysUserMapper.selectOne(queryWrapper);
+        return baseMapper.selectOne(queryWrapper);
+    }
+
+
+
+    /**
+     * 获取Auth Code
+     * @return
+     */
+    protected static final String[] randomAuthentHeader() {
+        String timeSpan = String.valueOf(System.currentTimeMillis() / 1000);
+        return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstant.SECKEY)).toUpperCase(), timeSpan };
     }
 
     @Override
-    public SysUser register(SysUserForm sysUserForm) {
+    public SysUser register(SysUserForm sysUserForm) throws Exception {
         //生成用户
         //生成主键
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
@@ -178,12 +204,34 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         company.setEmployeeId(employee.getEmployeeId());
         company.setCreatedAt(new Date());
         company.setUpdatedAt(new Date());
+//        判断企查查是否存在公司
+//        is_qichacha
+        String geteciImage = ApiConstant.GETECIIMAGE+"?key="+APPKEY;
+
+        String[] autherHeader = randomAuthentHeader();
+        HashMap<String, String> reqHeader = new HashMap<>();
+        reqHeader.put("Token",autherHeader[0]);
+        reqHeader.put("Timespan",autherHeader[1]);
+        Gson gson = new Gson();
+        String customerName = sysUserForm.getCompanyName();
+        String urlName=geteciImage+"&keyWord="+customerName;
+        String content = HttpUtils.Get(urlName,reqHeader);
+        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
+        if (null==apiGetEciImage){
+            company.setIsQichacha("0");
+        }
+        if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
+            String status = apiGetEciImage.getStatus();
+            if (!status.equals("200")){
+                company.setIsQichacha("0");
+            }else {
+                company.setIsQichacha("1");
+            }
+        }
         companyMapper.insert(company);
 
 
-
         //默认分配管理员角色
-
         SysRole sysRole = new SysRole();
         Long roleId = uniqueIdGenerator.nextId();
         sysRole.setRid(String.valueOf(roleId));

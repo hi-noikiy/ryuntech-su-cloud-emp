@@ -18,12 +18,11 @@
         <result column="STATUS" property="status" />
         <result column="REMARKS" property="remarks" />
         <result column="CONTRACT_ID" property="contractId" />
-        <result column="PLAN_ID" property="planId" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, ATTACHMENT_CODE, CREATE_BY, CREATE_TIME, STATUS, REMARKS, CONTRACT_ID, PLAN_ID
+        COLLECTION_ID, CUSTOMER_ID, CUSTOMER_NAME, AMOUNT, CARD_NO, TYPE, TIME, VOUCHER_TYPE, ATTACHMENT_CODE, CREATE_BY, CREATE_TIME, STATUS, REMARKS, CONTRACT_ID
     </sql>
 
 

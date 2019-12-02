@@ -95,6 +95,6 @@ public interface SysUserService  extends IBaseService<SysUser> {
      * @param sysUserForm
      * @return
      */
-    SysUser register(SysUserForm sysUserForm);
+    SysUser register(SysUserForm sysUserForm) throws Exception;
 
 }

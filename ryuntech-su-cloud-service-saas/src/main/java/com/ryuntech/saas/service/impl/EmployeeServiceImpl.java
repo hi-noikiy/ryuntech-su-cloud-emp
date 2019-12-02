@@ -51,6 +51,9 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         if (StringUtils.isNotBlank(employee.getUserId())){
             queryWrapper.eq("user_id", employee.getUserId());
         }
+        if (StringUtils.isNotBlank(employee.getEmployeeId())){
+            queryWrapper.eq("employee_id", employee.getEmployeeId());
+        }
         return employeeMapper.selectList(queryWrapper);
     }
 

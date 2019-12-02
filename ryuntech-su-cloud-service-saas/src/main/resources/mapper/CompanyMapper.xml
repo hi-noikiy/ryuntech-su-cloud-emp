@@ -32,6 +32,7 @@
         <result column="invoice_bank_account" property="invoiceBankAccount" />
         <result column="hotline_tel" property="hotlineTel" />
         <result column="is_del" property="isDel" />
+        <result column="is_qichacha" property="isQichacha" />
         <result column="updated_at" property="updatedAt" />
         <result column="created_at" property="createdAt" />
     </resultMap>
@@ -39,7 +40,9 @@
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         company_id,
-        name, logo, industry_type, province_id, city_id, district_id, address, postal_code, tel, fax, contactor, employee_id, position, phone, qq, email, company_web, company_introduce, taxpayer_identify_num, invoice_payable, invoice_address, invoice_tel, invoice_open_name, invoice_open_bank, invoice_bank_account, hotline_tel, is_del, updated_at, created_at
+        name, logo, industry_type, province_id, city_id, district_id, address, postal_code, tel, fax, contactor, employee_id, position, phone, qq, email, company_web,
+        company_introduce, taxpayer_identify_num, invoice_payable, invoice_address, invoice_tel, invoice_open_name, invoice_open_bank,
+        invoice_bank_account, hotline_tel, is_del, is_qichacha, updated_at, created_at
     </sql>
 
 </mapper>
