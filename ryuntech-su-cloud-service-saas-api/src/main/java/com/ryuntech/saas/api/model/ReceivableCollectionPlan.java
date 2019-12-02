@@ -10,7 +10,6 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -44,7 +43,7 @@ import java.util.Date;
     /**
      * 计划已回金额
      */
-    @TableField("PLAN_AMOUNT")
+    @TableField("BACKED_AMOUNT")
     private String backedAmount;
 
     /**

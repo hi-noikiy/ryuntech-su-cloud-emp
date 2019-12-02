@@ -10,9 +10,12 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.form.ReceivableCollectionConditionForm;
 import com.ryuntech.saas.api.form.ReceivableCollectionForm;
+import com.ryuntech.saas.api.helper.constant.PlanConstant;
+import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
 import com.ryuntech.saas.api.model.ReceivableCollection;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
+import com.ryuntech.saas.api.service.IReceivableCollectionPlanService;
 import com.ryuntech.saas.api.service.IReceivableCollectionService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -21,6 +24,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
@@ -39,6 +44,8 @@ public class ReceivableCollectionController extends ModuleBaseController {
     @Autowired
     private IReceivableCollectionService iReceivableCollectionService;
 
+    @Autowired
+    private IReceivableCollectionPlanService iReceivableCollectionPlanService;
 
     /**
      * 删除回款信息
@@ -107,7 +114,7 @@ public class ReceivableCollectionController extends ModuleBaseController {
     public Result add(@RequestBody ReceivableCollectionForm receivableCollectionForm) {
         receivableCollectionForm.setCollectionId(String.valueOf(generateId()));
         receivableCollectionForm.setCreateBy(getUserName());
-        ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
+//        ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
         ReceivableContract receivableContract = new ReceivableContract();
         ReceivableCollection receivableCollection = new ReceivableCollection();
         // 将receivableCollectionForm相应字段数据copy到receivableCollection中
@@ -118,6 +125,7 @@ public class ReceivableCollectionController extends ModuleBaseController {
         baseDto.setAClass(ReceivableCollection.class);
         baseDto.setT(receivableCollection);
         CopyUtil.copyObject2(baseForm, baseDto);
+        receivableCollection.setCreateTime(new Date());
         receivableContract.setContractId(receivableCollectionForm.getContractId());
         BigDecimal balAmount = new BigDecimal(receivableCollectionForm.getBalanceAmount());
         BigDecimal collAmount = new BigDecimal(receivableCollectionForm.getCollectionAmount());
@@ -127,7 +135,43 @@ public class ReceivableCollectionController extends ModuleBaseController {
         receivableContract.setContractId(receivableCollectionForm.getContractId());
         receivableContract.setBalanceAmount(balanceAmount.toString());
         receivableContract.setCollectionAmount(collectionAmount.toString());
-        boolean b = iReceivableCollectionService.addReceivableCollection(receivableCollectionPlan, receivableCollection, receivableContract);
+        if(0 == Double.parseDouble(receivableContract.getBalanceAmount())) {
+            receivableContract.setStatus(ReceivableContractConstants.REIMBURSEMENT);
+        }
+
+        // 查询合同还款计划
+        QueryWrapper<ReceivableCollectionPlan> queryWrapper =new QueryWrapper<>();
+        queryWrapper.eq("contract_id", receivableCollectionForm.getContractId()).orderByAsc("plan_time");
+        List<ReceivableCollectionPlan> receivableCollectionPlans = iReceivableCollectionPlanService.list(queryWrapper);
+        List<ReceivableCollectionPlan> receivableCollectionPlans1 = new ArrayList<>();
+        // 如果有还款计划，则将回款金额分摊
+        if(receivableCollectionPlans != null && receivableCollectionPlans.size() != 0) {
+            double repayAmount = Double.parseDouble(receivableCollectionForm.getAmount());
+            for(ReceivableCollectionPlan receivableCollectionPl : receivableCollectionPlans) {
+                double surplusAmount = Double.parseDouble(receivableCollectionPl.getSurplusAmount());
+                if(surplusAmount > 0) {
+                    if(surplusAmount >= repayAmount) {
+                        BigDecimal surplusAmount1 = new BigDecimal(surplusAmount).subtract(new BigDecimal(repayAmount));
+                        receivableCollectionPl.setSurplusAmount(surplusAmount1.toString());
+                        BigDecimal backedAmount = new BigDecimal(receivableCollectionPl.getBackedAmount()).add(new BigDecimal(repayAmount));
+                        receivableCollectionPl.setBackedAmount(backedAmount.toString());
+                        if(surplusAmount1.doubleValue() == 0) {
+                            receivableCollectionPl.setStatus(PlanConstant.REIMBURSEMENT);
+                        } else if(receivableCollectionPl.getPlanTime().before(new Date())) {
+                            receivableCollectionPl.setStatus(PlanConstant.OVERDUED);
+                        }
+                    } else {
+                        repayAmount = new BigDecimal(repayAmount).subtract(new BigDecimal(receivableCollectionPl.getSurplusAmount())).doubleValue();
+                        receivableCollectionPl.setBackedAmount(receivableCollectionPl.getPlanAmount());
+                        receivableCollectionPl.setSurplusAmount("0");
+                        receivableCollectionPl.setStatus(PlanConstant.REIMBURSEMENT);
+                    }
+                }
+                receivableCollectionPlans1.add(receivableCollectionPl);
+            }
+        }
+
+        boolean b = iReceivableCollectionService.addReceivableCollection(receivableCollectionPlans1, receivableCollection, receivableContract);
         if(b) {
             return new Result();
         } else {
@@ -139,7 +183,7 @@ public class ReceivableCollectionController extends ModuleBaseController {
     /**
      * 根据合同编号查询回款记录
      *
-     * @param receivableCollectionForm
+     * @param contractId
      * @return
      */
     @PostMapping("/listByContractId/{contractId}")

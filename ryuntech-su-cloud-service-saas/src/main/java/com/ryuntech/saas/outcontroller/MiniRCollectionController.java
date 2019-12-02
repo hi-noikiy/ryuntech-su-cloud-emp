@@ -7,7 +7,6 @@ import com.ryuntech.saas.api.form.ReceivableCollectionPlanForm;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.helper.constant.PlanConstant;
 import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
-import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.model.ReceivableCollection;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -17,7 +16,6 @@ import com.ryuntech.saas.api.service.IReceivableContractService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,8 +178,8 @@ public class MiniRCollectionController extends ModuleBaseController{
                     receivableCollection.setTime(new Date());
 
 
-                    iReceivableCollectionService.addReceivableCollection(rPlan,receivableCollection,byContract);
                 }
+                iReceivableCollectionService.addReceivableCollection(rCollectionPlans,receivableCollection,byContract);
             }
 
         return new Result<>();

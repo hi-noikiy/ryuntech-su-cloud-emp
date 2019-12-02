@@ -21,8 +21,6 @@ import java.util.Date;
     @Accessors(chain = true)
     public class ReceivableCollectionForm extends BaseModel {
 
-    private static final long serialVersionUID = 1L;
-
     /**
      * 回款编号（主键）
      */

@@ -1,6 +1,7 @@
 package com.ryuntech.saas.service.impl;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
@@ -17,6 +18,8 @@ import com.ryuntech.saas.api.service.IReceivableCollectionService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * <p>
@@ -59,15 +62,18 @@ public class ReceivableCollectionServiceImpl extends BaseServiceImpl<ReceivableC
 
     @Override
     public Boolean addReceivableCollection(
-            ReceivableCollectionPlan receivableCollectionPlan,
+            List<ReceivableCollectionPlan> receivableCollectionPlans,
             ReceivableCollection receivableCollection,
             ReceivableContract receivableContract) {
         if (null!=receivableCollection){
             baseMapper.insert(receivableCollection);
         }
-        if (null!=receivableCollectionPlan && StringUtils.isNotBlank(receivableCollectionPlan.getPlanId())){
-//            更新计划
-            receivableCollectionPlanMapper.updateById(receivableCollectionPlan);
+        // 更新计划
+        if (receivableCollectionPlans!=null&&receivableCollectionPlans.size()!=0){
+            receivableCollectionPlanMapper.delete(
+                    new QueryWrapper<ReceivableCollectionPlan>().
+                            eq("contract_id",receivableContract.getContractId()));
+            receivableCollectionPlanMapper.insertBatch(receivableCollectionPlans);
         }
 //        更改合同表回款金额
         if (null!=receivableContract && StringUtils.isNotBlank(receivableContract.getContractId())){

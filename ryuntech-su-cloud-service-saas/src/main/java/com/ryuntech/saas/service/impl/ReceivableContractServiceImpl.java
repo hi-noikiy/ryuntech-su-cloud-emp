@@ -139,6 +139,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 for (ReceivableCollectionPlan receivableCollectionPlan:receivableCollectionPlans){
                     ReceivableCollectionPlanDTO receivableCollectionPlanDTO =new ReceivableCollectionPlanDTO();
                     receivableCollectionPlanDTO.setPlanAmount(receivableCollectionPlan.getPlanAmount());
+                    receivableCollectionPlanDTO.setBackAmount(receivableCollectionPlan.getBackedAmount());
+                    receivableCollectionPlanDTO.setSurplusAmount(receivableCollectionPlan.getSurplusAmount());
                     receivableCollectionPlanDTO.setContractId(receivableContractDTO.getContractId());
                     receivableCollectionPlanDTO.setPlanId(receivableCollectionPlan.getPlanId());
                     if (receivableCollectionPlan.getPlanTime()!=null){
@@ -146,13 +148,13 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                     }
                     receivableCollectionPlanDTO.setRemakes(receivableCollectionPlan.getRemakes());
                     receivableCollectionPlanDTO.setStatus(receivableCollectionPlan.getStatus());
-//                    查询已回款金额
-                    ReceivableCollection receivableCollection = receivableCollectionMapper.selectOne(new QueryWrapper<ReceivableCollection>().eq("plan_id", receivableCollectionPlan.getPlanId()));
-                    receivableCollectionPlanDTO.setBackAmount("0.00");
-                    if (receivableCollection!=null){
-                        String amount = receivableCollection.getAmount();
-                        receivableCollectionPlanDTO.setBackAmount(amount);
-                    }
+////                    查询已回款金额
+//                    ReceivableCollection receivableCollection = receivableCollectionMapper.selectOne(new QueryWrapper<ReceivableCollection>().eq("plan_id", receivableCollectionPlan.getPlanId()));
+//                    receivableCollectionPlanDTO.setBackAmount("0.00");
+//                    if (receivableCollection!=null){
+//                        String amount = receivableCollection.getAmount();
+//                        receivableCollectionPlanDTO.setBackAmount(amount);
+//                    }
                     receivableCollectionPlanDTOs.add(receivableCollectionPlanDTO);
                 }
 

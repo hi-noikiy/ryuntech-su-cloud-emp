@@ -8,6 +8,8 @@ import com.ryuntech.saas.api.model.ReceivableCollection;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
 
+import java.util.List;
+
 /**
  * <p>
  * 回款表 服务类
@@ -49,7 +51,7 @@ public interface IReceivableCollectionService extends IBaseService<ReceivableCol
      * @return
      */
     Boolean addReceivableCollection(
-            ReceivableCollectionPlan receivableCollectionPlan,
+            List<ReceivableCollectionPlan> receivableCollectionPlans,
             ReceivableCollection receivableCollection,
             ReceivableContract receivableContract
     );

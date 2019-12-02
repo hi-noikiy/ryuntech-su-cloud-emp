@@ -23,6 +23,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
@@ -96,9 +97,9 @@ public class ReceivableContractController extends ModuleBaseController {
         receivableContract.setContractAmount(receivableContractFrom.getContractAmount());
         // 合同日期
         receivableContract.setContractTime(receivableContractFrom.getContractTime());
-//        回款余额
+//        已回款金额
         receivableContract.setCollectionAmount("0.00");
-        //应收未还
+        //待回款金额
         receivableContract.setBalanceAmount(receivableContract.getContractAmount());
 //        合同状态
         receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
@@ -141,6 +142,9 @@ public class ReceivableContractController extends ModuleBaseController {
                 String planId = String.valueOf(generateId());
                 receivableCollectionPlan.setPlanId(planId);
                 receivableCollectionPlan.setPlanAmount(receivableCollectionPlanDTO.getPlanAmount());
+                receivableCollectionPlan.setBackedAmount("0");
+                receivableCollectionPlan.setSurplusAmount(receivableCollectionPlan.getPlanAmount());
+                receivableCollectionPlan.setStatus(PlanConstant.NOTSTARTED);
                 receivableCollectionPlan.setRemakes(receivableCollectionPlanDTO.getRemakes());
                 receivableCollectionPlan.setPlanTime(DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()));
                 receivableCollectionPlans.add(receivableCollectionPlan);
@@ -197,20 +201,20 @@ public class ReceivableContractController extends ModuleBaseController {
         receivableContract.setContractId(contractId);
 //        合同名称
         receivableContract.setContractName(receivableContractFrom.getContractName());
-        //        待还款金额
-        receivableContract.setBalanceAmount(receivableContractFrom.getContractAmount());
 //        合同总额
         receivableContract.setContractAmount(receivableContractFrom.getContractAmount());
+        //        待还款金额
+        receivableContract.setBalanceAmount(receivableContractFrom.getBalanceAmount());
+//        已回款余额
+        receivableContract.setCollectionAmount(receivableContractFrom.getCollectionAmount());
 //        合同时间
         receivableContract.setContractTime(receivableContractFrom.getContractTime());
 //        联系人
         receivableContract.setContacts(receivableContractFrom.getContacts());
- //        联系人电话
+        //        联系人电话
         receivableContract.setContactsPhone(receivableContractFrom.getContactsPhone());
 //        合同编码
         receivableContract.setContractCode(receivableContractFrom.getContractCode());
-//        回款余额
-        receivableContract.setCollectionAmount(receivableContractFrom.getCollectionAmount());
         //       负责人编号
         receivableContract.setStaffId(receivableContractFrom.getStaffId());
         //        负责人姓名
@@ -230,23 +234,54 @@ public class ReceivableContractController extends ModuleBaseController {
         List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractFrom.getReceivableCollectionPlanDTOs();
         if (receivableCollectionPlanDTOs!=null&&receivableCollectionPlanDTOs.size()!=0){
             for (ReceivableCollectionPlanDTO receivableCollectionPlanDTO :receivableCollectionPlanDTOs){
-
-
                 ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
                 receivableCollectionPlan.setContractId(contractId);
 //                计划编号， 判断当前计划编码是否存在
                 String planIdDT = receivableCollectionPlanDTO.getPlanId();
                 if (StringUtils.isBlank(planIdDT)){
                     planIdDT = String.valueOf(generateId());
+                    receivableCollectionPlan.setBackedAmount("0");
+                    receivableCollectionPlan.setSurplusAmount(receivableCollectionPlanDTO.getPlanAmount());
+                    receivableCollectionPlan.setStatus(PlanConstant.NOTSTARTED);
+                } else {
+                    BigDecimal planAmount = new BigDecimal(receivableCollectionPlanDTO.getPlanAmount());
+                    BigDecimal backedAmount = new BigDecimal(receivableCollectionPlanDTO.getBackAmount());
+                    BigDecimal surplusAmount = new BigDecimal(receivableCollectionPlanDTO.getSurplusAmount());
+                    BigDecimal planAmount1 = backedAmount.add(surplusAmount);
+                    if (planAmount.compareTo(planAmount1) > 0) {
+                        BigDecimal diffAmount = planAmount.subtract(planAmount1);
+                        receivableCollectionPlan.setSurplusAmount(surplusAmount.add(diffAmount).toString());
+                    } else if (planAmount.compareTo(planAmount1) < 0){
+                        BigDecimal diffAmount = planAmount1.subtract(planAmount);
+                        if (receivableCollectionPlanDTO.getStatus().equals("1")) {
+                            receivableCollectionPlan.setBackedAmount(backedAmount.subtract(diffAmount).toString());
+                        } else {
+                            receivableCollectionPlan.setSurplusAmount(surplusAmount.subtract(diffAmount).toString());
+                        }
+                    } else {
+                        receivableCollectionPlan.setBackedAmount(receivableCollectionPlanDTO.getBackAmount());
+                        receivableCollectionPlan.setSurplusAmount(receivableCollectionPlanDTO.getSurplusAmount());
+                    }
                 }
                 receivableCollectionPlan.setPlanId(planIdDT);
-//                状态
-                receivableCollectionPlan.setStatus(PlanConstant.NOTSTARTED);
                 receivableCollectionPlan.setPlanAmount(receivableCollectionPlanDTO.getPlanAmount());
                 receivableCollectionPlan.setRemakes(receivableCollectionPlanDTO.getRemakes());
                 receivableCollectionPlan.setPlanTime(DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()));
+                // 计划状态
+                boolean b = receivableCollectionPlan.getPlanTime().before(new Date());
+                double surplusAmount = Double.parseDouble(receivableCollectionPlan.getSurplusAmount());
+                if (b) {
+                   if (surplusAmount > 0) {
+                       receivableCollectionPlan.setStatus(PlanConstant.OVERDUED);
+                   } else if (surplusAmount == 0) {
+                       receivableCollectionPlan.setStatus(PlanConstant.REIMBURSEMENT);
+                   }
+                }
                 receivableCollectionPlans.add(receivableCollectionPlan);
-
+                // 合同状态
+                if(receivableCollectionPlan.getStatus().equals("0")) {
+                    receivableContract.setStatus(ReceivableContractConstants.OVERDUED);
+                }
             }
         }
 

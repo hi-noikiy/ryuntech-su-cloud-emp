@@ -42,5 +42,6 @@
                 and time between #{receivableCollectionConditionForm.startTime} and #{receivableCollectionConditionForm.endTime}
             </if>
         </where>
+        order by create_time desc
     </select>
 </mapper>
