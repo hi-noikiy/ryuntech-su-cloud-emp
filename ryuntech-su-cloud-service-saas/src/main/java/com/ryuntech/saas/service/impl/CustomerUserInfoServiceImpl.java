@@ -122,6 +122,18 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
     }
 
     @Override
+    public CustomerUserInfo selectByCustomerF(CustomerUserInfoForm customerUserInfoForm) {
+        if (StringUtils.isNotBlank(customerUserInfoForm.getCustomerId())){
+            queryWrapper.eq("customer_id",customerUserInfoForm.getCustomerId());
+        }
+
+        if (StringUtils.isNotBlank(customerUserInfoForm.getCustomerName())){
+            queryWrapper.eq("customer_name",customerUserInfoForm.getCustomerName());
+        }
+        return baseMapper.selectOne(queryWrapper);
+    }
+
+    @Override
     public List<String> customerNameLimit(String customerName) {
         return customerUserInfoMapper.customerNameLimit(customerName);
     }

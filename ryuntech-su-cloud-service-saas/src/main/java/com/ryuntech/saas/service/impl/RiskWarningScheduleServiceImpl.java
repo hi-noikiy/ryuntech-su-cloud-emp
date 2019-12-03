@@ -115,7 +115,6 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
             log.info("没有待监控的企业");
             return;
         }
-
         log.info("开始监控");
         List<String> stringList = new ArrayList<>();
         for (CustomerMonitor customerMonitor :customerMonitors){
@@ -149,7 +148,6 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                     customerRisk.setRiskMType(RiskWarnConstants.TYPE1);
                                     customerRiskMapper.insert(customerRisk);
                                 }
-
                             }
                         }
                     } else if (urlName.contains(PRRSTOCKHOLDERCHANGE)) {

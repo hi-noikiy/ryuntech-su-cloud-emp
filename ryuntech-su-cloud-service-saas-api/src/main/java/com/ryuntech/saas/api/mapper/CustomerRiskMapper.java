@@ -36,4 +36,5 @@ public interface CustomerRiskMapper extends IBaseMapper<CustomerRisk> {
      */
     List<CustomerRiskDTO> selectGroupConcatByTime(@Param("customerRiskForm") CustomerRiskForm customerRiskForm);
 
+
 }

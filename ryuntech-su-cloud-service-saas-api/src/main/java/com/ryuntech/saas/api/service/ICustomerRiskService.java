@@ -42,4 +42,5 @@ public interface ICustomerRiskService extends IBaseService<CustomerRisk> {
      * @return
      */
     List<CustomerRiskDTO> selectGroupConcatByTime(@Param("customerRiskForm") CustomerRiskForm customerRiskForm);
+
 }

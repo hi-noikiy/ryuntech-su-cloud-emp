@@ -20,6 +20,7 @@
 
     <resultMap id="BaseResultMap2" type="com.ryuntech.saas.api.dto.CustomerRiskDTO">
         <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="CUSTOMER_ID" property="customerId" />
         <result column="RISK_TYPES" property="riskTypes" />
         <result column="RISK_TIME" property="riskTime" />
         <result column="FALG" property="falg" />
@@ -34,11 +35,12 @@
         SELECT
             group_concat(risk_type) AS risk_types,
             customer_name,
-            risk_time,
+            customer_id,
             falg
         FROM
             ryn_customer_risk
         <where>
+
             <if test="customerRiskForm.customerName!=null and customerRiskForm.customerName!=''">
                 customer_name like '%'||#{customerRiskForm.customerName}||'%'
             </if>
@@ -48,6 +50,7 @@
             </if>
 
         </where>
+
         GROUP BY
             customer_name
     </select>
@@ -65,5 +68,8 @@
         GROUP BY
             risk_time
     </select>
+
+
+
 
 </mapper>

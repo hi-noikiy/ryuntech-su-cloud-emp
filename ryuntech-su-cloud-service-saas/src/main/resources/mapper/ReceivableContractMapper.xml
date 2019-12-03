@@ -28,6 +28,27 @@
     </sql>
 
 
+    <select id="selectSumByRContract"  resultType="java.lang.String">
+        select
+            sum(balance_amount) balanceAmounts
+        from
+            ryn_receivable_contract
+        <where>
+            <if test="receivableContractDTO.customerId!=null and receivableContractDTO.customerId!=''">
+                customer_id like concat('%',#{receivableContractDTO.customerId},'%')
+            </if>
+
+            <if test="receivableContractDTO.statusList!=null and receivableContractDTO.statusList.size()>0">
+                and status in
+                <foreach collection="receivableContractDTO.statusList" item="status" index="index" open="(" close=")" separator=",">
+                    #{status}
+                </foreach>
+            </if>
+        </where>
+        group by customer_id
+    </select>
+
+
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.dto.ReceivableContractDTO">
         select
             ryn_receivable_contract.*,
@@ -56,5 +77,7 @@
 
         </where>
     </select>
+
+
 
 </mapper>

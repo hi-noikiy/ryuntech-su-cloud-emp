@@ -20,12 +20,25 @@ github仓库
 账号：290095142@qq.com
 密码：gaojiangjian@139
 
+gitee账号
+账号：dev@ykdtech.cn
+密码：YkdTech1234
+
+开放平台
+账号：dev@ykdtech.cn
+密码：yunkai123
+
+公众平台
+账号：chenruisheng@ykdtech.cn
+密码：yunkai123
+
+
 小程序地址:git@github.com:gjjbase/yktech-received-mini.git
 API文档https://taro-ui.jd.com/#/docs/introduction
 
+
 后台地址:git@github.com:gjjbase/ryuntech-su-cloud-emp.git
 API文档https://element.faas.ele.me/#/zh-CN/
-
 
 
 企查查接口平台  https://openapi.qichacha.com

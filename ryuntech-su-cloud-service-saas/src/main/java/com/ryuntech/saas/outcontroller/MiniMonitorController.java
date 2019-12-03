@@ -1,6 +1,7 @@
 package com.ryuntech.saas.outcontroller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.gson.Gson;
 import com.ryuntech.common.utils.HttpUtils;
@@ -78,6 +79,13 @@ public class MiniMonitorController extends ModuleBaseController{
         if (null!=customerMonitorForm){
             List<String> customerIds = customerMonitorForm.getCustomerIds();
             for (String customerId:customerIds){
+//                判断该企业是否已经存在
+                CustomerMonitor customerMonitor = iCustomerMonitorService.getOne(new QueryWrapper<CustomerMonitor>().eq("customer_id", customerId));
+                if (null!=customerMonitor){
+                    log.info("该公司已经在监控列表中"+customerMonitor.getMonitorId());
+                    continue;
+                }
+
 //                判断该公司是否存在企查查中
 
                 CustomerUserInfoDTO customerUserInfoDTO = iCustomerUserInfoService.selectCustomerUserInfoDTO(new CustomerUserInfo().setCustomerId(customerId));

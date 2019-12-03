@@ -241,4 +241,9 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
     public ReceivableContractDTO findDetailByContractId(ReceivableContractDTO receivableContractDTO) {
         return null;
     }
+
+    @Override
+    public String selectSumByRContract(ReceivableContractDTO receivableContractDTO) {
+        return baseMapper.selectSumByRContract(receivableContractDTO);
+    }
 }

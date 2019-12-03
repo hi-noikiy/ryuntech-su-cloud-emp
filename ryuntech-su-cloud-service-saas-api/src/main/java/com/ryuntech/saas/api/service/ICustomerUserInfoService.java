@@ -58,6 +58,13 @@ public interface ICustomerUserInfoService extends IBaseService<CustomerUserInfo>
     List<CustomerUserInfo> selectByCustomer(CustomerUserInfoForm customerUserInfoForm);
 
     /**
+     * 根据form查询对应的客户对象
+     * @param customerUserInfoForm
+     * @return
+     */
+    CustomerUserInfo selectByCustomerF(CustomerUserInfoForm customerUserInfoForm);
+
+    /**
      * 根据当前用户所在公司名称查询公司所有客户名称
      * @param customerName
      * @return

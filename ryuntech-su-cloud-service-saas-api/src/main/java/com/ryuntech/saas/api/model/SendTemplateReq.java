@@ -34,10 +34,18 @@ public class SendTemplateReq {
      * 不填则下发空模板。具体格式请参考示例。
      */
     private DoctorReplyMsgData data;
+    /**
+     * 模板内容json数据
+     */
+    private String jsonContent;
 
     /**
      * 模板需要放大的关键词
      * 不填则默认无放大
      */
     private String emphasis_keyword;
+    /**
+     * 点击后跳转的详情
+     */
+    private String url;
 }

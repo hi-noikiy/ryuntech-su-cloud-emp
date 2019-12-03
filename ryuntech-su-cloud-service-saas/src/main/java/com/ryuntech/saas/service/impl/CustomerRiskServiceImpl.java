@@ -49,4 +49,5 @@ public class CustomerRiskServiceImpl extends BaseServiceImpl<CustomerRiskMapper,
     public List<CustomerRiskDTO> selectGroupConcatByTime(CustomerRiskForm customerRiskForm) {
         return baseMapper.selectGroupConcatByTime(customerRiskForm);
     }
+
 }

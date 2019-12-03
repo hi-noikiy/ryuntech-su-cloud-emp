@@ -5,10 +5,16 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+/**
+ * @author EDZ
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
 public class DoctorReplyMsgData {
+
+    private KeyNote frist;
+
     private KeyNote keyword1;
 
     private KeyNote keyword2;
@@ -18,4 +24,5 @@ public class DoctorReplyMsgData {
     private KeyNote keyword4;
 
     private KeyNote keyword5;
+    private KeyNote remake;
 }

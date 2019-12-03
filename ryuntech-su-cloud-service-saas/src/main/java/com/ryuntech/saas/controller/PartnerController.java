@@ -219,15 +219,15 @@ public class PartnerController extends ModuleBaseController {
      * @return
      */
     @PostMapping("/outAuth")
-    @ApiOperation(value = "用户注册")
+    @ApiOperation(value = "用户认证")
     @ApiImplicitParam(name = "code", value = "小程序登录的code", required = true, dataType = "String", paramType = "body")
     public Result auth(
             @RequestBody Partner partner)
 
      {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid="
-                + WeChatConstant.APPID+
-                "&secret="+WeChatConstant.APPSECRET+
+                + WeChatConstant.MINIAPPID+
+                "&secret="+WeChatConstant.MINIAPPSECRET+
                 "&js_code="+ partner.getCodeValue() +
                 "&grant_type=authorization_code";
         //发送post请求读取调用微信接口获取openid用户唯一标识

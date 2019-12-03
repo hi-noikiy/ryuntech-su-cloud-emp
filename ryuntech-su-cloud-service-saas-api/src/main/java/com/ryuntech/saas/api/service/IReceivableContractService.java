@@ -81,4 +81,12 @@ public interface IReceivableContractService extends IBaseService<ReceivableContr
      * @return
      */
     ReceivableContractDTO findDetailByContractId(ReceivableContractDTO receivableContractDTO);
+
+
+    /**
+     * 查询对应的待收金额数据
+     * @param receivableContractDTO
+     * @return
+     */
+    String selectSumByRContract(ReceivableContractDTO receivableContractDTO);
 }

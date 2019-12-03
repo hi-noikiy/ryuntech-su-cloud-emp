@@ -28,10 +28,16 @@ public class UserWechatServiceImpl extends BaseServiceImpl<UserWechatMapper, Use
     @Override
     public UserWechat selectByUserWeChat(UserWechat userWechat) {
         if (StringUtils.isNotBlank(userWechat.getUnionId())){
-            queryWrapper.eq("OPEN_ID",userWechat.getUnionId());
+            queryWrapper.eq("union_id",userWechat.getUnionId());
+        }
+        if (StringUtils.isNotBlank(userWechat.getMiniprogramOpenid())){
+            queryWrapper.eq("miniprogram_openid",userWechat.getMiniprogramOpenid());
+        }
+        if (StringUtils.isNotBlank(userWechat.getGongzhonghaoOpenid())){
+            queryWrapper.eq("gongzhonghao_openid",userWechat.getGongzhonghaoOpenid());
         }
         if (StringUtils.isNotBlank(userWechat.getUserId())){
-            queryWrapper.eq("USER_ID",userWechat.getUserId());
+            queryWrapper.eq("user_id",userWechat.getUserId());
         }
         return userWechatMapper.selectOne(queryWrapper);
     }

@@ -20,6 +20,7 @@ public class WxToken {
      * 随机数
      */
     private String nonce;
+
     /**
      * 随机字符串
      */
