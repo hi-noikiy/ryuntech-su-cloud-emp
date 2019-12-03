@@ -1,6 +1,7 @@
 package com.ryuntech.authorization.config;
 
-import com.ryuntech.saas.api.service.fallback.UserDetailsServiceImpl;
+import com.ryuntech.authorization.service.CustomAuthenticationProvider;
+import com.ryuntech.authorization.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
@@ -31,41 +33,41 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     @Override
-    protected AuthenticationManager authenticationManager() throws Exception {
-        return super.authenticationManager();
-    }
-
-    @Bean
-    @Override
     protected UserDetailsService userDetailsService() {
         return new UserDetailsServiceImpl();
     }
 
+    @Bean
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService());
+    protected AuthenticationManager authenticationManager() throws Exception {
+        return super.authenticationManager();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/")
-                .deleteCookies("JSESSIONID")
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 不使用session
+
                 .and()
                 .authorizeRequests()
-                .antMatchers("/user/info/*", "/sms/*", "/*/out**","/actuator/*", "/token/logout")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/**").permitAll()
+
+                .and()
+                .cors()
                 .and()
                 .csrf().disable();
     }
 
+    // 不用授权的url，即不需要token
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 暴露`/oauth/check_token`端点
-        web.ignoring().mvcMatchers("/oauth/check_token", "/user/info/*","/sms/*","/*/out**");
+        //web.ignoring().mvcMatchers("/oauth/check_token");
+    }
+
+    // 自定义认证方法，默认执行DaoAuthenticationProvider
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(new CustomAuthenticationProvider(userDetailsService(), passwordEncoder()));
     }
 }

@@ -12,6 +12,10 @@ spring:
     config:
       name: ${spring.application.name}
       profile: ${spring.profiles.active}
+  auth:
+    client_id: client
+    client_secret: secret
+    grant_type: password
 
 # feign 配置
 feign:

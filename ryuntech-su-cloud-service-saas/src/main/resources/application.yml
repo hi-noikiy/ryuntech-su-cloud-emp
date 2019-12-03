@@ -30,16 +30,16 @@ spring:
       profile: ${spring.profiles.active}
 
 
-security:
-
-  oauth2:
-    client:
-      client-id: client
-      client-secret: secret
-      access-token-uri: http://ryuntech-su-cloud-auth:4000/oauth/token
-      user-authorization-uri: http://ryuntech-su-cloud-auth:4000/oauth/authorize
-    resource:
-      token-info-uri: http://ryuntech-su-cloud-auth:4000/oauth/check_token
+#security:
+#
+#  oauth2:
+#    client:
+#      client-id: client
+#      client-secret: secret
+#      access-token-uri: http://ryuntech-su-cloud-auth:4000/oauth/token
+#      user-authorization-uri: http://ryuntech-su-cloud-auth:4000/oauth/authorize
+#    resource:
+#      token-info-uri: http://ryuntech-su-cloud-auth:4000/oauth/check_token
 
 eureka:
   instance:

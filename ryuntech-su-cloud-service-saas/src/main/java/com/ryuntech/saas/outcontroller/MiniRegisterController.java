@@ -94,10 +94,10 @@ public class MiniRegisterController extends ModuleBaseController {
 
 
         if (register!=null){
-            SysUser sysUser = sysUserService.selectByUser(new SysUser().setPhone(sysUserForm.getPhone()));
-            List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setUserId(sysUser.getId()));
+            SysUser sysUser = sysUserService.selectByUser(new SysUser().setMobile(sysUserForm.getPhone()));
+            List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setSysUserId(sysUser.getSysUserId()));
             //            查询小程序
-            UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getId()));
+            UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getSysUserId()));
             SysUserDTO sysUserDTO = new SysUserDTO();
             if (null!=employeeList&&employeeList.size()!=0){
                 sysUserDTO.setEmployeeList(employeeList);
@@ -106,10 +106,10 @@ public class MiniRegisterController extends ModuleBaseController {
                 sysUserDTO.setUserWechat(userWechat);
             }
 
-            sysUserDTO.setUsername(sysUser.getUsername());
-            sysUserDTO.setId(sysUser.getId());
+        //    sysUserDTO.setUsername(sysUser.getUsername());
+            sysUserDTO.setId(sysUser.getSysUserId());
             sysUserDTO.setAvatar(sysUser.getAvatar());
-            sysUserDTO.setPhone(sysUser.getPhone());
+            sysUserDTO.setPhone(sysUser.getMobile());
             sysUserDTO.setStatus(sysUser.getStatus());
             if (sysUser!=null){
                 //手机号

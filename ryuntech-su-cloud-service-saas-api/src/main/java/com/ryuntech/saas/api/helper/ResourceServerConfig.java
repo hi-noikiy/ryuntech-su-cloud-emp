@@ -4,6 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 
 /**
  * @author antu
@@ -35,8 +37,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/swagger-resources/**",
                         "/v2/api-docs/**")
                 .permitAll()
-
-                .antMatchers("/actuator/**", "/user/info/*","/sms/*","/storage/local/upload","/*/out**")
+                .antMatchers("/actuator/**", "/user/info/*", "/sms/*", "/storage/local/upload", "/*/out**")
                 .permitAll()
 
                 .anyRequest()
@@ -44,5 +45,15 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
                 .and()
                 .csrf().disable();
+    }
+
+    @Override
+    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
+        RemoteTokenServices tokenService = new RemoteTokenServices();
+        tokenService.setCheckTokenEndpointUrl("https://wx.ryuntech.com:9999/api/auth/oauth/check_token");
+        tokenService.setClientId("client");
+        tokenService.setClientSecret("secret");
+
+        resources.tokenServices(tokenService);
     }
 }

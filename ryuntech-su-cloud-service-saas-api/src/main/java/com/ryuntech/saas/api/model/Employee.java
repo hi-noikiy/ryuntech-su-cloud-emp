@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -20,42 +21,54 @@ import java.util.Date;
 * @author antu
 * @since 2019-10-15
 */
-    @Data
-        @EqualsAndHashCode(callSuper = false)
-    @Accessors(chain = true)
-    @TableName("ryn_employee")
-    public class Employee extends BaseModel {
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+@TableName("ryn_employee")
+public class Employee extends BaseModel {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 职工编号
+     * 主键
      */
-    @TableId("EMPLOYEE_ID")
+    @TableId("employee_id")
     private String employeeId;
 
     /**
-     * 用户编号
+     * 职工编号
      */
-    @TableField("USER_ID")
-    private String userId;
+    @TableField("code")
+    private String code;
+
+    /**
+     * 用户ID
+     */
+    @TableField("sys_user_id")
+    private String sysUserId;
 
     /**
      * 职工姓名
      */
-    @TableField("NAME")
+    @TableField("name")
     private String name;
 
     /**
-     * 公司编号
+     * 公司ID
      */
-    @TableField("COMPANY_ID")
+    @TableField("company_id")
     private String companyId;
+
+    /**
+     * 公司姓名
+     */
+    @TableField("company_name")
+    private String companyName;
 
     /**
      * 所属部门ID
      */
-    @TableField("DEPARTMENT_ID")
+    @TableField("department_id")
     private String departmentId;
 
     /**
@@ -73,24 +86,30 @@ import java.util.Date;
     /**
      * 邮箱
      */
-    @TableField("EMAIL")
+    @TableField("email")
     private String email;
 
     /**
      * 帐号状态 0-正常 1-禁用
      */
-    @TableField("STATUS")
+    @TableField("status")
     private Integer status;
 
     /**
-     * 公司姓名
+     * 数据权限（1=本人2=本部门及下属部门3=全部4=指定部门）
      */
-    @TableField("COMPANY_NAME")
-    private String companyName;
+    @TableField("data_type")
+    private Integer dataType;
+
+    /**
+     * 可操作部门ID（多个英文逗号隔开）
+     */
+    @TableField("data_department_id")
+    private String dataDepartmentId;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @TableField("UPDATED_AT")
+    @TableField("updated_at")
     private Date updatedAt;
 
 
@@ -99,7 +118,7 @@ import java.util.Date;
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @TableField("CREATED_AT")
+    @TableField("created_at")
     private Date createdAt;
 
 

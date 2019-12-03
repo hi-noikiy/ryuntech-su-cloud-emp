@@ -66,11 +66,6 @@ public class SysUserController extends ModuleBaseController {
         if (user == null) {
             return new Result<>(CommonEnums.USER_ERROR);
         }
-        if (user != null) {
-            //用户对应的角色rids角色Id
-            List<SysPerm> permissions = sysPermService.getPermsByUserId(user.getId()+"");
-            putAuth(user, permissions);
-        }
         return new Result<>(user);
     }
 
@@ -87,30 +82,7 @@ public class SysUserController extends ModuleBaseController {
         if (user == null) {
             return new Result<>(CommonEnums.USER_ERROR);
         }
-        if (user != null) {
-            //用户对应的角色rids角色Id
-            List<SysPerm> permissions = sysPermService.getPermsByUserId(user.getId()+"");
-            putAuth(user, permissions);
-        }
         return new Result<>(user);
-    }
-
-    public static void putAuth(SysUser user, List<SysPerm> permissions) {
-        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        Set<Auth> perms = new HashSet<>();
-        for (SysPerm permission : permissions) {
-            if (permission != null && permission.getPval()!=null) {
-                GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(permission.getPval());
-                //1：此处将权限信息添加到 GrantedAuthority 对象中，在后面进行全权限验证时会使用GrantedAuthority 对象。
-                grantedAuthorities.add(grantedAuthority);
-                Auth auth = new Auth();
-                auth.setName(permission.getPname());
-                auth.setVal(permission.getPval());
-                perms.add(auth);
-            }
-        }
-        user.setPerms(perms);
-        user.setGrantedAuthorities(grantedAuthorities);
     }
 
     /**
@@ -138,8 +110,8 @@ public class SysUserController extends ModuleBaseController {
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "user", value = "查询条件", required = true, dataType = "SysUser", paramType = "body")
     public Result<IPage<SysUser>> list(SysUser user, QueryPage queryPage) {
-        log.info("order.getOrderid()"+user.getUsername());
-        log.info("order.getOrderid()"+user.getId());
+     //   log.info("order.getOrderid()"+user.getUsername());
+     //   log.info("order.getOrderid()"+user.getId());
         return  new Result<>(sysUserService.selectUsersRoleById(user, queryPage));
 //        return new Result<Map>(this.selectByPageNumSize(queryPage, () -> sysUserService.list(user)));
     }
@@ -228,57 +200,5 @@ public class SysUserController extends ModuleBaseController {
     }
 
 
-    @PermInfo("更新系统用户的角色")
-//    @RequiresPermissions("a:sys:user:role:update")
-    @PatchMapping("/role")
-    public Result updateUserRole(@RequestBody String body) {
-
-        String oper = "update user's roles";
-        log.info("{}, body: {}",oper,body);
-
-        JSONObject json = JSON.parseObject(body);
-        final String uid = json.getString("uid");
-
-        List<String> rids = json.getJSONArray("rids").toJavaList(String.class);
-
-        //检查：不能含有管理员角色
-        boolean containRoot = sysRoleService.checkRidsContainRval(rids, Root.ROLE_VAL);
-        if (containRoot){
-            return new Result<>(CommonEnums.PARAM_ERROR,"不能给非管理员用户赋予管理员角色");
-        }
-
-        //删除：原来绑定的角色
-        boolean deleteSucc = sysUserRoleService.remove(new QueryWrapper<SysUserRole>().eq("user_id", uid));
-        if (!deleteSucc) {
-            return new Result<>(CommonEnums.PARAM_ERROR,"无法解除原来的用户-角色关系");
-        }
-
-        //更新：绑定新的角色
-        List<SysUserRole> list = rids.stream().map(roleId -> new SysUserRole(uid, roleId)).collect(Collectors.toList());
-
-        if (!rids.isEmpty()){
-            boolean addSucc = sysUserRoleService.saveBatch(list);
-            return new Result<>(addSucc);
-        }
-        return new Result<>();
-    }
-
-    /**
-     * 获取用户id和用户名列表，用于搜索选择
-     * @param user
-     * @return
-     */
-    @PostMapping("/getUserMap")
-    public Result selectUserMap(@RequestBody SysUser user) {
-        List<SysUser> list = sysUserService.selectUserMap(user);
-        List<Map<String,String>> res = new ArrayList<>();
-        for (SysUser sysUser : list) {
-            Map<String,String> item = new HashMap<>();
-            item.put("id",sysUser.getId());
-            item.put("username",sysUser.getUsername());
-            res.add(item);
-        }
-        return new Result(res);
-    }
 
 }

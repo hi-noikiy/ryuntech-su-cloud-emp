@@ -73,7 +73,6 @@ public class CustomerUserInfoController extends ModuleBaseController {
             String username = getUserName();
             SysUser user = sysUserService.findByName(username);
             //当前用户所属公司名称
-            String companyName = user.getCompanyName();
 //            List<String> customerNames = iCustomerUserInfoService.customerNameLimit(companyName);
             List<String> customerNames = iCustomerUserInfoService.customerNameLimit("公司a");
             boolean isSuccess = customerNames.contains(customerUserInfo.getCustomerName());
@@ -118,7 +117,6 @@ public class CustomerUserInfoController extends ModuleBaseController {
                 String username = getUserName();
                 SysUser user = sysUserService.findByName(username);
                 //当前用户所属公司名称
-                String companyName = user.getCompanyName();
 //            List<String> customerNames = iCustomerUserInfoService.customerNameLimit(companyName);
                 List<String> customerNames = iCustomerUserInfoService.customerNameLimit("公司a");
                 boolean isSuccess = customerNames.contains(customerUserInfo.getCustomerName());

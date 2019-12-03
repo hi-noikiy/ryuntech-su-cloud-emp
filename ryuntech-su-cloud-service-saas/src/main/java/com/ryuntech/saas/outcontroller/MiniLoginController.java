@@ -61,14 +61,14 @@ public class MiniLoginController extends ModuleBaseController{
         }
         if (value!=null&&value.toString().equals(sysUserForm.getVcode())){
             //判断手机号是否已经存在
-            SysUser sysUser = sysUserService.selectByUser(new SysUser().setPhone(sysUserForm.getPhone()));
+            SysUser sysUser = sysUserService.selectByUser(new SysUser().setMobile(sysUserForm.getPhone()));
 //          查询对应的职工
             log.info("开始查询对应的职工");
-            log.info("开始查询对应的USERID"+sysUser.getId());
-            List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setUserId(sysUser.getId()));
+            log.info("开始查询对应的USERID"+sysUser.getSysUserId());
+            List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setSysUserId(sysUser.getSysUserId()));
             log.info("结束查询对应的职工");
 //            查询小程序
-            UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getId()));
+            UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getSysUserId()));
             SysUserDTO sysUserDTO = new SysUserDTO();
             if (null!=employeeList&&employeeList.size()!=0){
                 sysUserDTO.setEmployeeList(employeeList);
@@ -77,10 +77,10 @@ public class MiniLoginController extends ModuleBaseController{
                 sysUserDTO.setUserWechat(userWechat);
             }
 
-            sysUserDTO.setUsername(sysUser.getUsername());
-            sysUserDTO.setId(sysUser.getId());
+           // sysUserDTO.setUsername(sysUser.getUsername());
+            sysUserDTO.setId(sysUser.getSysUserId());
             sysUserDTO.setAvatar(sysUser.getAvatar());
-            sysUserDTO.setPhone(sysUser.getPhone());
+            sysUserDTO.setPhone(sysUser.getMobile());
             sysUserDTO.setStatus(sysUser.getStatus());
             if (sysUser!=null){
                 //手机号

@@ -55,7 +55,7 @@ public class IndexControllerOne extends ModuleBaseController {
         String username = getUserName();
         SysUser user = sysUserService.findByName(username);
         //用户编号
-        String id = user.getId();
+        String id = user.getSysUserId();
         ReceivableContract receivableContract = new ReceivableContract();
         receivableContract.setStaffId(id);
         List<ReceivableContract> receivableContracts =iReceivableContractService.receivableContractList(receivableContract);
@@ -114,7 +114,6 @@ public class IndexControllerOne extends ModuleBaseController {
         String username = getUserName();
         SysUser user = sysUserService.findByName(username);
         //当前用户所属公司职工编号
-        String employeeId = user.getEmployeeId();
         IndexDepartmentDTO indexDepartmentDTO = new IndexDepartmentDTO();
         Employee employee = iEmployeeService.getById("749875506521833471");
         String departmentId = null;

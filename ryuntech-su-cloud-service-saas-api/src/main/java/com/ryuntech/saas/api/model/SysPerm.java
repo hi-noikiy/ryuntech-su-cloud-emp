@@ -27,57 +27,48 @@ import java.util.Map;
 * @author antu
 * @since 2019-09-12
 */
-    @Data
-        @EqualsAndHashCode(callSuper = false)
-    @Accessors(chain = true)
-    @TableName("sys_perm")
-    public class SysPerm extends BaseModel {
+@Data
+@EqualsAndHashCode(callSuper = false)
+@Accessors(chain = true)
+public class SysPerm implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-            /**
-            * 权限值，shiro的权限控制表达式
-            */
-            @TableId(type = IdType.INPUT)
-    private String pval;
+    /**
+     * 主键
+     */
+    @TableId("perm_id")
+    private String permId;
 
-            /**
-            * 父权限id
-            */
-    private String parent;
+    /**
+     * 资源组排序
+     */
+    @TableField("res_group_sort")
+    private Integer resGroupSort;
 
-            /**
-            * 权限名称
-            */
-    private String pname;
+    /**
+     * 资源组名称
+     */
+    @TableField("res_group_name")
+    private String resGroupName;
 
-            /**
-            * 权限类型：1.菜单 2.按钮 3.接口 4.特殊
-            */
-    private Integer ptype;
+    /**
+     * 同资源组下资源排序
+     */
+    @TableField("sort")
+    private Integer sort;
 
-            /**
-            * 是否叶子节点
-            */
-    private Boolean leaf;
+    /**
+     * 资源名称
+     */
+    @TableField("res_name")
+    private String resName;
 
-            /**
-            * 创建时间
-            */
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-            @Column(name = "created")
-    private Date created;
-
-            /**
-            * 修改时间
-            */
-            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-            @Column(name = "created")
-    private Date updated;
-
-
+    /**
+     * 资源标识
+     */
+    @TableField("res_key")
+    private String resKey;
 
     @TableField(exist = false)
     private List<SysPerm> children = new ArrayList<>();

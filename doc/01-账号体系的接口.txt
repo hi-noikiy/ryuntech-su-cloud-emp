@@ -1,0 +1,29 @@
+账号体系接口统计
+
+
+系统前台
+	1.注册 
+	2.登录 sys/login
+	3.登出 sys/logout
+
+员工设置 employee
+	0. 查询员工列表 employee/list
+	1. 修改员工状态 employee/updateStatus
+	2. 编辑员工（新增编辑） employee/edit
+	3. 查询员工详情 employee/detail
+
+
+部门设置 department
+	1. 查询部门列表，树状结构数据（包含 员工设置-新增员工） department/tree
+	2. 编辑部门（新增修改） department/edit
+	3. 删除部门 department/delete
+	4. 迁移员工去其他部门 department/migrate
+
+角色权限 role
+        0. 查询角色列表 role/list
+	1. 查询所有资源列表，两级 role/allResources
+	2. 查询当前角色的资源 role/currentResources
+	3. 编辑角色（新增修改） role/edit
+	4. 删除角色 role/delete
+	5. 角色名称列表（编辑员工使用） role/nameList
+

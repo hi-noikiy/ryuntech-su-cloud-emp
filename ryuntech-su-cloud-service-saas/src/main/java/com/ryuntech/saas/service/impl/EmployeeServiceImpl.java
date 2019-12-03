@@ -34,8 +34,8 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public Employee selectByEmployee(Employee employee) {
-        if (StringUtils.isNotBlank(employee.getUserId())){
-            queryWrapper.eq("user_id", employee.getUserId());
+        if (StringUtils.isNotBlank(employee.getSysUserId())){
+            queryWrapper.eq("user_id", employee.getSysUserId());
         }
 
         if (StringUtils.isNotBlank(employee.getEmployeeId())){
@@ -48,8 +48,8 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     @Override
     public List<Employee> selectByEmployeeList(Employee employee) {
         queryWrapper=new QueryWrapper<>();
-        if (StringUtils.isNotBlank(employee.getUserId())){
-            queryWrapper.eq("user_id", employee.getUserId());
+        if (StringUtils.isNotBlank(employee.getSysUserId())){
+            queryWrapper.eq("user_id", employee.getSysUserId());
         }
         if (StringUtils.isNotBlank(employee.getEmployeeId())){
             queryWrapper.eq("employee_id", employee.getEmployeeId());

@@ -55,7 +55,7 @@ public class GenerateMybatisPlus {
         // dsc.setSchemaName("public");
         dsc.setDriverName("com.mysql.jdbc.Driver");
         dsc.setUsername("root");
-        dsc.setPassword("ryuntech");
+        dsc.setPassword("root");
         mpg.setDataSource(dsc);
 
         // 包配置

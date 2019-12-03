@@ -41,7 +41,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private AuthenticationManager authenticationManager;
 
     @Bean
-    @Primary
+    @Primary // 覆盖初始加载的数据源
     @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource dataSource() {
         return DataSourceBuilder.create().build();
@@ -57,28 +57,34 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         return new JdbcClientDetailsService(dataSource());
     }
 
+    // 客户端信息
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        /**
-         * 基于JDBC的储存方式
-         * 对应查询`oauth_client_details`表中的客户端信息
-         */
         clients.withClientDetails(clientDetailsService());
     }
 
+    // token数据及认证方式
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints
                 .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
                 .tokenStore(tokenStore())
                 .userDetailsService(userDetailsService)
                 .authenticationManager(authenticationManager);
+        //  .exceptionTranslator(webResponseExceptionTranslator);  // 自定义异常返回
+
+       /* DefaultTokenServices tokenServices = new DefaultTokenServices();
+        tokenServices.setTokenStore(tokenStore());
+        tokenServices.setAccessTokenValiditySeconds(10);
+        endpoints.tokenServices(tokenServices);*/
     }
 
+
     @Override
-    public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+    public void configure(AuthorizationServerSecurityConfigurer security) {
         security
-                .allowFormAuthenticationForClients()
+                .allowFormAuthenticationForClients() // 允许表单验证
+                .tokenKeyAccess("permitAll()")// 开启/oauth/token_key验证端口无权限访问
                 .checkTokenAccess("permitAll()");
     }
 }

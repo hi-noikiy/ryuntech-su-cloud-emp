@@ -67,9 +67,9 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
     @Override
     public List<SysUser> list(SysUser user) {
         QueryWrapper queryWrapper=null;
-        if (user.getUsername() != null && !user.getUsername().isEmpty()) {
+        /*if (user.getUsername() != null && !user.getUsername().isEmpty()) {
              queryWrapper= new QueryWrapper<SysUser>().eq("username", user.getUsername());
-        }
+        }*/
         //插入权限数据
         return sysUserMapper.selectList(queryWrapper);
     }
@@ -91,7 +91,7 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         SysUser entity = new SysUser();
         SysUser sysUser = this.findByName(SecurityUtils.getUsername());
         if (sysUser != null) {
-            entity.setId(sysUser.getId());
+            entity.setSysUserId(sysUser.getSysUserId());
             entity.setPassword(passwordEncoder.encode(user.getPassword()));
             sysUserMapper.updateById(entity);
         }
@@ -106,12 +106,12 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
     public IPage<SysUser> selectUsersRoleById(SysUser user, QueryPage queryPage) {
 
         Page<SysUser> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        if (user.getId()!=null) {
-            queryWrapper.eq("id", user.getId());
+        if (user.getSysUserId()!=null) {
+            queryWrapper.eq("id", user.getSysUserId());
         }
-        if (user.getUsername()!=null) {
+        /*if (user.getUsername()!=null) {
             queryWrapper.eq("username", user.getUsername());
-        }
+        }*/
         return sysUserMapper.selectUsersRoleById(page,user);
     }
 
@@ -139,14 +139,14 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
 
     @Override
     public SysUser selectByUser(SysUser user) {
-        if (StringUtils.isNotBlank(user.getId())){
-            queryWrapper.eq("id", user.getId());
+        if (StringUtils.isNotBlank(user.getSysUserId())){
+            queryWrapper.eq("id", user.getSysUserId());
         }
-        if (user.getUsername()!=null) {
+        /*if (user.getUsername()!=null) {
             queryWrapper.eq("username", user.getUsername());
-        }
-        if (user.getPhone()!=null) {
-            queryWrapper.eq("phone", user.getPhone());
+        }*/
+        if (user.getMobile()!=null) {
+            queryWrapper.eq("phone", user.getMobile());
         }
         return baseMapper.selectOne(queryWrapper);
     }
@@ -170,13 +170,13 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
 
         Long id = uniqueIdGenerator.nextId();
         SysUser sysUser = new SysUser();
-        sysUser.setId(String.valueOf(id));
+        sysUser.setSysUserId(String.valueOf(id));
 //        登陆名默认为手机号
-        sysUser.setUsername(sysUserForm.getPhone());
-        sysUser.setPhone(sysUserForm.getPhone());
+        //sysUser.setUsername(sysUserForm.getPhone());
+        sysUser.setMobile(sysUserForm.getPhone());
         sysUser.setAvatar(sysUserForm.getAvatar());
         sysUser.setPassword(sysUserForm.getPassword());
-        sysUser.setCreateTime(new Date());
+        sysUser.setCreatedAt(new Date());
         sysUser.setUpdatedAt(new Date());
         sysUserMapper.insert(sysUser);
 
@@ -184,7 +184,7 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         Employee employee = new Employee();
         String employeeId = String.valueOf(uniqueIdGenerator.nextId());
         employee.setEmployeeId(employeeId);
-        employee.setUserId(sysUser.getId());
+        employee.setSysUserId(sysUser.getSysUserId());
         employee.setCompanyName(sysUserForm.getCompanyName());
         employee.setName(sysUserForm.getName());
         employee.setMobile(sysUserForm.getPhone());
@@ -235,12 +235,12 @@ public class SysUserServiceImpl  extends BaseServiceImpl<SysUserMapper, SysUser>
         SysRole sysRole = new SysRole();
         Long roleId = uniqueIdGenerator.nextId();
         sysRole.setRid(String.valueOf(roleId));
-        sysRole.setRval(RoleConstants.ADMINROOT);
+      //  sysRole.setRval(RoleConstants.ADMINROOT);
         sysRole.setRname(RoleConstants.ADMIN);
         sysRole.setRdesc(RoleConstants.ADMINDESC);
         sysRole.setCreated(new Date());
         sysRole.setUpdated(new Date());
-        sysRole.setIsAdmin(RoleConstants.ISADMIN);
+        sysRole.setIsAdmin(Integer.parseInt(RoleConstants.ISADMIN));
         sysRole.setCompanyId(employee.getEmployeeId());
         sysRoleMapper.insert(sysRole);
 
