@@ -22,7 +22,7 @@ public class RoleInfoDTO {
         this.roleName = roleDetail.getRoleName();
         StringBuilder builder = new StringBuilder();
         for (PermGroupDTO group : roleDetail.getPermGroupList()) {
-            for (SysPerm perm : group.getSysPermList()) {
+            for (PermDTO perm : group.getPermList()) {
                 builder.append(perm.getResName()).append(",");
             }
         }

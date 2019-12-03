@@ -2,7 +2,10 @@ package com.ryuntech.saas.controller;
 
 
 import com.ryuntech.common.constant.PermInfo;
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.PermGroupDTO;
+import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.dto.RoleInfoDTO;
 import com.ryuntech.saas.api.service.ISysRoleService;
 import io.swagger.annotations.Api;
@@ -48,8 +51,12 @@ public class SysRoleController extends ModuleBaseController {
      * @return 角色详情(拥有资源的列表)
      */
     @GetMapping("detail")
-    public Result getDetail() {
-        return null;
+    public Result<RoleDetailDTO> getDetail(String roleId) {
+        RoleDetailDTO roleDetail = roleService.getRoleDetail(roleId);
+        if (roleDetail != null) {
+            return new Result<>(roleDetail);
+        }
+        return new Result<>(CommonEnums.PARAM_ERROR, "未找到对应的角色详情, 请重新选择角色");
     }
 
     /**
@@ -57,8 +64,8 @@ public class SysRoleController extends ModuleBaseController {
      * @return 所有资源, 按所属组分成多个list
      */
     @GetMapping("allResources")
-    public Result getAllResources() {
-        return null;
+    public Result<List<PermGroupDTO>> getAllResources() {
+        return new Result<>(roleService.getAllResources());
     }
 
     /**

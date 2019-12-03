@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.dto.RoleInfoDTO;
 import com.ryuntech.saas.api.mapper.SysRoleMapper;
@@ -60,5 +61,17 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             roleInfoList.add(new RoleInfoDTO(detail));
         }
         return roleInfoList;
+    }
+
+    @Override
+    public List<PermGroupDTO> getAllResources() {
+        return baseMapper.getPermGroup();
+    }
+
+    @Override
+    public RoleDetailDTO getRoleDetail(String roleId) {
+        // todo 获取当前员工的公司id;
+        String companyId = "773031356912366360";
+        return baseMapper.getRoleDetailByCompanyIdAndRoleId(companyId, roleId);
     }
 }

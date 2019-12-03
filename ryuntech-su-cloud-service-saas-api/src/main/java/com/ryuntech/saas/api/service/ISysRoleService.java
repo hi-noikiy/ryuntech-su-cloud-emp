@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.PermGroupDTO;
+import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.dto.RoleInfoDTO;
 import com.ryuntech.saas.api.model.FinanceUserInfo;
 import com.ryuntech.saas.api.model.SysRole;
@@ -26,4 +28,8 @@ public interface ISysRoleService extends IBaseService<SysRole> {
     boolean checkRidsContainRval(List<String> rids, String rval);
 
     List<RoleInfoDTO> getRoleInfoList();
+
+    List<PermGroupDTO> getAllResources();
+
+    RoleDetailDTO getRoleDetail(String roleId);
 }

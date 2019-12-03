@@ -1,13 +1,10 @@
 package com.ryuntech.saas.api.dto;
 
-
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
- * 权限组DTO
+ * 权限 DTO
  *
  * @author luojbin
  * @version 1.0
@@ -15,19 +12,22 @@ import java.util.List;
  */
 @Data
 @Accessors(chain = true)
-public class PermGroupDTO {
+public class PermDTO {
 
     /**
-     * 分组序号
+     * 权限id
      */
-    private String groupSort;
+    String permId;
     /**
-     * 分组名称
+     * 序号
      */
-    private String groupName;
+    Integer sort;
     /**
-     * 权限列表
+     * 权限名
      */
-    private List<PermDTO> permList;
-
+    String resName;
+    /**
+     * 权限标识符
+     */
+    String resKey;
 }

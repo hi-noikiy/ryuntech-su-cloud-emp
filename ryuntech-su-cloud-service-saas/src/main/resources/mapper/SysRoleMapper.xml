@@ -61,9 +61,9 @@
         <id property="roleId" column="roleId"/>
         <result property="roleName" column="roleName"/>
         <collection property="permGroupList" ofType="com.ryuntech.saas.api.dto.PermGroupDTO">
-            <id property="name" column="resGroupName"/>
+            <id property="groupName" column="resGroupName"/>
             <result property="groupSort" column="resGroupSort"/>
-            <collection property="sysPermList" ofType="com.ryuntech.saas.api.model.SysPerm">
+            <collection property="permList" ofType="com.ryuntech.saas.api.dto.PermDTO">
                 <id property="permId" column="permId"/>
                 <id property="sort" column="permSort"/>
                 <result property="resName" column="resName"/>
@@ -71,7 +71,6 @@
             </collection>
         </collection>
     </resultMap>
-
     <select id="getRoleDetailList" resultMap="roleDetail">
         select r.RID            roleId,
                r.RNAME          roleName,
@@ -85,6 +84,42 @@
                  left join sys_role_perm rp on r.RID = rp.ROLE_ID
                  left join sys_perm p on rp.PERM_ID = p.PERM_ID
         where r.COMPANY_ID = #{companyId}
+    </select>
+    <select id="getRoleDetailByCompanyIdAndRoleId" resultMap="roleDetail">
+        select r.RID            roleId,
+               r.RNAME          roleName,
+               p.res_group_sort resGroupSort,
+               p.res_group_name resGroupName,
+               p.perm_id        permId,
+               p.sort           permSort,
+               p.res_name       resName,
+               p.res_key        resKey
+        from sys_role r
+                 left join sys_role_perm rp on r.RID = rp.ROLE_ID
+                 left join sys_perm p on rp.PERM_ID = p.PERM_ID
+        where r.COMPANY_ID = #{companyId}
+          and r.RID = #{roleId}
+    </select>
+
+    <resultMap id="permGroup" type="com.ryuntech.saas.api.dto.PermGroupDTO">
+        <id property="groupName" column="resGroupName"/>
+        <result property="groupSort" column="resGroupSort"/>
+        <collection property="permList" ofType="com.ryuntech.saas.api.dto.PermDTO">
+            <id property="permId" column="permId"/>
+            <id property="sort" column="permSort"/>
+            <result property="resName" column="resName"/>
+            <result property="resKey" column="resKey"/>
+        </collection>
+    </resultMap>
+
+    <select id="getPermGroup" resultMap="permGroup">
+        select p.res_group_sort resGroupSort,
+               p.res_group_name resGroupName,
+               p.perm_id        permId,
+               p.sort           permSort,
+               p.res_name       resName,
+               p.res_key        resKey
+        from sys_perm p
     </select>
 
 </mapper>
