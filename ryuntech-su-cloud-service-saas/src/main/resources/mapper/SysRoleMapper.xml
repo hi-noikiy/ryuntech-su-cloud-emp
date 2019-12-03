@@ -4,14 +4,14 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.SysRole">
-        <id column="rid" property="rid" />
-        <result column="rname" property="rname" />
-        <result column="rdesc" property="rdesc" />
-        <result column="rval" property="rval" />
-        <result column="company_id" property="companyId" />
-        <result column="is_admin" property="isAdmin" />
-        <result column="created" property="created" />
-        <result column="updated" property="updated" />
+        <id column="rid" property="rid"/>
+        <result column="rname" property="rname"/>
+        <result column="rdesc" property="rdesc"/>
+        <result column="rval" property="rval"/>
+        <result column="company_id" property="companyId"/>
+        <result column="is_admin" property="isAdmin"/>
+        <result column="created" property="created"/>
+        <result column="updated" property="updated"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -20,27 +20,30 @@
     </sql>
 
 
-
     <select id="getRoleIdsByUserId" resultType="java.lang.String">
-        SELECT r.rid FROM sys_role r, sys_user_role ur
-        WHERE r.rid = ur.role_id AND ur.user_id = #{userId}
+        SELECT r.rid
+        FROM sys_role r,
+             sys_user_role ur
+        WHERE r.rid = ur.role_id
+          AND ur.user_id = #{userId}
     </select>
 
     <!--关联查询-->
     <select id="selectRoleById" resultType="com.ryuntech.saas.api.model.SysRole">
-        select
-            *
+        select *
         from sys_role
-            left join sys_user_role on sys_role.rid = sys_user_role.role_id
-        where sys_user_role.user_id =#{id}
+                 left join sys_user_role on sys_role.rid = sys_user_role.role_id
+        where sys_user_role.user_id = #{id}
     </select>
 
 
     <select id="checkUidContainRval" resultType="java.lang.Boolean">
-        SELECT
-        CONCAT(',',GROUP_CONCAT(r.rval SEPARATOR ','),',')
-        REGEXP CONCAT(',',#{rval},',{1}') AS result FROM sys_role r, sys_user_role ur
-        WHERE ur.role_id = r.rid AND ur.user_id = #{uid}
+        SELECT CONCAT(',', GROUP_CONCAT(r.rval SEPARATOR ','), ',')
+                   REGEXP CONCAT(',', #{rval}, ',{1}') AS result
+        FROM sys_role r,
+             sys_user_role ur
+        WHERE ur.role_id = r.rid
+          AND ur.user_id = #{uid}
     </select>
 
     <select id="checkRidsContainRval" resultType="java.lang.Boolean">
@@ -51,6 +54,37 @@
         <foreach collection="rids" item="rid" separator="," open="(" close=")">
             #{rid}
         </foreach>
+    </select>
+
+
+    <resultMap id="roleDetail" type="com.ryuntech.saas.api.dto.RoleDetailDTO">
+        <id property="roleId" column="roleId"/>
+        <result property="roleName" column="roleName"/>
+        <collection property="permGroupList" ofType="com.ryuntech.saas.api.dto.PermGroupDTO">
+            <id property="name" column="resGroupName"/>
+            <result property="groupSort" column="resGroupSort"/>
+            <collection property="sysPermList" ofType="com.ryuntech.saas.api.model.SysPerm">
+                <id property="permId" column="permId"/>
+                <id property="sort" column="permSort"/>
+                <result property="resName" column="resName"/>
+                <result property="resKey" column="resKey"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="getRoleDetailList" resultMap="roleDetail">
+        select r.RID            roleId,
+               r.RNAME          roleName,
+               p.res_group_sort resGroupSort,
+               p.res_group_name resGroupName,
+               p.perm_id        permId,
+               p.sort           permSort,
+               p.res_name       resName,
+               p.res_key        resKey
+        from sys_role r
+                 left join sys_role_perm rp on r.RID = rp.ROLE_ID
+                 left join sys_perm p on rp.PERM_ID = p.PERM_ID
+        where r.COMPANY_ID = #{companyId}
     </select>
 
 </mapper>

@@ -2,16 +2,17 @@ package com.ryuntech.saas.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.RoleDetailDTO;
+import com.ryuntech.saas.api.dto.RoleInfoDTO;
 import com.ryuntech.saas.api.mapper.SysRoleMapper;
-import com.ryuntech.saas.api.model.FinanceUserInfo;
 import com.ryuntech.saas.api.model.SysRole;
 import com.ryuntech.saas.api.service.ISysRoleService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -47,5 +48,17 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
         }
         Boolean re = baseMapper.checkRidsContainRval(rids, rval);
         return re==null?false:re.booleanValue();
+    }
+
+    @Override
+    public List<RoleInfoDTO> getRoleInfoList() {
+        // todo 获取当前员工的公司id;
+        String companyId = "773031356912366360";
+        List<RoleDetailDTO> roleDetailList = baseMapper.getRoleDetailList(companyId);
+        List<RoleInfoDTO> roleInfoList = new ArrayList<>();
+        for (RoleDetailDTO detail : roleDetailList) {
+            roleInfoList.add(new RoleInfoDTO(detail));
+        }
+        return roleInfoList;
     }
 }

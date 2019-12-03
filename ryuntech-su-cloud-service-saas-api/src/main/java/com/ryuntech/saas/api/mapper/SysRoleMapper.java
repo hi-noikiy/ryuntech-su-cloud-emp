@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ryuntech.common.mapper.IBaseMapper;
+import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.model.SysRole;
 import org.apache.ibatis.annotations.Param;
 
@@ -40,4 +41,6 @@ public interface SysRoleMapper extends IBaseMapper<SysRole> {
      * @return
      */
     Boolean checkRidsContainRval(List<String> rids, String rval);
+
+    List<RoleDetailDTO> getRoleDetailList(String companyId);
 }
