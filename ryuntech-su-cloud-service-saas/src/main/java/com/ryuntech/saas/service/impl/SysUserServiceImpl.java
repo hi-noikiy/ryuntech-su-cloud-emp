@@ -9,8 +9,6 @@ import com.ryuntech.common.constant.enums.RolePermEnum;
 import com.ryuntech.common.constant.enums.SysRoleEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
-import com.ryuntech.common.enums.RolePermEnum;
-import com.ryuntech.common.enums.SysRoleEnum;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
@@ -139,9 +137,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (StringUtils.isNotBlank(userDTO.getId())) {
             queryWrapper.eq("id", userDTO.getId());
         }
-        /*if (userDTO.getOpenId() != null) {
-            queryWrapper.eq("open_id", userDTO.getOpenId());
-        }*/
+        if (userDTO.getUnionId() != null) {
+            queryWrapper.eq("union_id", userDTO.getUnionId());
+        }
         return sysUserMapper.selectOne(queryWrapper);
     }
 
