@@ -77,7 +77,7 @@
             <!--<a v-for="(item,index) in companyList" :key="index">{{item}}</a>-->
             <ul id="companycss">
               <li v-for="(item,index) in companyList" @click="handleLink(item)">
-                <span v-if='item.company'>{{ item.company }}</span>
+                <span v-if='item.name'>{{ item.name }}</span>
               </li>
             </ul>
           </div>
@@ -102,8 +102,8 @@ export default {
       userDetail: null,
       date: parseTime(new Date().getTime(), ''),
       loginForm: {
-        username: '18518215882',
-        password: '12345678'
+        username: '15270811867',
+        password: '123456'
       },
       loginRules: {
         username: [{ required: true, trigger: 'blur' }],
@@ -183,9 +183,9 @@ export default {
         this.userDetail = responses
 
         // 如果选中公司和查询到的该用户信息中的公司一样，将该公司对应的权限添加到路由表中
-        if (data.company == responses.companyName) {
-          this.$router.addRoutes(responses.perms)
-        }
+        // if (data.name == responses.name) {
+        //   this.$router.addRoutes(responses.perms)
+        // }
         this.$router.push({ path: this.redirect || '/' })
       }).catch(() => {
         this.$message({
