@@ -128,7 +128,7 @@ export function resetTemp(temp) {
  */
 export function companyListByUserName(param) {
   return request({
-    url: '/saas/employee/companylist/' + param,
+    url: '/saas/company/listBySysUserName/' + param,
     method: 'get'
   })
 }

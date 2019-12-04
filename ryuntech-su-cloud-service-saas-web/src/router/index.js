@@ -253,6 +253,13 @@ export const constantRoutes = [
         component: () => import('@/views/system/employee_department/access'),
         hidden: true,
         meta: { title: '部门与员工帐号' }
+      },
+      {
+        path: 'message_setting',
+        name: '消息设置',
+        component: () => import('@/views/system/message_setting/index'),
+        hidden: true,
+        meta: { title: '消息设置' }
       }
     ]
   },

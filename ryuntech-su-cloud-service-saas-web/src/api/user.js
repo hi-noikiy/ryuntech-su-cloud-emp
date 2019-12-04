@@ -22,7 +22,7 @@ export function getInfo(token) {
 
 export function logout() {
   return request({
-    url: '/auth/token/logout',
+    url: '/auth/sys/logout',
     method: 'delete'
   })
 }

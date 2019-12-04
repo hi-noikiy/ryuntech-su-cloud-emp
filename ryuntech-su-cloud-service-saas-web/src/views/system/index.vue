@@ -10,7 +10,7 @@
         </div>
       </div>
 
-      <div class="item">
+      <div class="item" @click="gotoPage('/system/message_setting')">
         <img class="item-l" src="https://www.baidu.com/img/bd_logo1.png" alt="">
         <div class="item-r">
           <h3>消息设置</h3>

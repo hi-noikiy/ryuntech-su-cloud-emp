@@ -22,6 +22,12 @@
     <sql id="Base_Column_List">
          EMPLOYEE_ID, SYS_USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
     </sql>
+    <update id="migrateToAnotherDept">
+        update ryn_employee
+        set DEPARTMENT_ID = #{newDeptId},
+            UPDATED_AT = SYSDATE()
+        where DEPARTMENT_ID = #{oldDeptId}
+    </update>
 
     <select id="selectCompanys" parameterType="String" resultType="map">
         select rynem.company_name, sysro.rval, sysrope.perm_val

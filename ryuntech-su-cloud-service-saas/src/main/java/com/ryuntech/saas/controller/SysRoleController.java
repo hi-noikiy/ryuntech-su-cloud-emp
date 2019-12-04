@@ -4,6 +4,7 @@ package com.ryuntech.saas.controller;
 import com.ryuntech.common.constant.PermInfo;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.dto.RoleNameDTO;
@@ -76,10 +77,13 @@ public class SysRoleController extends ModuleBaseController {
     @PostMapping("edit")
     public Result edit(RoleForm roleForm) {
         try {
+            if (StringUtil.isEmpty(roleForm.getRoleName())) {
+                return new Result(CommonEnums.OPERATE_ERROR, "角色名称不能为空!");
+            }
             roleService.edit(roleForm);
             return new Result();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("编辑角色发生异常", e);
             return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
         }
     }
