@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
+import com.ryuntech.common.enums.RolePermEnum;
+import com.ryuntech.common.enums.SysRoleEnum;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
@@ -51,7 +53,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
     private SysUserRoleMapper sysUserRoleMapper;
 
     @Autowired
-    private EmployeeRoleMapper employeeRoleMapper;
+    private SysRolePermMapper sysRolePermMapper;
 
     @Autowired
     private SysRoleMapper sysRoleMapper;
@@ -239,14 +241,14 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         sysRoleMapper.insert(sysRole);
 
 
-        EmployeeRole employeeRole = new EmployeeRole();
+        /*EmployeeRole employeeRole = new EmployeeRole();
         employeeRole.setEmployeeId(employee.getEmployeeId());
         Long employeeRoleId = uniqueIdGenerator.nextId();
         employeeRole.setId(String.valueOf(employeeRoleId));
         employeeRole.setRoleId(sysRole.getRid());
         employeeRole.setCreatedAt(new Date());
         employeeRole.setUpdatedAt(new Date());
-        employeeRoleMapper.insert(employeeRole);
+        employeeRoleMapper.insert(employeeRole);*/
 
 
         return sysUser;
@@ -287,11 +289,31 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
             sysRole.setCreated(time);
             sysRole.setUpdated(time);
             sysRoleMapper.insert(sysRole);
+
+            List<SysRolePerm> list = null;
+            switch (SysRoleEnum.valueOf(sysRole.getRname())) {
+                case ADMIN:
+                    list = initAdminRolePerm(sysRole.getRid());
+                    break;
+                case BUSINESS:
+                    list = initBusinessRolePerm(sysRole.getRid());
+                    break;
+                case LEADER:
+                    list = initLeaderRolePerm(sysRole.getRid());
+                    break;
+                case FINANCE:
+                    list = initFinanceRolePerm(sysRole.getRid());
+                    break;
+                case CREDIT:
+                    list = initCreditRolePerm(sysRole.getRid());
+                    break;
+            }
+
+            // 初始化角色-资源关联表
+            for (SysRolePerm sysRolePerm : list) {
+                sysRolePermMapper.insert(sysRolePerm);
+            }
         }
-
-        // 初始化角色-资源关联表
-        List<SysPerm> permList = sysPermMapper.selectList(null);
-
 
         // 初始化部门信息
         Department department = new Department();
@@ -336,9 +358,69 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         return true;
     }
 
+    private List<SysRolePerm> initAdminRolePerm(String rid) {
+        List<SysRolePerm> rolePermList = new ArrayList<>();
+        List<String> list = RolePermEnum.list(RolePermEnum.ADMIN_IDS);
+        for (String permId : list) {
+            SysRolePerm sysRolePerm = new SysRolePerm();
+            sysRolePerm.setPermId(permId);
+            sysRolePerm.setRoleId(rid);
+            rolePermList.add(sysRolePerm);
+        }
+        return rolePermList;
+    }
+
+    private List<SysRolePerm> initBusinessRolePerm(String rid) {
+        List<SysRolePerm> rolePermList = new ArrayList<>();
+        List<String> list = RolePermEnum.list(RolePermEnum.BUSINESS_IDS);
+        for (String permId : list) {
+            SysRolePerm sysRolePerm = new SysRolePerm();
+            sysRolePerm.setPermId(permId);
+            sysRolePerm.setRoleId(rid);
+            rolePermList.add(sysRolePerm);
+        }
+        return rolePermList;
+    }
+
+    private List<SysRolePerm> initLeaderRolePerm(String rid) {
+        List<SysRolePerm> rolePermList = new ArrayList<>();
+        List<String> list = RolePermEnum.list(RolePermEnum.LEADER_IDS);
+        for (String permId : list) {
+            SysRolePerm sysRolePerm = new SysRolePerm();
+            sysRolePerm.setPermId(permId);
+            sysRolePerm.setRoleId(rid);
+            rolePermList.add(sysRolePerm);
+        }
+        return rolePermList;
+    }
+
+    private List<SysRolePerm> initFinanceRolePerm(String rid) {
+        List<SysRolePerm> rolePermList = new ArrayList<>();
+        List<String> list = RolePermEnum.list(RolePermEnum.FINANCE_IDS);
+        for (String permId : list) {
+            SysRolePerm sysRolePerm = new SysRolePerm();
+            sysRolePerm.setPermId(permId);
+            sysRolePerm.setRoleId(rid);
+            rolePermList.add(sysRolePerm);
+        }
+        return rolePermList;
+    }
+
+    private List<SysRolePerm> initCreditRolePerm(String rid) {
+        List<SysRolePerm> rolePermList = new ArrayList<>();
+        List<String> list = RolePermEnum.list(RolePermEnum.CREDIT_IDS);
+        for (String permId : list) {
+            SysRolePerm sysRolePerm = new SysRolePerm();
+            sysRolePerm.setPermId(permId);
+            sysRolePerm.setRoleId(rid);
+            rolePermList.add(sysRolePerm);
+        }
+        return rolePermList;
+    }
+
     private List<SysRole> initRole() {
         List<SysRole> roleList = new ArrayList<>();
-        String roleNames[] = new String[]{"管理员", "财务", "业务员", "业务负责人", "信控"};
+        String roleNames[] = (String[]) SysRoleEnum.list().toArray();
         for (String roleName : roleNames) {
             SysRole sysRole = new SysRole();
             if ("管理员".equals(roleName)) {
@@ -352,4 +434,5 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         }
         return roleList;
     }
+
 }

@@ -5,15 +5,3 @@ spring:
     username: root
     password: ryuntech
     url: jdbc:mysql://ryuntech-su-cloud-mysql:3306/ryuntech_su_receivable?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai
-  redis:
-      host: 192.168.30.103
-      port: 6379
-      password: vsxd@redis
-      database: 1
-      lettuce:
-          pool:
-              max-active: 1024
-              max-idle: 300
-              min-idle: 5
-              max-wait: -1
-      timeout: 30000

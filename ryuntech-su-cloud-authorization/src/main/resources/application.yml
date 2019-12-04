@@ -16,6 +16,18 @@ spring:
     client_id: client
     client_secret: secret
     grant_type: password
+  redis:
+    host: 192.168.30.103
+    port: 6379
+    password: vsxd@redis
+    database: 1
+    lettuce:
+        pool:
+            max-active: 1024
+            max-idle: 300
+            min-idle: 5
+            max-wait: -1
+    timeout: 30000
 
 # feign 配置
 feign:
