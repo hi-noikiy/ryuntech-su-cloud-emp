@@ -25,15 +25,22 @@
     </sql>
 
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.CustomerUserInfo">
-        select *
+        select
+            *
         from ryn_customer_user_info
         <where>
-            <if test="customerUserInfo.customerId!=null and customerUserInfo.customerId!=''">
-                customer_id like concat('%',#{customerUserInfo.customerId},'%')
+            <if test="customerUserInfoForm.customerId!=null and customerUserInfoForm.customerId!=''">
+                customer_id like concat('%',#{customerUserInfoForm.customerId},'%')
             </if>
-            <if test="customerUserInfo.customerName!=null and customerUserInfo.customerName!=''">
-                and customer_name like concat('%',#{customerUserInfo.customerName},'%')
+            <if test="customerUserInfoForm.customerName!=null and customerUserInfoForm.customerName!=''">
+                and customer_name like concat('%',#{customerUserInfoForm.customerName},'%')
             </if>
+
+
+            <if test="customerUserInfoForm.isRisk!=null and customerUserInfoForm.isRisk==1">
+                and customer_id not in ( select customer_id from ryn_customer_monitor)
+            </if>
+
         </where>
     </select>
 

@@ -53,9 +53,9 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
     }
 
     @Override
-    public Result<IPage<CustomerUserInfo>> selectPageList(CustomerUserInfo customerUserInfo, QueryPage queryPage) {
+    public Result<IPage<CustomerUserInfo>> selectPageList(CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
         Page<CustomerUserInfo> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        return new Result(m.selectPageList(page,customerUserInfo));
+        return new Result(m.selectPageList(page,customerUserInfoForm));
     }
 
     @Override

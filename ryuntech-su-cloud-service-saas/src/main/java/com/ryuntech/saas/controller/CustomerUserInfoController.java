@@ -4,6 +4,7 @@ package com.ryuntech.saas.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
@@ -43,7 +44,7 @@ public class CustomerUserInfoController extends ModuleBaseController {
     /**
      * 分页查询列表数据，条件查询
      *
-     * @param customerUserInfo
+     * @param customerUserInfoForm
      * @return
      */
     @PostMapping("/list")
@@ -52,8 +53,8 @@ public class CustomerUserInfoController extends ModuleBaseController {
             @ApiImplicitParam(name = "customerUserInfo", value = "查询条件", dataType = "CustomerUserInfo", paramType = "body"),
             @ApiImplicitParam(name="queryPage",value="分页信息",dataType="QueryPage", paramType = "body")
     })
-    public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfo customerUserInfo, QueryPage queryPage) {
-        return iCustomerUserInfoService.selectPageList(customerUserInfo,queryPage);
+    public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
+        return iCustomerUserInfoService.selectPageList(customerUserInfoForm,queryPage);
     }
 
     /**

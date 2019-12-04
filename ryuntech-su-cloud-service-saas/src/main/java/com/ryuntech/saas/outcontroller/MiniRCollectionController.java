@@ -61,7 +61,7 @@ public class MiniRCollectionController extends ModuleBaseController{
     @ApiImplicitParam(name = "receivableCollection", value = "收款信息", required = true, dataType = "receivableCollection", paramType = "body")
     public Result add(@RequestBody ReceivableCollection receivableCollection) {
 //            生成客户编号
-        log.info("customerUserInfo.getCollectionId()"+receivableCollection.getCollectionId());
+        log.info("receivableCollection.getCollectionId()"+receivableCollection.getCollectionId());
         if (StringUtils.isBlank(receivableCollection.getAmount())){
             return new Result<>(OPERATE_ERROR,"收款金额为空");
         }
@@ -100,21 +100,21 @@ public class MiniRCollectionController extends ModuleBaseController{
             if (null==rCollectionPlans||rCollectionPlans.size()==0){
 //                说明没有回款计划
 //                设置状态还款状态
-                //                    查询合同金额
-                String contractAmount = byContract.getContractAmount();
-                BigDecimal contractAmountDe=new BigDecimal(contractAmount);
-                if (amountDe.compareTo(contractAmountDe)==-1){
-//                    amountDe<contractAmountDe
+//                查询待还款金额
+                BigDecimal balanceAmountDe = new BigDecimal(byContract.getBalanceAmount());
+//                查询已还款金额
+                BigDecimal collectionAmountDe = new BigDecimal(byContract.getCollectionAmount());
+                if (amountDe.compareTo(balanceAmountDe)==-1){
 //                    设置状态还款中
                     byContract.setStatus(ReceivableContractConstants.NOTSTARTED);
 //                    设置已还款金额
-                    byContract.setCollectionAmount(amountDe.toString());
+                    byContract.setCollectionAmount(collectionAmountDe.add(amountDe).toString());
 //                    设置待还款金额
-                    byContract.setBalanceAmount(contractAmountDe.subtract(amountDe).toString());
+                    byContract.setBalanceAmount(balanceAmountDe.subtract(amountDe).toString());
 //                    插入一条还款记录，只有合同编号，没有计划
                     receivableCollection.setCreateBy(DateUtil.formatDate(new Date()));
                     receivableCollection.setTime(new Date());
-                    iReceivableCollectionService.addReceivableCollection(null,receivableCollection,byContract);
+
                 }
             }else {
                 for (ReceivableCollectionPlan rPlan:rCollectionPlans){
@@ -158,9 +158,8 @@ public class MiniRCollectionController extends ModuleBaseController{
                 }
                 receivableCollection.setCreateBy(DateUtil.formatDate(new Date()));
                 receivableCollection.setTime(new Date());
-                iReceivableCollectionService.addReceivableCollection(rCollectionPlans,receivableCollection,byContract);
             }
-
+        iReceivableCollectionService.addReceivableCollection(rCollectionPlans,receivableCollection,byContract);
         return new Result<>();
     }
 

@@ -9,6 +9,7 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.form.CustomerMonitorForm;
+import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.helper.ApiConstant;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerMonitorService;
@@ -57,6 +58,16 @@ public class MiniMonitorController extends ModuleBaseController{
         return  iCustomerMonitorService.pageList(customerMonitor, queryPage);
     }
 
+
+    @PostMapping("/outaddlist")
+    @ApiOperation(value = "分页、条件查询客户列表信息")
+    @ApiImplicitParam(name = "customerUserInfo", value = "查询条件", required = true, dataType = "CustomerUserInfo", paramType = "body")
+    public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
+        log.info("customerUserInfoForm.getCustomerId()"+customerUserInfoForm.getCustomerId());
+//        查询非监控列表的数据
+        customerUserInfoForm.setIsRisk(1);
+        return  iCustomerUserInfoService.selectPageList(customerUserInfoForm, queryPage);
+    }
 
     /**
      * 获取Auth Code

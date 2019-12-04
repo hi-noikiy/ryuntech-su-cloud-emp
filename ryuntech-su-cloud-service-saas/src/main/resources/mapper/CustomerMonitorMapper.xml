@@ -24,7 +24,7 @@
             staff_name,
             group_concat(customer_id) AS customer_ids
         from
-            ryn_company_monitor
+            ryn_customer_monitor
         <where>
             <if test="customerMonitorForm.customerId!=null and customerMonitorForm.customerId!=''">
                 customer_id like '%'||#{customerMonitorForm.customerId}||'%'

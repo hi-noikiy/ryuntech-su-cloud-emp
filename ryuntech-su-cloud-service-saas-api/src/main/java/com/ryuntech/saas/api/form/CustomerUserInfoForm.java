@@ -36,4 +36,9 @@ public class CustomerUserInfoForm extends BaseModel {
     private String provinceId;
 
     private String districtId;
+
+    /**
+     * 是否被监控 0 否 1被监控
+     */
+    private Integer isRisk;
 }

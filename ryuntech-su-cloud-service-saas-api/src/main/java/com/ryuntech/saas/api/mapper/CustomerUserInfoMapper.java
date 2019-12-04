@@ -3,6 +3,7 @@ package com.ryuntech.saas.api.mapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
+import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,10 +23,10 @@ public interface CustomerUserInfoMapper extends IBaseMapper<CustomerUserInfo> {
     /**
      * 分页查询
      * @param page
-     * @param customerUserInfo
+     * @param customerUserInfoForm
      * @return
      */
-    IPage<CustomerUserInfo> selectPageList(@Param("pg") Page<CustomerUserInfo> page, @Param("customerUserInfo") CustomerUserInfo customerUserInfo);
+    IPage<CustomerUserInfo> selectPageList(@Param("pg") Page<CustomerUserInfo> page, @Param("customerUserInfoForm") CustomerUserInfoForm customerUserInfoForm);
 
     /**
      * 获取用户id和客户名称列表，用于搜索选择

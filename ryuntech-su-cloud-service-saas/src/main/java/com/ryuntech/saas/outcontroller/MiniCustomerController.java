@@ -41,12 +41,12 @@ public class MiniCustomerController extends ModuleBaseController{
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询客户列表信息")
     @ApiImplicitParam(name = "customerUserInfo", value = "查询条件", required = true, dataType = "CustomerUserInfo", paramType = "body")
-    public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfo customerUserInfo, QueryPage queryPage) {
-        log.info("customerUserInfo.getCustomerId()"+customerUserInfo.getCustomerId());
+    public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
+        log.info("customerUserInfoForm.getCustomerId()"+customerUserInfoForm.getCustomerId());
 //        if (StringUtils.isBlank(customerUserInfo.getCustomerId())){
 //            return new Result<>(OPERATE_ERROR);
 //        }
-        return  customerUserInfoService.selectPageList(customerUserInfo, queryPage);
+        return  customerUserInfoService.selectPageList(customerUserInfoForm, queryPage);
     }
 
     /**

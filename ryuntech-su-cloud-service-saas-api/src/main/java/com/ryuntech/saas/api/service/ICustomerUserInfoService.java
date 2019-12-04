@@ -30,11 +30,11 @@ public interface ICustomerUserInfoService extends IBaseService<CustomerUserInfo>
 
     /**
      * 分页查询
-     * @param customerUserInfo
+     * @param customerUserInfoForm
      * @param queryPage
      * @return
      */
-    Result<IPage<CustomerUserInfo>> selectPageList(CustomerUserInfo customerUserInfo, QueryPage queryPage);
+    Result<IPage<CustomerUserInfo>> selectPageList(CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage);
 
     /**
      * 获取用户id和用户名列表，用于搜索选择
