@@ -1,13 +1,13 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.dto.RoleInfoDTO;
-import com.ryuntech.saas.api.model.FinanceUserInfo;
+import com.ryuntech.saas.api.dto.RoleNameDTO;
+import com.ryuntech.saas.api.form.RoleForm;
 import com.ryuntech.saas.api.model.SysRole;
 
 import java.util.List;
@@ -32,4 +32,8 @@ public interface ISysRoleService extends IBaseService<SysRole> {
     List<PermGroupDTO> getAllResources();
 
     RoleDetailDTO getRoleDetail(String roleId);
+
+    List<RoleNameDTO> getNameList();
+
+    void edit(RoleForm roleForm);
 }

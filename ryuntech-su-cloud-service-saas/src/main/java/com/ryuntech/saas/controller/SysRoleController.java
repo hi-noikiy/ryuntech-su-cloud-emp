@@ -6,7 +6,8 @@ import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
-import com.ryuntech.saas.api.dto.RoleInfoDTO;
+import com.ryuntech.saas.api.dto.RoleNameDTO;
+import com.ryuntech.saas.api.form.RoleForm;
 import com.ryuntech.saas.api.service.ISysRoleService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +34,8 @@ public class SysRoleController extends ModuleBaseController {
      * @return 角色名称与id 的列表
      */
     @GetMapping("nameList")
-    public Result nameList() {
-        return null;
+    public Result<List<RoleNameDTO>> nameList() {
+        return new Result<>(roleService.getNameList());
     }
 
     /**
@@ -73,8 +74,14 @@ public class SysRoleController extends ModuleBaseController {
      * @return 操作结果(成功 or 失败)
      */
     @PostMapping("edit")
-    public Result edit() {
-        return null;
+    public Result edit(RoleForm roleForm) {
+        try {
+            roleService.edit(roleForm);
+            return new Result();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
+        }
     }
 
     /**

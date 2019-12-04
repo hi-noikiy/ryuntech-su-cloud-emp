@@ -122,4 +122,8 @@
         from sys_perm p
     </select>
 
+    <select id="getNameList" resultType="com.ryuntech.saas.api.dto.RoleNameDTO">
+        select r.RID   roleId, r.RNAME roleName from sys_role r where r.COMPANY_ID = #{companyId}
+    </select>
+
 </mapper>

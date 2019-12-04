@@ -27,6 +27,12 @@
         WHERE p.pval = rp.perm_val AND ur.role_id = rp.role_id
         AND ur.user_id = #{userId}
     </select>
+    <select id="queryByIdListAndCompanyId" resultType="com.ryuntech.saas.api.model.SysPerm">
+        select * from sys_perm where PERM_ID in
+        <foreach collection="newPermIdList" item="pid" open="(" separator="," close=")">
+            #{pid }
+        </foreach>
+    </select>
 
 
 </mapper>

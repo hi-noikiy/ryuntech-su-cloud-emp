@@ -1,16 +1,28 @@
 package com.ryuntech.saas.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ryuntech.common.constant.generator.IncrementIdGenerator;
+import com.ryuntech.common.constant.generator.UniqueIdGenerator;
+import com.ryuntech.common.exception.RyunBizException;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.dto.RoleInfoDTO;
+import com.ryuntech.saas.api.dto.RoleNameDTO;
+import com.ryuntech.saas.api.form.RoleForm;
+import com.ryuntech.saas.api.mapper.SysPermMapper;
 import com.ryuntech.saas.api.mapper.SysRoleMapper;
+import com.ryuntech.saas.api.mapper.SysRolePermMapper;
+import com.ryuntech.saas.api.model.SysPerm;
 import com.ryuntech.saas.api.model.SysRole;
+import com.ryuntech.saas.api.model.SysRolePerm;
 import com.ryuntech.saas.api.service.ISysRoleService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +38,13 @@ import java.util.List;
  */
 @Service
 public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {
+
+    @Autowired
+    private SysRolePermMapper sysRolePermMapper;
+
+    @Autowired
+    private SysPermMapper sysPermMapper;
+
 
     @Override
     public Result<IPage<SysRole>> pageList(SysRole sysRole, QueryPage queryPage) {
@@ -74,4 +93,77 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
         String companyId = "773031356912366360";
         return baseMapper.getRoleDetailByCompanyIdAndRoleId(companyId, roleId);
     }
+
+    @Override
+    public List<RoleNameDTO> getNameList() {
+        // todo 获取当前员工的公司id;
+        String companyId = "773031356912366360";
+        return baseMapper.getNameList(companyId);
+    }
+
+    @Override
+    public void edit(RoleForm roleForm) {
+        // todo 获取当前员工的公司id;
+        String companyId = "773031356912366360";
+        // 查询同名岗位
+        SysRole sameNameRole = baseMapper.selectOne(
+                new QueryWrapper<SysRole>().eq("RNAME", roleForm.getRoleName()).eq("COMPANY_ID", companyId));
+        // 检测同名角色是否存在(存在同名角色, 且角色id不同)
+        if (sameNameRole != null && !sameNameRole.getRid().equals(roleForm.getRoleId())) {
+            throw new RyunBizException("已经存在同名的角色, 请指定新的角色名.");
+        }
+
+        // 检查权限是否存在
+        List<String> newPermIdList = roleForm.getPermList();
+        List<SysPerm> existedPermList = sysPermMapper.queryByIdListAndCompanyId(newPermIdList);
+        if (existedPermList.size() != newPermIdList.size()) {
+            throw new RyunBizException("您所选择的角色权限有误, 请重新为角色指定权限.");
+        }
+
+        // 数据库实体
+        SysRole newRole = roleForm.convertToSysRole();
+        List<SysRolePerm> rolePermList;
+
+        if (!StringUtil.isEmpty(newRole.getRid())) {
+            // 修改角色
+            String roleId = newRole.getRid();
+            // 获取旧角色并检验
+            SysRole oldRole = baseMapper.selectOne(new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
+            if (oldRole == null) {
+                throw new RyunBizException("角色不存在, 操作失败");
+            }
+            if (oldRole.getIsAdmin() == 1) {
+                throw new RyunBizException("管理员角色不允许编辑, 操作失败");
+            }
+
+            // 更新角色
+            baseMapper.update(newRole, new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
+
+            // 更新权限 删除旧权限, 重新插入
+            sysRolePermMapper.delete(new QueryWrapper<SysRolePerm>().eq("ROLE_ID", roleId));
+            rolePermList = roleForm.convertToSysRolePermList();
+            if (rolePermList.size() > 0){
+                sysRolePermMapper.batchInsert(rolePermList);
+            }
+        } else {
+            // 新增角色, 新建一个 roleId
+            UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
+            String roleId = uniqueIdGenerator.nextStrId();
+            // 完善角色对象的数据并插入
+            newRole.setRid(roleId);
+            newRole.setIsAdmin(0);
+            newRole.setIsPreset(0);
+            newRole.setCompanyId(companyId);
+            newRole.setCreated(newRole.getUpdated());
+            baseMapper.insert(newRole);
+
+            // 插入角色权限
+            roleForm.setRoleId(roleId);
+            rolePermList = roleForm.convertToSysRolePermList();
+            if (rolePermList.size() > 0) {
+                sysRolePermMapper.batchInsert(rolePermList);
+            }
+        }
+    }
+
 }
