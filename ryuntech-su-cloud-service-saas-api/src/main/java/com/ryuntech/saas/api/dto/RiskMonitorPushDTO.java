@@ -24,4 +24,8 @@ public class RiskMonitorPushDTO {
      * 风险条数
      */
     private Integer riskSize;
+    /**
+     * 公司条数
+     */
+    private Integer companySize;
 }

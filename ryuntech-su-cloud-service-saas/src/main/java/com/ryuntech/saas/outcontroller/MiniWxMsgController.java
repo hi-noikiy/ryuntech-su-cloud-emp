@@ -85,7 +85,7 @@ public class MiniWxMsgController extends ModuleBaseController{
 //        open_id ='oxzcO5KaNB6_ZLNUBOvN3_phHIC0'
 //        测试模板数据
         weixinTemplate=new SendTemplateReq();
-        weixinTemplate.setTemplate_id("UXxkjX3AkOuglrNm24sglwCTXATTjI7tkb_JuN9Ka7U");
+        weixinTemplate.setTemplate_id(WeChatConstant.TEMPLATEID);
 //         oKvCSv3pfx_wOYq7oXJLQpPJxFSc  oKvCSvz_OO70H8Iy-Wqh4REbVZNs
         weixinTemplate.setTouser("oKvCSv3pfx_wOYq7oXJLQpPJxFSc");
         DoctorReplyMsgData doctorReplyMsgData = new DoctorReplyMsgData();
