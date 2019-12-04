@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.PlanOverdueRemindMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.PlanOverdueRemind">
+        <id column="OVERDUE_ID" property="overdueId" />
+        <result column="COMPANY_ID" property="companyId" />
+        <result column="FOLLOW_PERSON" property="followPerson" />
+        <result column="DEPART_HEAD" property="departHead" />
+        <result column="EMAIL_TYPE" property="emailType" />
+        <result column="WECHAT_TYPE" property="wechatType" />
+        <result column="INTERVAL_DAY" property="intervalDay" />
+        <result column="CREATE_TIME" property="createTime" />
+        <result column="UPDATE_TIME" property="updateTime" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        OVERDUE_ID, COMPANY_ID, FOLLOW_PERSON, DEPART_HEAD, EMAIL_TYPE, WECHAT_TYPE, INTERVAL_DAY, CREATE_TIME, UPDATE_TIME
+    </sql>
+
+</mapper>
