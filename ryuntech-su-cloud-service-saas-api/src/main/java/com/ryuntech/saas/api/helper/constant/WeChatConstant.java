@@ -21,6 +21,12 @@ public class WeChatConstant {
 
 
     /**
+     * 消息模板编号
+     */
+    public static final String TEMPLATEID = "UXxkjX3AkOuglrNm24sglwCTXATTjI7tkb_JuN9Ka7U";
+
+
+    /**
      * 请求消息类型：事件
      */
     public static final String REQ_MESSAGE_TYPE_EVENT = "event";

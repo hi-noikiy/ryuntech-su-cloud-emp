@@ -104,6 +104,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
      */
     @Override
     @Scheduled(cron = "0 05 03 ? * *")
+//    @Scheduled(cron = "0 0 2 * * ?")
     public void riskWarning() {
         /**
          * 轮询客户风险监控列表

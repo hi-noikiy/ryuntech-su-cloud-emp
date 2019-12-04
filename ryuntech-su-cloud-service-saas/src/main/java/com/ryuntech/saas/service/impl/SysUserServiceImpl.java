@@ -137,9 +137,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (StringUtils.isNotBlank(userDTO.getId())) {
             queryWrapper.eq("id", userDTO.getId());
         }
-        /*if (userDTO.getOpenId() != null) {
-            queryWrapper.eq("open_id", userDTO.getOpenId());
-        }*/
+        if (userDTO.getUnionId() != null) {
+            queryWrapper.eq("union_id", userDTO.getUnionId());
+        }
         return sysUserMapper.selectOne(queryWrapper);
     }
 
