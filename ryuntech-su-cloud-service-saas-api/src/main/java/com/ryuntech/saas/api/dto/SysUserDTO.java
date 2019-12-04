@@ -42,7 +42,7 @@ public class SysUserDTO extends BaseDto {
     /**
      * 手机号
      */
-    private String phone;
+    private String mobile;
 
     /**
      * 公司名
@@ -70,6 +70,17 @@ public class SysUserDTO extends BaseDto {
      * 用户状态
      */
     private String status;
+
+
+    /**
+     * 小程序openid
+     */
+    private String miniprogramOpenid;
+
+    /**
+     * 公众号openid
+     */
+    private String gongzhonghaoOpenid;
 
     /**
      * 职工列表数据ryn_employee

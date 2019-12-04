@@ -116,12 +116,5 @@ import java.util.Date;
     @TableField("CONTRACT_ID")
     private String contractId;
 
-    /**
-     * 计划编号
-     */
-    @TableField("PLAN_ID")
-    private String planId;
-
-
 
 }

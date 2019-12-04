@@ -78,6 +78,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         customerUserInfoDTO.setContacts(cUserInfo.getContacts());
         customerUserInfoDTO.setContactsPhone(cUserInfo.getContactsPhone());
         customerUserInfoDTO.setAddress(cUserInfo.getAddress());
+        customerUserInfoDTO.setCityId(cUserInfo.getCityId());
         customerUserInfoDTO.setStaffName(cUserInfo.getStaffName());
         List<ReceivableContract> receivableContractList = receivableContractMapper.selectList(
                 new QueryWrapper<ReceivableContract>().

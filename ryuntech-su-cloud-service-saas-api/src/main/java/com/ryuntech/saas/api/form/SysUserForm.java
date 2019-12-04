@@ -42,7 +42,7 @@ public class SysUserForm extends BaseDto {
     /**
      * 手机号
      */
-    private String phone;
+    private String mobile;
 
     /**
      * 公司名

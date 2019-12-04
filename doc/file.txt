@@ -43,6 +43,12 @@ gitee账号
 账号：chenruisheng@ykdtech.cn
 密码：yunkai123
 
+小程序appId:wx9ab0de8eb6945d32
+小程序appSecret:7f3c0ac3f7d439be94c3d266c87b38e5
+
+公众号appId:wxba0f3b19e65fbbc6
+公众号appSecret:8e1c04167012aefad852501f34a5d898
+
 
 小程序地址:git@github.com:gjjbase/yktech-received-mini.git
 前端地址:https://github.com/gjjbase/ryuntech-su-cloud-service-saas-web.git

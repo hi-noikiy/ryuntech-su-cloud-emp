@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.Employee">
         <id column="EMPLOYEE_ID" property="employeeId"/>
-        <result column="USER_ID" property="userId"/>
+        <result column="SYS_USER_ID" property="sysUserId"/>
         <result column="NAME" property="name"/>
         <result column="COMPANY_ID" property="companyId"/>
         <result column="DEPARTMENT_ID" property="departmentId"/>
@@ -20,11 +20,11 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-         EMPLOYEE_ID, USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
+         EMPLOYEE_ID, SYS_USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
     </sql>
 
     <select id="selectCompanys" parameterType="String" resultType="map">
-        select rynem.COMPANY_NAME, sysro.rval, sysrope.perm_val
+        select rynem.company_name, sysro.rval, sysrope.perm_val
         from ryn_employee rynem
         left join sys_user_role rynemro
         on rynem.employee_id = rynemro.employee_id
@@ -32,7 +32,7 @@
         on rynemro.role_id = sysro.rid
         left join sys_role_perm sysrope
         on rynemro.role_id = sysrope.role_id
-        where rynem.USER_ID = #{userId, jdbcType=VARCHAR}
+        where rynem.sys_user_id = #{sysUserId, jdbcType=VARCHAR}
     </select>
 
     <select id="queryEmployeeIds" resultType="java.lang.String" parameterType="java.util.List">

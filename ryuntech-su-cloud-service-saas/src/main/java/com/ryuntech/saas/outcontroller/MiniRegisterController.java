@@ -57,7 +57,7 @@ public class MiniRegisterController extends ModuleBaseController {
     @PostMapping("/outfrist")
     @ApiOperation(value = "注册第一步验证手机号")
     public Result<SysUser> frist(@RequestBody SysUserDTO sysUserDTO) {
-        Object value =   redisTemplate.opsForValue().get(sysUserDTO.getPhone() + "ryun_code");
+        Object value =   redisTemplate.opsForValue().get(sysUserDTO.getMobile() + "ryun_code");
         if (value!=null&&value.toString().equals(sysUserDTO.getVcode())){
             //判断手机号是否已经存在
             SysUser sysUser1 = sysUserService.selectByUserDTO(sysUserDTO);
@@ -89,14 +89,18 @@ public class MiniRegisterController extends ModuleBaseController {
         if (company!=null){
             return new Result<>(OPERATE_ERROR,"公司名已经存在");
         }
-        //开始注册操作
+        /**
+         * 开始注册操作
+         */
         SysUser register = sysUserService.register(sysUserForm);
 
 
         if (register!=null){
-            SysUser sysUser = sysUserService.selectByUser(new SysUser().setMobile(sysUserForm.getPhone()));
+            SysUser sysUser = sysUserService.selectByUser(new SysUser().setMobile(sysUserForm.getMobile()));
             List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setSysUserId(sysUser.getSysUserId()));
-            //            查询小程序
+            /**
+             * 查询小程序
+              */
             UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getSysUserId()));
             SysUserDTO sysUserDTO = new SysUserDTO();
             if (null!=employeeList&&employeeList.size()!=0){
@@ -104,15 +108,16 @@ public class MiniRegisterController extends ModuleBaseController {
             }
             if (null!=userWechat){
                 sysUserDTO.setUserWechat(userWechat);
+                sysUserDTO.setGongzhonghaoOpenid(userWechat.getGongzhonghaoOpenid());
+                sysUserDTO.setMiniprogramOpenid(userWechat.getMiniprogramOpenid());
+                sysUserDTO.setUnionId(userWechat.getUnionId());
             }
-
-        //    sysUserDTO.setUsername(sysUser.getUsername());
             sysUserDTO.setId(sysUser.getSysUserId());
             sysUserDTO.setAvatar(sysUser.getAvatar());
-            sysUserDTO.setPhone(sysUser.getMobile());
+            sysUserDTO.setMobile(sysUser.getMobile());
             sysUserDTO.setStatus(sysUser.getStatus());
+
             if (sysUser!=null){
-                //手机号
                 return new Result(sysUserDTO);
             }else {
                 return new Result(OPERATE_ERROR,"手机号不存在");

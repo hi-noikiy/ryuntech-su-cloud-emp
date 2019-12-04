@@ -131,8 +131,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (userDTO.getUsername() != null) {
             queryWrapper.eq("username", userDTO.getUsername());
         }
-        if (userDTO.getPhone() != null) {
-            queryWrapper.eq("phone", userDTO.getPhone());
+        if (userDTO.getMobile() != null) {
+            queryWrapper.eq("mobile", userDTO.getMobile());
         }
         if (StringUtils.isNotBlank(userDTO.getId())) {
             queryWrapper.eq("id", userDTO.getId());
@@ -148,11 +148,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (StringUtils.isNotBlank(user.getSysUserId())) {
             queryWrapper.eq("id", user.getSysUserId());
         }
-        /*if (user.getUsername()!=null) {
-            queryWrapper.eq("username", user.getUsername());
-        }*/
         if (user.getMobile() != null) {
-            queryWrapper.eq("phone", user.getMobile());
+            queryWrapper.eq("mobile", user.getMobile());
         }
         return baseMapper.selectOne(queryWrapper);
     }
@@ -178,8 +175,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         SysUser sysUser = new SysUser();
         sysUser.setSysUserId(String.valueOf(id));
 //        登陆名默认为手机号
-        //sysUser.setUsername(sysUserForm.getPhone());
-        sysUser.setMobile(sysUserForm.getPhone());
+        sysUser.setUsername(sysUserForm.getMobile());
+        sysUser.setMobile(sysUserForm.getMobile());
         sysUser.setAvatar(sysUserForm.getAvatar());
         sysUser.setPassword(sysUserForm.getPassword());
         sysUser.setCreatedAt(new Date());

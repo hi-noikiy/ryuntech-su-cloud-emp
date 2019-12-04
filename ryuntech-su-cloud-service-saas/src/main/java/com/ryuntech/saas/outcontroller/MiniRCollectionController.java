@@ -75,23 +75,19 @@ public class MiniRCollectionController extends ModuleBaseController{
 //        收款金额
         String amount = receivableCollection.getAmount();
         BigDecimal amountDe=new BigDecimal(amount);
-
-
-
         receivableCollection.setCreateTime(new Date());
 //        查询合同数据
         ReceivableContract byContract = iReceivableContractService.findByContract(new ReceivableContractForm().setContractId(contractId));
 //        收款金额不能大于合同剩余金额
-
         if (amountDe.compareTo(new BigDecimal(byContract.getContractAmount()))==1){
             return new Result<>(OPERATE_ERROR,"收款金额不能大于合同剩余金额");
         }
-
 //        客户编号
         receivableCollection.setCustomerId(byContract.getCustomerId());
 //        客户名称
         receivableCollection.setCustomerName(byContract.getCustomerName());
-
+//        合同编号
+        receivableCollection.setContractId(byContract.getContractId());
 //        查询回款计划 暂定为未开始
         ReceivableCollectionPlanForm receivableCollectionPlanForm = new ReceivableCollectionPlanForm();
         receivableCollectionPlanForm.setContractId(contractId);
@@ -116,26 +112,19 @@ public class MiniRCollectionController extends ModuleBaseController{
 //                    设置待还款金额
                     byContract.setBalanceAmount(contractAmountDe.subtract(amountDe).toString());
 //                    插入一条还款记录，只有合同编号，没有计划
-                    receivableCollection.setContractId(byContract.getContractId());
                     receivableCollection.setCreateBy(DateUtil.formatDate(new Date()));
                     receivableCollection.setTime(new Date());
-
                     iReceivableCollectionService.addReceivableCollection(null,receivableCollection,byContract);
                 }
-
             }else {
                 for (ReceivableCollectionPlan rPlan:rCollectionPlans){
                     if (amountDe.compareTo(new BigDecimal(0))<=0){
 //                        当前回款金额已消耗完
                         break;
                     }
-
-                    ReceivableCollectionPlan receivableCollectionPlan = new ReceivableCollectionPlan();
-                    receivableCollection.setPlanId(rPlan.getPlanId());
                     //        计划金额
                     String planAmount = rPlan.getPlanAmount();
                     BigDecimal planAmountDe=new BigDecimal(planAmount);
-
 //                    查询待还款
                     String balanceAmount = byContract.getBalanceAmount();
                     BigDecimal balanceAmountDe=new BigDecimal(balanceAmount);
@@ -143,42 +132,32 @@ public class MiniRCollectionController extends ModuleBaseController{
                     String collectionAmount = byContract.getCollectionAmount();
                     BigDecimal collectionAmountDe=new BigDecimal(collectionAmount);
 
-
-
                     if (amountDe.compareTo(planAmountDe)==-1){
 //            amountDe<planAmountDe  收款金额小于当前计划还款金额
 //            设置回款计划状态为回款中
-                        receivableCollectionPlan.setStatus(PlanConstant.STARTING);
+                        rPlan.setStatus(PlanConstant.STARTING);
 //            设置已回金额
-                        receivableCollectionPlan.setBackedAmount(amountDe.toString());
+                        rPlan.setBackedAmount(amountDe.toString());
 //            设置未回金额
-                        receivableCollectionPlan.setSurplusAmount(planAmountDe.subtract(amountDe).toString());
-
+                        rPlan.setSurplusAmount(planAmountDe.subtract(amountDe).toString());
                     }
-
 //         如果当前还款金额还款金额等于计划金额，修改状态为已回款
                     if (amountDe.compareTo(planAmountDe)>=0){
                         //            设置回款计划状态为已回款
-                        receivableCollectionPlan.setStatus(PlanConstant.REIMBURSEMENT);
-
-                        receivableCollectionPlan.setBackedAmount(planAmountDe.toString());
-                        receivableCollectionPlan.setSurplusAmount("0.00");
+                        rPlan.setStatus(PlanConstant.REIMBURSEMENT);
+                        rPlan.setBackedAmount(planAmountDe.toString());
+                        rPlan.setSurplusAmount("0.00");
                     }
-
 //                        设置合同待还金额
                     BigDecimal balanceAmountDe2 = balanceAmountDe.subtract(amountDe);
                     byContract.setBalanceAmount(balanceAmountDe2.toString());
 //                        设置合同已还金额
                     BigDecimal addDe = collectionAmountDe.add(amountDe);
                     byContract.setCollectionAmount(addDe.toString());
-
-
                     amountDe = planAmountDe.subtract(amountDe);
-                    receivableCollection.setCreateBy(DateUtil.formatDate(new Date()));
-                    receivableCollection.setTime(new Date());
-
-
                 }
+                receivableCollection.setCreateBy(DateUtil.formatDate(new Date()));
+                receivableCollection.setTime(new Date());
                 iReceivableCollectionService.addReceivableCollection(rCollectionPlans,receivableCollection,byContract);
             }
 
