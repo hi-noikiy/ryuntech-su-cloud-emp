@@ -4,7 +4,7 @@ package com.ryuntech.saas.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.common.utils.ValidateUtil;
+import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.dto.FinanceOrder;
 import com.ryuntech.saas.api.model.FinanceUserInfo;
 import com.ryuntech.saas.api.service.IFinanceUserInfoService;
@@ -109,7 +109,7 @@ public class FinanceUserInfoController extends ModuleBaseController {
     @ApiImplicitParam(name = "financeOrder", value = "添加融资用户信息", required = true, dataType = "FinanceOrder", paramType = "body")
     public Result addOrder(@RequestBody FinanceOrder financeOrder) {
         //验证手机
-        boolean mobileNumber = ValidateUtil.isMobileNumber(financeOrder.getMobile());
+        boolean mobileNumber = StringUtil.isMobile(financeOrder.getMobile());
         if (mobileNumber){
             //检查该用户的订单是否有未完结状态，有则不能申请
           /*  FinanceUserInfo financeUserInfo = iFinanceUserInfoService.selectOne(financeOrder);

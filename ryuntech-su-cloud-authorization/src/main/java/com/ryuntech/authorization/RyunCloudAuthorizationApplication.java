@@ -17,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
  */
 @EnableFeignClients("com.ryuntech.*.api.service")
 @EnableEurekaClient
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.ryuntech"})
 public class RyunCloudAuthorizationApplication {
 
     public static void main(String[] args) {

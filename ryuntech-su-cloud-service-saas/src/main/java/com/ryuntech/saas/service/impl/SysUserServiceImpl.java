@@ -59,6 +59,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
     @Autowired
     private DepartmentMapper departmentMapper;
 
+    @Autowired
+    private SysPermMapper sysPermMapper;
+
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Override
@@ -285,6 +288,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
             sysRole.setUpdated(time);
             sysRoleMapper.insert(sysRole);
         }
+
+        // 初始化角色-资源关联表
+        List<SysPerm> permList = sysPermMapper.selectList(null);
+
 
         // 初始化部门信息
         Department department = new Department();

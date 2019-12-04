@@ -5,6 +5,7 @@ import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.helper.SecurityUtils;
 import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.service.ISysPermService;
@@ -38,8 +39,12 @@ public class SysUserController extends ModuleBaseController {
 
     @Autowired
     ISysRoleService sysRoleService;
+
     @Autowired
     ISysPermService sysPermService;
+
+    @Autowired
+    JedisUtil jedisUtil;
 
     /**
      * 获取当前用户信息
@@ -169,7 +174,6 @@ public class SysUserController extends ModuleBaseController {
     @PostMapping("checkRegisterSmsCode")
     public Result checkRegisterSmsCode(
             @RequestParam("mobile") String mobile) {
-
 
 
         // 校验成功保存随机生成uId，下一步保存校验需要使用

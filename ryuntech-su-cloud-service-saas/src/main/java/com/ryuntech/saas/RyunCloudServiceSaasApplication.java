@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableFeignClients
 @EnableEurekaClient
 @EnableScheduling
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages={"com.ryuntech"})
 @EnableTransactionManagement
 public class RyunCloudServiceSaasApplication {
 

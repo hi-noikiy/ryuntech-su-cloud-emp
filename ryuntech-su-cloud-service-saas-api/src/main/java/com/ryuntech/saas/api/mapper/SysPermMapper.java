@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.SysPerm;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
  * @author antu
  * @since 2019-09-12
  */
+@Component
 public interface SysPermMapper extends IBaseMapper<SysPerm> {
     /**
      * @param roleId
