@@ -1,9 +1,9 @@
 package com.ryuntech.saas.api.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
+import com.ryuntech.saas.api.dto.RoleNameDTO;
 import com.ryuntech.saas.api.model.SysRole;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
@@ -50,4 +50,6 @@ public interface SysRoleMapper extends IBaseMapper<SysRole> {
     List<PermGroupDTO> getPermGroup();
 
     RoleDetailDTO getRoleDetailByCompanyIdAndRoleId(@Param("companyId") String companyId, @Param("roleId") String roleId);
+
+    List<RoleNameDTO> getNameList(@Param("companyId") String companyId);
 }

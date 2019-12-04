@@ -1,10 +1,9 @@
 package com.ryuntech.saas.api.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.SysPerm;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -16,7 +15,7 @@ import java.util.List;
  * @author antu
  * @since 2019-09-12
  */
-@Component
+@Repository
 public interface SysPermMapper extends IBaseMapper<SysPerm> {
     /**
      * @param roleId
@@ -29,4 +28,6 @@ public interface SysPermMapper extends IBaseMapper<SysPerm> {
      * @return
      */
     List<SysPerm> getPermsByUserId(@Param("userId") String userId);
+
+    List<SysPerm> queryByIdListAndCompanyId(@Param("newPermIdList") List<String> newPermIdList);
 }

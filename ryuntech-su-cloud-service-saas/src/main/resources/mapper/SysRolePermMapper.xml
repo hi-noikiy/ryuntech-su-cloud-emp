@@ -4,14 +4,21 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.SysRolePerm">
-        <id column="role_id" property="roleId" />
-        <result column="perm_val" property="permVal" />
-        <result column="perm_type" property="permType" />
+        <result column="role_id" property="roleId" />
+        <result column="perm_id" property="permId" />
     </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        role_id, perm_val, perm_type
-    </sql>
+    <insert id="batchInsert" parameterType="com.ryuntech.saas.api.model.SysRolePerm">
+        insert into sys_role_perm
+        (role_id, perm_id)
+        values
+        <foreach collection="rolePermList" item="rp" separator=",">
+            (#{rp.roleId}, #{rp.permId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByRoleId">
+        delete from sys_role_perm where ROLE_ID = #{roleId}
+    </delete>
 
 </mapper>
