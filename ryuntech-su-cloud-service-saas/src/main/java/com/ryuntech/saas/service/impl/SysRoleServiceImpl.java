@@ -18,10 +18,13 @@ import com.ryuntech.saas.api.form.RoleForm;
 import com.ryuntech.saas.api.mapper.SysPermMapper;
 import com.ryuntech.saas.api.mapper.SysRoleMapper;
 import com.ryuntech.saas.api.mapper.SysRolePermMapper;
+import com.ryuntech.saas.api.mapper.SysUserRoleMapper;
 import com.ryuntech.saas.api.model.SysPerm;
 import com.ryuntech.saas.api.model.SysRole;
 import com.ryuntech.saas.api.model.SysRolePerm;
+import com.ryuntech.saas.api.model.SysUserRole;
 import com.ryuntech.saas.api.service.ISysRoleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,6 +39,7 @@ import java.util.List;
  * @author antu
  * @since 2019-09-12
  */
+@Slf4j
 @Service
 public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {
 
@@ -45,6 +49,8 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Autowired
     private SysPermMapper sysPermMapper;
 
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
 
     @Override
     public Result<IPage<SysRole>> pageList(SysRole sysRole, QueryPage queryPage) {
@@ -103,7 +109,8 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public void edit(RoleForm roleForm) {
-        // todo 获取当前员工的公司id;
+        // todo 获取当前员工名字及公司id;
+        String empName = "操作员工";
         String companyId = "773031356912366360";
         // 查询同名岗位
         SysRole sameNameRole = baseMapper.selectOne(
@@ -145,6 +152,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             if (rolePermList.size() > 0){
                 sysRolePermMapper.batchInsert(rolePermList);
             }
+            log.info("员工【{}】修改了角色详情：{}", empName, newRole);
         } else {
             // 新增角色, 新建一个 roleId
             UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
@@ -163,7 +171,31 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             if (rolePermList.size() > 0) {
                 sysRolePermMapper.batchInsert(rolePermList);
             }
+            log.info("员工【{}】创建了角色：{}", empName, newRole);
         }
     }
 
+    @Override
+    public void delete(String roleId) {
+        // todo 获取当前员工名字及公司id;
+        String empName = "操作员工";
+        String companyId = "773031356912366360";
+        // 获取旧角色并检验
+        SysRole oldRole = baseMapper.selectOne(new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
+        if (oldRole == null) {
+            throw new RyunBizException("角色不存在, 操作失败");
+        }
+        if (oldRole.getIsAdmin() == 1) {
+            throw new RyunBizException("管理员角色不允许删除, 操作失败");
+        }
+        // 检查角色下有没有员工
+        List<SysUserRole> roleEmpList = sysUserRoleMapper.selectList(new QueryWrapper<SysUserRole>().eq("ROLE_ID",roleId));
+        if (roleEmpList.size() > 0) {
+            throw new RyunBizException("该角色下有关联员工, 请先为员工分配新角色. ");
+        }
+        // 删除角色, 以及角色关联的权限
+        baseMapper.deleteById(roleId);
+        sysRolePermMapper.delete(new QueryWrapper<SysRolePerm>().eq("ROLE_ID", roleId));
+        log.info("员工【{}】删除了角色：{}", empName, oldRole);
+    }
 }

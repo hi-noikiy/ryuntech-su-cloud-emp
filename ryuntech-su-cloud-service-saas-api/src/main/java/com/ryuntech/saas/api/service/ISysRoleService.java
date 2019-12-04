@@ -36,4 +36,6 @@ public interface ISysRoleService extends IBaseService<SysRole> {
     List<RoleNameDTO> getNameList();
 
     void edit(RoleForm roleForm);
+
+    void delete(String roleId);
 }

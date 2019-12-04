@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -30,7 +31,8 @@ public class SysRole implements Serializable {
     /**
      * 主键
      */
-    @TableField("rid")
+    @Id
+    @TableId("rid")
     private String rid;
 
     /**
