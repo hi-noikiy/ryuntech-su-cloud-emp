@@ -1,6 +1,7 @@
 package com.ryuntech.saas.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.constant.RedisConstant;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
@@ -8,10 +9,7 @@ import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.helper.SecurityUtils;
 import com.ryuntech.saas.api.model.SysUser;
-import com.ryuntech.saas.api.service.ISysPermService;
-import com.ryuntech.saas.api.service.ISysRoleService;
-import com.ryuntech.saas.api.service.ISysUserRoleService;
-import com.ryuntech.saas.api.service.SysUserService;
+import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +40,9 @@ public class SysUserController extends ModuleBaseController {
 
     @Autowired
     ISysPermService sysPermService;
+
+    @Autowired
+    MessageSendService messageSendService;
 
     @Autowired
     JedisUtil jedisUtil;
@@ -164,20 +165,28 @@ public class SysUserController extends ModuleBaseController {
     @PostMapping("sendRegisterSms")
     public Result sendRegisterSms(
             @RequestParam("mobile") String mobile) {
-        // TODO 手机号码已经存在sysuser表，则不允许继续注册，后面走添加公司流程
-
-
-        //
-        return new Result();
+        if (!StringUtil.isMobile(mobile)) {
+            return new Result(CommonEnums.PARAM_ERROR, "手机号码不合法");
+        }
+        try {
+            return new Result(sysUserService.sendRegisterSms(mobile));
+        } catch (Exception e) {
+            return new Result(CommonEnums.OPERATE_ERROR, e.getLocalizedMessage());
+        }
     }
 
     @PostMapping("checkRegisterSmsCode")
     public Result checkRegisterSmsCode(
-            @RequestParam("mobile") String mobile) {
+            @RequestParam("mobile") String mobile,
+            @RequestParam("code") String code) {
+        if (!messageSendService.checkSmsCode(1, mobile, code)) {
+            return new Result(CommonEnums.PARAM_ERROR, "您输入的手机校验码不正确");
+        }
 
-
-        // 校验成功保存随机生成uId，下一步保存校验需要使用
-        return new Result();
+        // 验证码验证成功后5分钟内注册有效
+        String randomId = StringUtil.getUUID32();
+        jedisUtil.setex(RedisConstant.PRE_ALLOW_REGISTER + randomId, RedisConstant.PRE_ALLOW_REGISTER_EXPIRE, mobile);
+        return new Result(randomId);
     }
 
     @PostMapping("register")
@@ -185,8 +194,7 @@ public class SysUserController extends ModuleBaseController {
             @RequestParam("companyName") String companyName,
             @RequestParam("employeeName") String employeeName,
             @RequestParam("password") String password,
-            // @RequestParam("uId") String uId) { 暂时短信没接
-            @RequestParam("mobile") String mobile) {
+            @RequestParam("uId") String uId) {
         companyName = StringUtil.trim(companyName);
         employeeName = StringUtil.trim(employeeName);
 
@@ -202,9 +210,10 @@ public class SysUserController extends ModuleBaseController {
             return new Result(CommonEnums.PARAM_ERROR, "登录密码仅支持6-16个字符");
         }
 
-        // TODO 通过uId获取校验成功的手机号码
-        // 通过uId获取校验成功的手机号码
-        //String mobile = null;
+        if (!jedisUtil.exists(RedisConstant.PRE_ALLOW_REGISTER + uId)) {
+            return new Result(CommonEnums.PARAM_ERROR, "请重新获取验证码后再注册");
+        }
+        String mobile = jedisUtil.get(RedisConstant.PRE_ALLOW_REGISTER + uId);
 
         try {
             sysUserService.saveRegister(companyName, employeeName, mobile, password);

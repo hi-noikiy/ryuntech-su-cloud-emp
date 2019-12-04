@@ -4,17 +4,25 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
+import com.ryuntech.common.constant.RedisConstant;
+import com.ryuntech.common.constant.enums.RolePermEnum;
+import com.ryuntech.common.constant.enums.SysRoleEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
+import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.redis.JedisUtil;
+import com.ryuntech.saas.api.dto.Sms;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
 import com.ryuntech.saas.api.helper.ApiConstant;
 import com.ryuntech.saas.api.helper.constant.RoleConstants;
+import com.ryuntech.saas.api.helper.constant.SmsConstants;
 import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.*;
+import com.ryuntech.saas.api.service.MessageSendService;
 import com.ryuntech.saas.api.service.SysUserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
@@ -60,7 +68,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
     private DepartmentMapper departmentMapper;
 
     @Autowired
-    private SysPermMapper sysPermMapper;
+    private MessageSendService messageSendService;
+
+    @Autowired
+    private JedisUtil jedisUtil;
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -126,9 +137,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (StringUtils.isNotBlank(userDTO.getId())) {
             queryWrapper.eq("id", userDTO.getId());
         }
-        if (userDTO.getOpenId() != null) {
+        /*if (userDTO.getOpenId() != null) {
             queryWrapper.eq("open_id", userDTO.getOpenId());
-        }
+        }*/
         return sysUserMapper.selectOne(queryWrapper);
     }
 
@@ -252,6 +263,23 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         return sysUser;
     }
 
+
+    @Override
+    public boolean sendRegisterSms(String mobile) throws Exception {
+        // 手机号码已经存在sysuser表，则不允许继续注册，后面走添加公司流程
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("mobile", mobile));
+        if (sysUser != null && "1".equals(sysUser.getStatus())) {
+            throw new Exception("用户账号已经存在，不能重复注册");
+        }
+
+        // 手机号码发送的频率限制
+        if (jedisUtil.exists(RedisConstant.PRE_SMS_EXIST_IN_MINUTE + SmsConstants.TEMPLATECODE + ":" + mobile)) {
+            throw new Exception("您获取验证码太频繁，每分钟仅支持发送一条短信");
+        }
+
+        return messageSendService.send(new Sms(mobile, SmsConstants.TEMPLATECODE, 1, StringUtil.sixRandomNum()));
+    }
+
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public boolean saveRegister(String companyName, String employeeName, String mobile, String password) throws Exception {
@@ -355,6 +383,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         sysUserRoleMapper.insert(sysUserRole);
         return true;
     }
+
 
     private List<SysRolePerm> initAdminRolePerm(String rid) {
         List<SysRolePerm> rolePermList = new ArrayList<>();

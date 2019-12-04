@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ryuntech.saas.api.mapper.SmsSendMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.ryuntech.saas.api.model.SmsSend">
+        <id column="SMS_SEND_ID" property="smsSendId" />
+        <result column="MOBILE" property="mobile" />
+        <result column="TYPE" property="type" />
+        <result column="SMS_PARAM" property="smsParam" />
+        <result column="CONTENT" property="content" />
+        <result column="SMS_TYPE" property="smsType" />
+        <result column="created_at" property="createdAt" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        SMS_SEND_ID, MOBILE, TYPE, SMS_PARAM, CONTENT, SMS_TYPE, CREATED_AT
+    </sql>
+
+</mapper>

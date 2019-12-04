@@ -27,4 +27,7 @@ public interface MessageSendService {
      * 批量发送短信
      */
     void sendBatchSms();
+
+    boolean send(Sms sms) throws Exception;
+    boolean checkSmsCode(int templateType, String mobile, String code);
 }

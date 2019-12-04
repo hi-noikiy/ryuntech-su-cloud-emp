@@ -1,6 +1,7 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
@@ -96,4 +97,6 @@ public interface SysUserService extends IBaseService<SysUser> {
     SysUser register(SysUserForm sysUserForm) throws Exception;
 
     boolean saveRegister(String companyName, String employeeName, String mobile, String password) throws Exception;
+
+    boolean sendRegisterSms(String mobile) throws Exception;
 }

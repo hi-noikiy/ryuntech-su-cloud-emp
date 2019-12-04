@@ -1,4 +1,4 @@
-package com.ryuntech.common.enums;
+package com.ryuntech.common.constant.enums;
 
 import java.util.ArrayList;
 import java.util.List;
