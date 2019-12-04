@@ -2,6 +2,7 @@ package com.ryuntech.saas.controller;
 
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO;
 import com.ryuntech.saas.api.form.DepartmentForm;
 import com.ryuntech.saas.api.service.IDepartmentService;
@@ -33,6 +34,9 @@ public class DepartmentController extends ModuleBaseController {
     @PostMapping("edit")
     public Result edit(DepartmentForm form){
         try {
+            if (StringUtil.isEmpty(form.getDeptName())) {
+                return new Result(CommonEnums.OPERATE_ERROR, "部门名称不能为空!");
+            }
             departmentService.edit(form);
             return new Result();
         } catch (Exception e) {
