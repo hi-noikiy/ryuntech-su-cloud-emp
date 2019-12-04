@@ -12,6 +12,17 @@ aliCha21QoTe
 账号：root
 密码：ryuntech
 
+本地测试环境库
+172.31.7.28:3306
+账号：root
+密码：ryuntech
+
+线上测试库
+192.168.30.105
+账号：ryun
+密码：123456
+
+
 小程序
 账号：gaojiangjian@ykdtech.cn
 密码：yunkai123

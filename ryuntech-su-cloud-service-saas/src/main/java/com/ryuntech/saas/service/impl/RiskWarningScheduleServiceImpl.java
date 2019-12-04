@@ -103,7 +103,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
      * 每天凌晨2点执行
      */
     @Override
-    @Scheduled(cron = "0 31 15 ? * *")
+    @Scheduled(cron = "0 05 03 ? * *")
     public void riskWarning() {
         /**
          * 轮询客户风险监控列表

@@ -42,7 +42,7 @@ import static com.ryuntech.saas.api.helper.constant.WeChatConstant.*;
 @RestController
 @RequestMapping("/miniwxsendmsg")
 @Api(value = "MiniWxSendMsgController", tags = {"小程序消息接收推送接口"})
-public class MiniWxSendMsgController extends ModuleBaseController{
+public class MiniWxMsgController extends ModuleBaseController{
 
     @Autowired
     ITemplateMessageService iTemplateMessageService;

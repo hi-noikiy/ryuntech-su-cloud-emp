@@ -26,8 +26,8 @@
     <select id="selectCompanys" parameterType="String" resultType="map">
         select rynem.COMPANY_NAME, sysro.rval, sysrope.perm_val
         from ryn_employee rynem
-        left join ryn_employee_role rynemro
-        on rynem.EMPLOYEE_ID = rynemro.employee_id
+        left join sys_user_role rynemro
+        on rynem.employee_id = rynemro.employee_id
         left join sys_role sysro
         on rynemro.role_id = sysro.rid
         left join sys_role_perm sysrope
@@ -62,7 +62,7 @@
 
     <select id="queryRoleLimitEmployeeIds" resultType="java.util.Map" parameterType="java.util.List">
         select rer.employee_id, sr.rname
-        from ryn_employee_role rer
+        from sys_user_role rer
         left join sys_role sr
         on rer.role_id = sr.rid
         <where>

@@ -90,7 +90,7 @@ public class MiniMonitorController extends ModuleBaseController{
 
                 CustomerUserInfoDTO customerUserInfoDTO = iCustomerUserInfoService.selectCustomerUserInfoDTO(new CustomerUserInfo().setCustomerId(customerId));
 
-                String geteciImage = ApiConstant.GETECIIMAGE+"?key="+APPKEY;
+                String geteciImage = ApiConstant.SEARCH+"?key="+APPKEY;
 
                 String[] autherHeader = randomAuthentHeader();
                 HashMap<String, String> reqHeader = new HashMap<>();
@@ -98,7 +98,7 @@ public class MiniMonitorController extends ModuleBaseController{
                 reqHeader.put("Timespan",autherHeader[1]);
                 Gson gson = new Gson();
                 String customerName = customerUserInfoDTO.getCustomerName();
-                String urlName=geteciImage+"&keyWord="+customerName;
+                String urlName=geteciImage+"&keyword="+customerName;
                 String content = HttpUtils.Get(urlName,reqHeader);
                 ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
                 if (null==apiGetEciImage){
