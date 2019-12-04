@@ -72,16 +72,10 @@ public class Employee extends BaseModel {
     private String departmentId;
 
     /**
-     * 所属部门名称
+     * 是否是部门负责人，0=不是1=是
      */
-    @TableField("DEPARTMENT_NAME")
-    private String departmentName;
-
-    /**
-     * 手机号（和登录手机号相同）
-     */
-    @TableField("MOBILE")
-    private String mobile;
+    @TableField("is_charger")
+    private String isCharger;
 
     /**
      * 邮箱

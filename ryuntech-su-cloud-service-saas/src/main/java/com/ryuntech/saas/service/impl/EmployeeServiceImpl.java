@@ -3,23 +3,42 @@ package com.ryuntech.saas.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.ryuntech.common.constant.generator.IncrementIdGenerator;
+import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.saas.api.dto.EmployeeDTO;
+import com.ryuntech.saas.api.dto.EmployeeDetailDTO;
+import com.ryuntech.saas.api.form.EmployeeEditForm;
+import com.ryuntech.saas.api.form.EmployeeForm;
+import com.ryuntech.saas.api.mapper.CompanyMapper;
 import com.ryuntech.saas.api.mapper.EmployeeMapper;
+import com.ryuntech.saas.api.mapper.SysUserMapper;
+import com.ryuntech.saas.api.mapper.SysUserRoleMapper;
+import com.ryuntech.saas.api.model.Company;
 import com.ryuntech.saas.api.model.Employee;
+import com.ryuntech.saas.api.model.SysUser;
+import com.ryuntech.saas.api.model.SysUserRole;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author antu
@@ -32,13 +51,22 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     @Autowired
     private EmployeeMapper employeeMapper;
 
+    @Autowired
+    private SysUserMapper sysUserMapper;
+
+    @Autowired
+    private CompanyMapper companyMapper;
+
+    @Autowired
+    private SysUserRoleMapper sysUserRoleMapper;
+
     @Override
     public Employee selectByEmployee(Employee employee) {
-        if (StringUtils.isNotBlank(employee.getSysUserId())){
+        if (StringUtils.isNotBlank(employee.getSysUserId())) {
             queryWrapper.eq("user_id", employee.getSysUserId());
         }
 
-        if (StringUtils.isNotBlank(employee.getEmployeeId())){
+        if (StringUtils.isNotBlank(employee.getEmployeeId())) {
             queryWrapper.eq("employee_id", employee.getEmployeeId());
         }
 
@@ -47,11 +75,11 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public List<Employee> selectByEmployeeList(Employee employee) {
-        queryWrapper=new QueryWrapper<>();
-        if (StringUtils.isNotBlank(employee.getSysUserId())){
+        queryWrapper = new QueryWrapper<>();
+        if (StringUtils.isNotBlank(employee.getSysUserId())) {
             queryWrapper.eq("user_id", employee.getSysUserId());
         }
-        if (StringUtils.isNotBlank(employee.getEmployeeId())){
+        if (StringUtils.isNotBlank(employee.getEmployeeId())) {
             queryWrapper.eq("employee_id", employee.getEmployeeId());
         }
         return employeeMapper.selectList(queryWrapper);
@@ -63,16 +91,16 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         QueryWrapper qw = new QueryWrapper();
         if (param.containsKey("departmentId")) {
             // todo: 找出部门下的所有部门
-            qw.eq("department_id",param.get("departmentId"));
+            qw.eq("department_id", param.get("departmentId"));
         }
         if (param.containsKey("status")) {
-            qw.eq("status",param.get("status"));
+            qw.eq("status", param.get("status"));
         }
         if (param.containsKey("employeeId")) {
-            qw.eq("employee_id",param.get("employeeId"));
+            qw.eq("employee_id", param.get("employeeId"));
         }
         if (param.containsKey("companyId")) {
-            qw.eq("company_id",param.get("companyId"));
+            qw.eq("company_id", param.get("companyId"));
         }
         // 关键字搜索
         if (param.containsKey("keyword") && StringUtils.isNotBlank((String) param.get("keyword"))) {
@@ -120,6 +148,129 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         if (StringUtils.isNotBlank(employee.getName())) {
             queryWrapper.eq("name", employee.getName());
         }
-        return super.pageList(queryWrapper,page);
+        return super.pageList(queryWrapper, page);
+    }
+
+    @Override
+    public Result<IPage<EmployeeDTO>> getPager(EmployeeForm employeeForm) {
+        // TODO 数据权限校验
+
+        PageHelper.startPage(employeeForm.getPageCode(), employeeForm.getPageSize());
+        List<EmployeeDTO> list = employeeMapper.getPager(employeeForm);
+        PageInfo<EmployeeDTO> pageInfo = new PageInfo(list);
+
+        IPage<EmployeeDTO> page = new Page<>();
+        page.setRecords(list);
+        page.setTotal(pageInfo.getTotal());
+        page.setSize(pageInfo.getSize());
+        page.setCurrent(pageInfo.getPageNum());
+        page.setSize(pageInfo.getPageNum());
+        return new Result<>(page);
+    }
+
+    @Override
+    public EmployeeDetailDTO detail(String employeeId) {
+        // TODO 数据权限校验
+
+        return employeeMapper.detail(employeeId);
+    }
+
+    @Override
+    public boolean updateStatus(String emplyoeeId, String status) throws Exception {
+
+        Employee employee = employeeMapper.selectById(emplyoeeId);
+        if (employee == null || employee.getStatus() == Integer.parseInt(status)) {
+            throw new Exception("数据异常");
+        }
+
+        // TODO 数据权限校验，是否可以操作这个员工
+        employee.setEmployeeId(emplyoeeId);
+        employee.setStatus(Integer.parseInt(status));
+        employee.setUpdatedAt(new Date());
+        return employeeMapper.updateById(employee) > 0;
+    }
+
+    @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    @Override
+    public boolean edit(EmployeeEditForm employeeEditForm) {
+        // TODO 数据权限校验，是否可以操作这个员工
+
+        UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
+        Date time = new Date();
+        if (employeeEditForm.getEmployeeId() == null) {
+            // 添加用户表数据
+            SysUser sysUser = new SysUser();
+            sysUser.setSysUserId(uniqueIdGenerator.nextStrId());
+            sysUser.setUsername(employeeEditForm.getMobile());
+            sysUser.setMobile(employeeEditForm.getMobile());
+            // TODO 暂时使用这个密码，生产时不需要设置密码，短信登录-忘记密码
+            sysUser.setPassword(new BCryptPasswordEncoder().encode("123456"));
+            //   sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
+            sysUser.setStatus("1");
+            sysUser.setCreatedAt(time);
+            sysUser.setUpdatedAt(time);
+            sysUserMapper.insert(sysUser);
+
+            Company company = companyMapper.selectById(employeeEditForm.getCompanyId());
+
+            // 添加员工表数据
+            Employee employee = new Employee();
+            employee.setCompanyId(employeeEditForm.getCompanyId());
+            employee.setCompanyName(company.getName());
+            employee.setEmployeeId(uniqueIdGenerator.nextStrId());
+            employee.setSysUserId(sysUser.getSysUserId());
+            employee.setName(employeeEditForm.getEmployeeName());
+            employee.setDepartmentId(employeeEditForm.getDepartmentId());
+            employee.setEmail(employeeEditForm.getEmail());
+            employee.setIsCharger(employee.getIsCharger());
+            employee.setDataType(Integer.parseInt(employeeEditForm.getDataType()));
+            employee.setStatus(1);
+            employee.setCreatedAt(time);
+            employee.setUpdatedAt(time);
+            employeeMapper.insert(employee);
+
+            String[] roles = employeeEditForm.getRoleIds().split(",");
+            for (String rId : roles) {
+                if (!StringUtil.isNumber(rId)) {
+                    continue;
+                }
+
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setEmployeeId(employee.getEmployeeId());
+                sysUserRole.setRoleId(rId);
+                sysUserRoleMapper.insert(sysUserRole);
+            }
+        } else {
+            // 更新员工
+            Employee employee = new Employee();
+            employee.setEmployeeId(employeeEditForm.getEmployeeId());
+            employee.setName(employeeEditForm.getEmployeeName());
+            employee.setDepartmentId(employeeEditForm.getDepartmentId());
+            employee.setIsCharger(employeeEditForm.getIsCharger());
+            employee.setEmail(employeeEditForm.getEmail());
+            employee.setDataType(Integer.parseInt(employeeEditForm.getDataType()));
+            employee.setDataDepartmentId(employeeEditForm.getDataDepartmentId());
+            employee.setUpdatedAt(time);
+            employeeMapper.updateById(employee);
+
+            // 更新员工角色信息
+            //1.清空当前员工角色信息
+            sysUserRoleMapper.deleteByEmployeeId(employeeEditForm.getEmployeeId());
+
+            //2.添加当前员工角色信息
+            String[] roles = employeeEditForm.getRoleIds().split(",");
+            for (String rId : roles) {
+                if (!StringUtil.isNumber(rId)) {
+                    continue;
+                }
+
+                SysUserRole sysUserRole = new SysUserRole();
+                sysUserRole.setEmployeeId(employeeEditForm.getEmployeeId());
+                sysUserRole.setRoleId(rId);
+                sysUserRoleMapper.insert(sysUserRole);
+            }
+        }
+
+        return true;
     }
 }

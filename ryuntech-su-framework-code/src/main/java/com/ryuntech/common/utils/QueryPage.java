@@ -1,5 +1,6 @@
 package com.ryuntech.common.utils;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.ToString;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @date 2019-05-23
  */
 @Data
+@AllArgsConstructor
 @ToString
 public class QueryPage implements Serializable {
 

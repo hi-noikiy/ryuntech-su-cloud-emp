@@ -13,4 +13,8 @@
         user_id, role_id
     </sql>
 
+    <delete id="deleteByEmployeeId">
+        delete from `sys_user_role` where `EMPLOYEE_ID` = #{employeeId}
+    </delete>
+
 </mapper>

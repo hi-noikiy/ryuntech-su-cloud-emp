@@ -1,20 +1,12 @@
 package com.ryuntech.saas.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.ryuntech.common.constant.PermInfo;
-import com.ryuntech.common.constant.Root;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.helper.RequiresPermissions;
+import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.helper.SecurityUtils;
-import com.ryuntech.saas.api.model.Auth;
-import com.ryuntech.saas.api.model.SysPerm;
 import com.ryuntech.saas.api.model.SysUser;
-import com.ryuntech.saas.api.model.SysUserRole;
 import com.ryuntech.saas.api.service.ISysPermService;
 import com.ryuntech.saas.api.service.ISysRoleService;
 import com.ryuntech.saas.api.service.ISysUserRoleService;
@@ -24,13 +16,9 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.spring.web.json.Json;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.regex.Pattern;
 
 /**
  * @author antu
@@ -98,32 +86,15 @@ public class SysUserController extends ModuleBaseController {
         return new Result<>(sysUserService.findByName(username));
     }
 
-    /**
-     * 分页查询列表数据，条件查询
-     *
-     * @param user
-     * @return
-     */
-
-
     @PostMapping("/list")
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "user", value = "查询条件", required = true, dataType = "SysUser", paramType = "body")
     public Result<IPage<SysUser>> list(SysUser user, QueryPage queryPage) {
-     //   log.info("order.getOrderid()"+user.getUsername());
-     //   log.info("order.getOrderid()"+user.getId());
-        return  new Result<>(sysUserService.selectUsersRoleById(user, queryPage));
+        //   log.info("order.getOrderid()"+user.getUsername());
+        //   log.info("order.getOrderid()"+user.getId());
+        return new Result<>(sysUserService.selectUsersRoleById(user, queryPage));
 //        return new Result<Map>(this.selectByPageNumSize(queryPage, () -> sysUserService.list(user)));
     }
-    /*@PostMapping("/list")
-    @ApiOperation(value = "分页、条件查询用户列表信息")
-    @ApiImplicitParam(name = "user", value = "查询条件", required = true, dataType = "SysUser", paramType = "body")
-    public Result<Map> list(SysUser user, QueryPage queryPage) {
-        log.info("order.getOrderid()"+user.getUsername());
-        log.info("order.getOrderid()"+user.getId());
-        return  new Result<>(sysUserService.selectUsersRoleById(user, queryPage));
-//        return new Result<Map>(this.selectByPageNumSize(queryPage, () -> sysUserService.list(user)));
-    }*/
 
 
     /**
@@ -185,20 +156,59 @@ public class SysUserController extends ModuleBaseController {
         return new Result();
     }
 
-    /**
-     * 修改密码
-     *
-     * @param user
-     * @return
-     */
-    @PostMapping("/changePass")
-    @ApiOperation(value = "修改密码")
-    @ApiImplicitParam(name = "user", value = "用户实体信息", required = true, dataType = "SysUser", paramType = "body")
-    public Result changePass(@RequestBody SysUser user) {
-        sysUserService.changePass(user);
+    @PostMapping("sendRegisterSms")
+    public Result sendRegisterSms(
+            @RequestParam("mobile") String mobile) {
+        // TODO 手机号码已经存在sysuser表，则不允许继续注册，后面走添加公司流程
+
+
+        //
         return new Result();
     }
 
+    @PostMapping("checkRegisterSmsCode")
+    public Result checkRegisterSmsCode(
+            @RequestParam("mobile") String mobile) {
 
+
+
+        // 校验成功保存随机生成uId，下一步保存校验需要使用
+        return new Result();
+    }
+
+    @PostMapping("register")
+    public Result register(
+            @RequestParam("companyName") String companyName,
+            @RequestParam("employeeName") String employeeName,
+            @RequestParam("password") String password,
+            // @RequestParam("uId") String uId) { 暂时短信没接
+            @RequestParam("mobile") String mobile) {
+        companyName = StringUtil.trim(companyName);
+        employeeName = StringUtil.trim(employeeName);
+
+        if (!StringUtil.length(companyName, 1, 100)) {
+            return new Result(CommonEnums.PARAM_ERROR, "公司名称仅支持1-100个字符");
+        }
+
+        if (!StringUtil.length(employeeName, 1, 50)) {
+            return new Result(CommonEnums.PARAM_ERROR, "员工名称仅支持1-50个字符");
+        }
+
+        if (password == null || !Pattern.matches("^[0-9a-zA-Z~!@#$%^&*?]{6,16}$", password)) {
+            return new Result(CommonEnums.PARAM_ERROR, "登录密码仅支持6-16个字符");
+        }
+
+        // TODO 通过uId获取校验成功的手机号码
+        // 通过uId获取校验成功的手机号码
+        //String mobile = null;
+
+        try {
+            sysUserService.saveRegister(companyName, employeeName, mobile, password);
+        } catch (Exception e) {
+            return new Result(CommonEnums.OPERATE_ERROR, e.getLocalizedMessage());
+        }
+
+        return new Result();
+    }
 
 }

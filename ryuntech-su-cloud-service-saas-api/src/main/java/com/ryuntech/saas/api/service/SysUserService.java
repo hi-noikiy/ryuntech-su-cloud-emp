@@ -1,7 +1,6 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
@@ -13,7 +12,7 @@ import java.util.List;
  * @author antu
  * @date 2019-05-22
  */
-public interface SysUserService  extends IBaseService<SysUser> {
+public interface SysUserService extends IBaseService<SysUser> {
 
     /**
      * 根据用户名查询用户信息
@@ -47,14 +46,8 @@ public interface SysUserService  extends IBaseService<SysUser> {
     void update(SysUser user);
 
     /**
-     * 修改密码
-     *
-     * @param user
-     */
-    void changePass(SysUser user);
-
-    /**
      * 查询用户信息
+     *
      * @param user
      * @return
      */
@@ -62,6 +55,7 @@ public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 分页查看用户信息
+     *
      * @param user
      * @param queryPage
      * @return
@@ -70,6 +64,7 @@ public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 获取用户ID和用户名的列表，用于搜索选择
+     *
      * @param user
      * @return
      */
@@ -77,6 +72,7 @@ public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 通过指定用户查询
+     *
      * @param user
      * @return
      */
@@ -85,6 +81,7 @@ public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 通过指定用户查询
+     *
      * @param userDTO
      * @return
      */
@@ -92,9 +89,11 @@ public interface SysUserService  extends IBaseService<SysUser> {
 
     /**
      * 注册方法
+     *
      * @param sysUserForm
      * @return
      */
     SysUser register(SysUserForm sysUserForm) throws Exception;
 
+    boolean saveRegister(String companyName, String employeeName, String mobile, String password) throws Exception;
 }
