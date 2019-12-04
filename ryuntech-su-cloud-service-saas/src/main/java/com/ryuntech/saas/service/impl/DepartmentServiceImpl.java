@@ -202,4 +202,25 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         baseMapper.deleteById(deptId);
         log.info("员工【{}】删除了部门：{}", empName, oldDept);
     }
+
+    @Override
+    public int migrateToAnotherDept(String oldDeptId, String newDeptId) {
+        // todo 获取当前员工名字及公司id;
+        String empName = "操作员工";
+        String companyId = "773031356912366360";
+
+        // 检查旧部门是否存在
+        Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", oldDeptId).eq("COMPANY_ID", companyId));
+        if (oldDept == null) {
+            throw new RyunBizException("移出部门不存在");
+        }
+        // 检查新部门是否存在
+        Department newDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", newDeptId).eq("COMPANY_ID", companyId));
+        if (newDept == null) {
+            throw new RyunBizException("目标部门不存在");
+        }
+        int result = employeeMapper.migrateToAnotherDept(oldDeptId, newDeptId);
+        log.info("员工【{}】将 {} 个员工从 {} 迁移到 {}", empName, result, oldDept.getDepartmentName(), newDept.getDepartmentName());
+        return result;
+    }
 }

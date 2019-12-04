@@ -51,10 +51,14 @@ public class DepartmentController extends ModuleBaseController {
             return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
         }
     }
-    //
-    // @PostMapping("migrate")
-    // public Result migrateToAnotherDept(String oldDeptId, String newDeptId){
-    //     departmentService.migrateToAnotherDept(oldDeptId, newDeptId);
-    //     return null;
-    // }
+
+    @PostMapping("migrate")
+    public Result<Integer> migrateToAnotherDept(String oldDeptId, String newDeptId){
+        try {
+            return new Result<>(departmentService.migrateToAnotherDept(oldDeptId, newDeptId));
+        } catch (Exception e) {
+            log.error("删除部门发生异常", e);
+            return new Result<>(CommonEnums.OPERATE_ERROR, e.getMessage());
+        }
+    }
 }

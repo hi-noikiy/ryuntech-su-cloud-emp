@@ -56,4 +56,6 @@ public interface EmployeeMapper extends IBaseMapper<Employee> {
     List<EmployeeDTO> getPager(EmployeeForm employeeForm);
 
     EmployeeDetailDTO detail(String employeeId);
+
+    int migrateToAnotherDept(@Param("oldDeptId") String oldDeptId, @Param("newDeptId") String newDeptId);
 }

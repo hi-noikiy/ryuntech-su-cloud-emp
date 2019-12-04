@@ -65,4 +65,6 @@ public interface IDepartmentService extends IBaseService<Department> {
     void edit(DepartmentForm form);
 
     void delete(String deptId);
+
+    int migrateToAnotherDept(String oldDeptId, String newDeptId);
 }
