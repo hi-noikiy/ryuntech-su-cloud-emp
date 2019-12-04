@@ -89,7 +89,13 @@ public class SysRoleController extends ModuleBaseController {
      * @return 操作结果(成功 or 失败)
      */
     @PostMapping("delete")
-    public Result delete(){
-        return null;
+    public Result delete(String roleId){
+        try {
+            roleService.delete(roleId);
+            return new Result();
+        } catch (Exception e) {
+            log.error("删除角色发生异常", e);
+            return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
+        }
     }
 }
