@@ -25,12 +25,20 @@ public class DepartmentController extends ModuleBaseController {
     @Autowired
     private IDepartmentService departmentService;
 
+    /**
+     * 获取部门结构树
+     */
     @GetMapping("tree")
     public Result<List<DepartmetnTreeNodeDTO>> getDepartmentTree(){
         List<DepartmetnTreeNodeDTO> deptTree = departmentService.getDepartmentTree();
         return new Result<>(deptTree);
     }
 
+    /**
+     * 编辑部门(新增/修改)
+     * @param form 新的部门信息
+     * @return 操作结果
+     */
     @PostMapping("edit")
     public Result edit(DepartmentForm form){
         try {
@@ -45,6 +53,11 @@ public class DepartmentController extends ModuleBaseController {
         }
     }
 
+    /**
+     * 删除部门
+     * @param deptId 要删除的部门id
+     * @return 操作结果
+     */
     @PostMapping("delete")
     public Result delete(String deptId){
         try {
@@ -56,6 +69,12 @@ public class DepartmentController extends ModuleBaseController {
         }
     }
 
+    /**
+     * 将一个部门的员工迁移到另一个部门
+     * @param oldDeptId 旧部门id
+     * @param newDeptId 新部门id
+     * @return 操作结果, 成功的记录数
+     */
     @PostMapping("migrate")
     public Result<Integer> migrateToAnotherDept(String oldDeptId, String newDeptId){
         try {

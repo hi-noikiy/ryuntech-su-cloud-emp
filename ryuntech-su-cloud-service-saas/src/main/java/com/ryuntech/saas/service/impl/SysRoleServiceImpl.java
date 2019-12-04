@@ -110,7 +110,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     public void edit(RoleForm roleForm) {
         // todo 获取当前员工名字及公司id;
-        String empName = "操作员工";
+        String empId = "操作员工";
         String companyId = "773031356912366360";
         // 查询同名岗位
         SysRole sameNameRole = baseMapper.selectOne(
@@ -152,7 +152,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             if (rolePermList.size() > 0){
                 sysRolePermMapper.batchInsert(rolePermList);
             }
-            log.info("员工【{}】修改了角色详情：{}", empName, newRole);
+            log.info("员工【{}】修改了角色详情：{}", empId, newRole);
         } else {
             // 新增角色, 新建一个 roleId
             UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
@@ -171,14 +171,14 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             if (rolePermList.size() > 0) {
                 sysRolePermMapper.batchInsert(rolePermList);
             }
-            log.info("员工【{}】创建了角色：{}", empName, newRole);
+            log.info("员工【{}】创建了角色：{}", empId, newRole);
         }
     }
 
     @Override
     public void delete(String roleId) {
         // todo 获取当前员工名字及公司id;
-        String empName = "操作员工";
+        String empId = "empId";
         String companyId = "773031356912366360";
         // 获取旧角色并检验
         SysRole oldRole = baseMapper.selectOne(new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
@@ -196,6 +196,6 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
         // 删除角色, 以及角色关联的权限
         baseMapper.deleteById(roleId);
         sysRolePermMapper.delete(new QueryWrapper<SysRolePerm>().eq("ROLE_ID", roleId));
-        log.info("员工【{}】删除了角色：{}", empName, oldRole);
+        log.info("员工【{}】删除了角色：{}", empId, oldRole);
     }
 }

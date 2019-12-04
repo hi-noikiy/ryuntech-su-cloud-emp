@@ -116,7 +116,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     @Override
     public void edit(DepartmentForm form) {
         // todo 获取公司id
-        String empName = "操作员工";
+        String empId = "操作员工";
         String companyId = "773031356912366360";
 
         // 查询同名部门
@@ -156,7 +156,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             // 更新部门
             newDept.setLevel(String.valueOf(level));
             baseMapper.update(newDept, new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
-            log.info("员工【{}】修改了部门：{}", empName, newDept);
+            log.info("员工【{}】修改了部门：{}", empId, newDept);
         } else {
             // 新增部门, 新建一个 deptId
             UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
@@ -167,14 +167,14 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             newDept.setLevel(String.valueOf(level));
             newDept.setCreatedAt(newDept.getUpdatedAt());
             baseMapper.insert(newDept);
-            log.info("员工【{}】创建了部门：{}", empName, newDept);
+            log.info("员工【{}】创建了部门：{}", empId, newDept);
         }
     }
 
     @Override
     public void delete(String deptId) {
         // todo 获取当前员工名字及公司id;
-        String empName = "操作员工";
+        String empId = "操作员工";
         String companyId = "773031356912366360";
         // 获取旧部门并检验
         Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
@@ -200,13 +200,13 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         }
         // 删除部门
         baseMapper.deleteById(deptId);
-        log.info("员工【{}】删除了部门：{}", empName, oldDept);
+        log.info("员工【{}】删除了部门：{}", empId, oldDept);
     }
 
     @Override
     public int migrateToAnotherDept(String oldDeptId, String newDeptId) {
         // todo 获取当前员工名字及公司id;
-        String empName = "操作员工";
+        String empId = "操作员工";
         String companyId = "773031356912366360";
 
         // 检查旧部门是否存在
@@ -220,7 +220,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             throw new RyunBizException("目标部门不存在");
         }
         int result = employeeMapper.migrateToAnotherDept(oldDeptId, newDeptId);
-        log.info("员工【{}】将 {} 个员工从 {} 迁移到 {}", empName, result, oldDept.getDepartmentName(), newDept.getDepartmentName());
+        log.info("员工【{}】将 {} 个员工从 {} 迁移到 {}", empId, result, oldDept.getDepartmentName(), newDept.getDepartmentName());
         return result;
     }
 }
