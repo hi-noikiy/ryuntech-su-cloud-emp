@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.mapper;
 
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.Department;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.ryuntech.saas.api.model.Department;
  * @author antu
  * @since 2019-10-15
  */
+@Component
 public interface DepartmentMapper extends IBaseMapper<Department> {
 
 }

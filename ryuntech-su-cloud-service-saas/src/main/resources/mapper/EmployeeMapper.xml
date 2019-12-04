@@ -76,4 +76,73 @@
         </where>
     </select>
 
+    <select id="getPager" parameterType="com.ryuntech.saas.api.form.EmployeeForm" resultType="com.ryuntech.saas.api.dto.EmployeeDTO">
+        SELECT
+          re.`EMPLOYEE_ID` employeeId,
+          re.`NAME` name,
+          t.`concatRoleName`,
+          rd.`DEPARTMENT_NAME` departmentName,
+          su.`MOBILE` mobile,
+          re.`DATA_TYPE` dataType,
+          re.`STATUS` status
+        FROM
+          `ryn_department` rd ,
+          `sys_user` su,
+          `ryn_employee` re
+          LEFT JOIN
+          (SELECT
+          s1.`EMPLOYEE_ID`,
+          CONCAT(s2.`RNAME`, ',') concatRoleName
+        FROM
+          `sys_user_role` s1,
+          `sys_role` s2
+        WHERE s1.`ROLE_ID` = s1.`ROLE_ID`
+        GROUP BY s1.`EMPLOYEE_ID`) t ON re.`EMPLOYEE_ID` = t.`EMPLOYEE_ID`
+        <where>
+            re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID` AND su.`SYS_USER_ID` = re.`SYS_USER_ID` AND su.`STATUS` = 1 AND re.`COMPANY_ID` = #{companyId}
+
+            <if test="departmentId != null and departmentId  != ''">
+                AND re.`DEPARTMENT_ID` = #{departmentId}
+            </if>
+
+            <if test="status != null and status  != ''">
+                AND re.`STATUS` = #{status}
+            </if>
+
+            <if test="keyWord != null and keyWord  != ''">
+                AND (instr(re.`NAME`,#{keyWord})!=0 OR instr(su.`MOBILE`,#{keyWord})!=0)
+            </if>
+
+        </where>
+    </select>
+
+    <select id="detail" resultType="com.ryuntech.saas.api.dto.EmployeeDetailDTO">
+        SELECT
+            re.`EMPLOYEE_ID` employeeId,
+            su.`MOBILE` mobile,
+            re.`NAME` name,
+            rd.`DEPARTMENT_ID` departmentId,
+            re.`IS_CHARGER` isCharger,
+            re.`EMAIL` email,
+            re.`DATA_TYPE` dataType,
+            t.`roleIds`
+        FROM
+          `ryn_department` rd ,
+          `sys_user` su,
+          `ryn_employee` re
+          LEFT JOIN
+          (SELECT
+          s1.`EMPLOYEE_ID`,
+          CONCAT(s2.`RID`, ',') roleIds
+        FROM
+          `sys_user_role` s1,
+          `sys_role` s2
+        WHERE s1.`ROLE_ID` = s1.`ROLE_ID`
+        GROUP BY s1.`EMPLOYEE_ID`) t ON re.`EMPLOYEE_ID` = t.`EMPLOYEE_ID`
+        <where>
+            re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID` AND su.`SYS_USER_ID` = re.`SYS_USER_ID` AND su.`STATUS` = 1
+            AND re.`EMPLOYEE_ID` = #{employeeId}
+        </where>
+    </select>
+
 </mapper>

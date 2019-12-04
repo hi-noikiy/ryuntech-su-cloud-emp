@@ -3,8 +3,12 @@ package com.ryuntech.saas.api.mapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
+import com.ryuntech.saas.api.dto.EmployeeDTO;
+import com.ryuntech.saas.api.dto.EmployeeDetailDTO;
+import com.ryuntech.saas.api.form.EmployeeForm;
 import com.ryuntech.saas.api.model.Employee;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +21,7 @@ import java.util.Map;
  * @author antu
  * @since 2019-10-15
  */
+@Component
 public interface EmployeeMapper extends IBaseMapper<Employee> {
 
     /**
@@ -35,7 +40,7 @@ public interface EmployeeMapper extends IBaseMapper<Employee> {
 
     /**
      * 根据员工id集合查询对应的员工角色
-     * @param departmentIdList
+     * @param
      * @return
      */
     List<Map<String, String>> queryRoleLimitEmployeeIds(@Param("employeeIdList") List<String> employeeIdList);
@@ -47,4 +52,8 @@ public interface EmployeeMapper extends IBaseMapper<Employee> {
      * @return
      */
     IPage<Employee> queryListByLimitSearch(@Param("pg") Page<Employee> page, @Param("map") Map map);
+
+    List<EmployeeDTO> getPager(EmployeeForm employeeForm);
+
+    EmployeeDetailDTO detail(String employeeId);
 }

@@ -14,6 +14,16 @@ import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 @Slf4j
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
+    // 资源端不需要验证的url集合
+    public static final String[] WHITELIST = {
+            "/actuator/**",
+            "/user/info/*",
+            "/user/register",
+            "/sms/*",
+            "/storage/local/upload",
+            "/*/out**" // 小程序端
+    };
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         log.info("加载了 >> ResourceServerConfig...");
@@ -37,7 +47,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/swagger-resources/**",
                         "/v2/api-docs/**")
                 .permitAll()
-                .antMatchers("/actuator/**", "/user/info/*", "/sms/*", "/storage/local/upload", "/*/out**")
+                .antMatchers(WHITELIST)
                 .permitAll()
 
                 .anyRequest()

@@ -1,8 +1,13 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.dto.EmployeeDTO;
+import com.ryuntech.saas.api.dto.EmployeeDetailDTO;
+import com.ryuntech.saas.api.form.EmployeeEditForm;
+import com.ryuntech.saas.api.form.EmployeeForm;
 import com.ryuntech.saas.api.model.Employee;
 
 import java.util.List;
@@ -73,4 +78,13 @@ public interface IEmployeeService extends IBaseService<Employee> {
      * @return
      */
     IPage<Employee> queryListByLimitSearch(Map map, QueryPage page);
+
+
+    Result<IPage<EmployeeDTO>> getPager(EmployeeForm employeeForm);
+
+    EmployeeDetailDTO detail(String employeeId);
+
+    boolean updateStatus(String emplyoeeId, String status) throws Exception;
+
+    boolean edit(EmployeeEditForm employeeEditForm);
 }

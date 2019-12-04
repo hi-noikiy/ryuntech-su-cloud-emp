@@ -184,13 +184,10 @@ public class Company implements Serializable {
     @TableField("invoice_bank_account")
     private String invoiceBankAccount;
 
-            @TableId("IS_QICHACHA")
-    private String isQichacha;
-
-            /**
-            * 服务热线
-            */
-            @TableId("HOTLINE_TEL")
+    /**
+     * 服务热线
+     */
+    @TableId("hotline_tel")
     private String hotlineTel;
 
     /**

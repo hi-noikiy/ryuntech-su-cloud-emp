@@ -3,23 +3,22 @@ package com.ryuntech.saas.api.dto;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Id;
-
 @Data
 @Accessors(chain = true)
-public class EmployeeDTO {
+public class EmployeeDetailDTO {
     private String employeeId;
-
-    private String concatRoleName;
-
-    private String name;
-
-    private String departmentName;
 
     private String mobile;
 
-    private Integer status;
+    private String name;
+
+    private String departmentId;
+
+    private String isCharger;
+
+    private String email;
 
     private Integer dataType;
 
+    private String roleIds;
 }

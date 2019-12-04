@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.mapper;
 
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.EmployeeRole;
+import org.springframework.stereotype.Component;
 
 /**
  * <p>
@@ -11,6 +12,7 @@ import com.ryuntech.saas.api.model.EmployeeRole;
  * @author antu
  * @since 2019-10-17
  */
+@Component
 public interface EmployeeRoleMapper extends IBaseMapper<EmployeeRole> {
 
 }

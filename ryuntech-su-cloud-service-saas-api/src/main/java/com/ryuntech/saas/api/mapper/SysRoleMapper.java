@@ -6,6 +6,7 @@ import com.ryuntech.saas.api.dto.PermGroupDTO;
 import com.ryuntech.saas.api.dto.RoleDetailDTO;
 import com.ryuntech.saas.api.model.SysRole;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @author antu
  * @since 2019-09-12
  */
+@Component
 public interface SysRoleMapper extends IBaseMapper<SysRole> {
 
     /**

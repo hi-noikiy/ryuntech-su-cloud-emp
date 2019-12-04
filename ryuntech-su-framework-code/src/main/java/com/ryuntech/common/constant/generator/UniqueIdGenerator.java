@@ -108,6 +108,10 @@ public class UniqueIdGenerator implements IdGenerator {
 		return this.genUniqueId();
 	}
 
+	public String nextStrId() {
+		return String.valueOf(this.genUniqueId());
+	}
+
 	/**
 	 * 生成唯一id的具体实现
 	 */

@@ -4,6 +4,7 @@
 系统前台
 	1.注册 
 	2.登录 sys/login
+	3.选择公司 company/listBySysUserId
 	3.登出 sys/logout
 
 员工设置 employee
@@ -20,7 +21,7 @@
 	4. 迁移员工去其他部门 department/migrate
 
 角色权限 role
-        0. 查询角色列表 role/list
+    0. 查询角色列表 role/list
 	1. 查询所有资源列表，两级 role/allResources
 	2. 查询当前角色的资源 role/currentResources
 	3. 编辑角色（新增修改） role/edit

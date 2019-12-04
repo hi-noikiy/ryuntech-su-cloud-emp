@@ -120,7 +120,7 @@ public class IndexControllerOne extends ModuleBaseController {
         if(employee != null) {
             departmentId = employee.getDepartmentId();
             indexDepartmentDTO.setDepartmentId(departmentId);
-            indexDepartmentDTO.setDepartmentName(employee.getDepartmentName());
+            // indexDepartmentDTO.setDepartmentName(employee.getDepartmentName());
         }
         List<IndexDepartmentDTO> list = new ArrayList<>();
         list = getBack(departmentId);
@@ -145,5 +145,4 @@ public class IndexControllerOne extends ModuleBaseController {
         }
         return indexDepartmentDTOList;
     }
-
 }

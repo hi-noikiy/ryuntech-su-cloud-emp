@@ -1,6 +1,9 @@
 package com.ryuntech.saas.api.service;
 
+import com.ryuntech.saas.api.dto.LoginConpanyDTO;
 import com.ryuntech.saas.api.model.Company;
+
+import java.util.List;
 
 /**
  * <p>
@@ -18,4 +21,6 @@ public interface ICompanyService extends IBaseService<Company> {
      * @return
      */
     Company selectByCompany(Company company);
+
+    List<LoginConpanyDTO> listBySysUserId(String sysUserId);
 }

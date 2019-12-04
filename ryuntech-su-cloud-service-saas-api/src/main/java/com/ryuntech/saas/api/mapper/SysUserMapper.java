@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.model.SysUser;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ import java.util.List;
  * @author antu
  * @date 2019-05-22
  */
-
+@Component
 public interface SysUserMapper  extends IBaseMapper<SysUser> {
 //    selectUserRoleById
 
