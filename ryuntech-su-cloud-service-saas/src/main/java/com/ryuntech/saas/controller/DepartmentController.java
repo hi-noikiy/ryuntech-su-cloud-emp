@@ -40,12 +40,17 @@ public class DepartmentController extends ModuleBaseController {
             return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
         }
     }
-    //
-    // @PostMapping("delete")
-    // public Result delete(String deptId){
-    //     departmentService.delete(deptId);
-    //     return null;
-    // }
+
+    @PostMapping("delete")
+    public Result delete(String deptId){
+        try {
+            departmentService.delete(deptId);
+            return new Result();
+        } catch (Exception e) {
+            log.error("删除部门发生异常", e);
+            return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
+        }
+    }
     //
     // @PostMapping("migrate")
     // public Result migrateToAnotherDept(String oldDeptId, String newDeptId){

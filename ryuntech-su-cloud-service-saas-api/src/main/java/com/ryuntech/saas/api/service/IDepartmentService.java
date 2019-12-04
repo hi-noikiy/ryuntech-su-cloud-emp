@@ -63,4 +63,6 @@ public interface IDepartmentService extends IBaseService<Department> {
     List<DepartmetnTreeNodeDTO> getDepartmentTree();
 
     void edit(DepartmentForm form);
+
+    void delete(String deptId);
 }

@@ -10,7 +10,9 @@ import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO;
 import com.ryuntech.saas.api.form.DepartmentForm;
 import com.ryuntech.saas.api.mapper.DepartmentMapper;
+import com.ryuntech.saas.api.mapper.EmployeeMapper;
 import com.ryuntech.saas.api.model.Department;
+import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.service.IDepartmentService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +37,8 @@ import java.util.Map;
 public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Department> implements IDepartmentService {
     @Autowired
     private DepartmentMapper departmentMapper;
+    @Autowired
+    private EmployeeMapper employeeMapper;
     @Override
 
     /*
@@ -165,5 +169,37 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             baseMapper.insert(newDept);
             log.info("员工【{}】创建了部门：{}", empName, newDept);
         }
+    }
+
+    @Override
+    public void delete(String deptId) {
+        // todo 获取当前员工名字及公司id;
+        String empName = "操作员工";
+        String companyId = "773031356912366360";
+        // 获取旧部门并检验
+        Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
+        if (oldDept == null) {
+            throw new RyunBizException("部门不存在");
+        }
+        // 至少保留一个一级部门
+        if ("1".equals(oldDept.getLevel())) {
+            List<Department> lv1DeptList = baseMapper.selectList(new QueryWrapper<Department>().eq("LEVEL", "1").eq("COMPANY_ID", companyId));
+            if(lv1DeptList.size() == 1) {
+                throw new RyunBizException("至少保留一个一级部门");
+            }
+        }
+        // 存在下级部门, 不能删
+        List<Department> subDeptList = baseMapper.selectList(new QueryWrapper<Department>().eq("PID", deptId).eq("COMPANY_ID", companyId));
+        if (subDeptList.size() > 0) {
+            throw new RyunBizException("该部门存在下级部门, 请先删除下级部门.");
+        }
+        // 存在关联员工, 不能删
+        List<Employee> employeeList = employeeMapper.selectList(new QueryWrapper<Employee>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
+        if (employeeList.size() > 0) {
+            throw new RyunBizException("该部门存在关联员工, 请先将员工迁移到其他部门.");
+        }
+        // 删除部门
+        baseMapper.deleteById(deptId);
+        log.info("员工【{}】删除了部门：{}", empName, oldDept);
     }
 }
