@@ -22,7 +22,7 @@ public class SysUserDTO extends BaseDto {
      */
     @Id
     private String id;
-    private String openId;
+    private String unionId;
 
     /**
      * 小程序用户对象

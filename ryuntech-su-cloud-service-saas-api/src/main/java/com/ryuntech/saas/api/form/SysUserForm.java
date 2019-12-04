@@ -22,7 +22,7 @@ public class SysUserForm extends BaseDto {
      */
     @Id
     private String id;
-    private String openId;
+    private String union_id;
 
     /**
      * 小程序用户对象

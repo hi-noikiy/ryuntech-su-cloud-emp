@@ -120,6 +120,8 @@ public class MiniMonitorController extends ModuleBaseController{
                 customerM.setCustomerId(customerId);
                 customerM.setCreated(new Date());
                 customerM.setUpdated(new Date());
+                customerM.setStaffId(customerUserInfoDTO.getStaffId());
+                customerM.setStaffName(customerUserInfoDTO.getStaffName());
                 customerM.setCustomerName(customerUserInfoDTO.getCustomerName());
                 iCustomerMonitorService.saveOrUpdate(customerM);
             }

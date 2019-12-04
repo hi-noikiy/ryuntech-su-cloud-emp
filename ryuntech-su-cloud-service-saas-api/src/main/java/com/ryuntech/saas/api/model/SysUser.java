@@ -72,12 +72,6 @@ public class SysUser implements Serializable {
     private String unionId;
 
     /**
-     * 微信的OPENID
-     */
-    @TableField("open_id")
-    private String openId;
-
-    /**
      * 创建时间
      */
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

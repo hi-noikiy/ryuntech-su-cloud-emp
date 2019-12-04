@@ -7,13 +7,30 @@
         <id column="MONITOR_ID" property="monitorId" />
         <result column="CUSTOMER_ID" property="customerId" />
         <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="STAFF_ID" property="staffId" />
+        <result column="STAFF_NAME" property="staffName" />
         <result column="CREATED" property="created" />
         <result column="UPDATED" property="updated" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        MONITOR_ID, CUSTOMER_ID, CUSTOMER_NAME, CREATED, UPDATED
+        MONITOR_ID, CUSTOMER_ID, CUSTOMER_NAME, CREATED, UPDATED,STAFF_ID,STAFF_NAME
     </sql>
+
+    <select id="selectGroupMonitorByStaffId" resultType="java.util.HashMap">
+        select
+            staff_id,
+            staff_name,
+            group_concat(customer_id) AS customer_ids
+        from
+            ryn_company_monitor
+        <where>
+            <if test="customerMonitorForm.customerId!=null and customerMonitorForm.customerId!=''">
+                customer_id like '%'||#{customerMonitorForm.customerId}||'%'
+            </if>
+        </where>
+        group by staff_id
+    </select>
 
 </mapper>

@@ -47,6 +47,14 @@ import java.util.Date;
         @TableField("CUSTOMER_NAME")
     private String customerName;
 
+
+        @TableField("STAFF_ID")
+    private String staffId;
+
+
+        @TableField("STAFF_NAME")
+    private String staffName;
+
             /**
             * 创建时间
             */

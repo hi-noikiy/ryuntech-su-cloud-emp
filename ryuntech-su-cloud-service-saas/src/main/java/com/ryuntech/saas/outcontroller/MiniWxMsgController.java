@@ -152,9 +152,8 @@ public class MiniWxMsgController extends ModuleBaseController{
             }
 
             SysUser sysUser = sysUserService.selectByUserDTO(new SysUserDTO().setId(userId));
-            if (StringUtils.isBlank(sysUser.getOpenId())){
+            if (StringUtils.isBlank(sysUser.getUnionId())){
                 //开始更新用户的对象信息
-                sysUser.setOpenId(openid);
                 sysUser.setUnionId(unionid);
                 sysUser.setAvatar(wxAuthForm.getAvatar());
 

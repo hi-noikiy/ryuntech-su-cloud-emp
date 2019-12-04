@@ -45,6 +45,7 @@ gitee账号
 
 
 小程序地址:git@github.com:gjjbase/yktech-received-mini.git
+前端地址:https://github.com/gjjbase/ryuntech-su-cloud-service-saas-web.git
 API文档https://taro-ui.jd.com/#/docs/introduction
 
 
@@ -55,3 +56,12 @@ API文档https://element.faas.ele.me/#/zh-CN/
 企查查接口平台  https://openapi.qichacha.com
 用户名：13120698711
 密码：3c9dbab1
+
+
+小程序原型：https://next.modao.cc/app/baa8369e6e593d00eea1795ad09a1976f5bbbe87
+PC端原型：  https://next.modao.cc/app/9adfffd959215345eb3f976a33a3a153e194ffe0
+密码：123456
+
+设计稿
+PC：https://lanhuapp.com/url/nxmOZ-xs8kn
+M端：https://lanhuapp.com/url/UTM8y-7tGJs
