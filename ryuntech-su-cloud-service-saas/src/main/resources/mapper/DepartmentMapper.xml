@@ -18,4 +18,45 @@
         DEPARTMENT_ID, COMPANY_ID, DEPARTMENT_NAME, LEVEL, PID, UPDATED_AT, CREATED_AT
     </sql>
 
+    <resultMap id="deptTree" type="com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO">
+        <!-- 一级部门 -->
+        <id column="d1id" property="deptId"/>
+        <result column="d1Name" property="name"/>
+        <collection property="subDept" ofType="com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO">
+            <!-- 二级部门 -->
+            <id column="d2id" property="deptId"/>
+            <result column="d2Name" property="name"/>
+            <collection property="subDept" ofType="com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO">
+                <!-- 三级部门 -->
+                <id column="d3id" property="deptId"/>
+                <result column="d3Name" property="name"/>
+                <collection property="subDept" ofType="com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO">
+                    <!-- 四级部门 -->
+                    <id column="d4id" property="deptId"/>
+                    <result column="d4Name" property="name"/>
+                </collection>
+            </collection>
+        </collection>
+    </resultMap>
+    <select id="getDepartmentTreeByCompanyId" resultMap="deptTree">
+        select d1.DEPARTMENT_ID   d1id,
+               d1.DEPARTMENT_NAME d1Name,
+
+               d2.DEPARTMENT_ID   d2id,
+               d2.DEPARTMENT_NAME d2Name,
+
+               d3.DEPARTMENT_ID   d3id,
+               d3.DEPARTMENT_NAME d3Name,
+
+               d4.DEPARTMENT_ID   d4id,
+               d4.DEPARTMENT_NAME d4Name
+
+        from ryn_department d1
+                 left join ryn_department d2 on d2.PID = d1.DEPARTMENT_ID and d2.LEVEL = '2'
+                 left join ryn_department d3 on d3.PID = d2.DEPARTMENT_ID and d3.LEVEL = '3'
+                 left join ryn_department d4 on d4.PID = d3.DEPARTMENT_ID and d4.LEVEL = '4'
+        where d1.COMPANY_ID = #{companyId}
+          and d1.LEVEL = '1';
+    </select>
+
 </mapper>

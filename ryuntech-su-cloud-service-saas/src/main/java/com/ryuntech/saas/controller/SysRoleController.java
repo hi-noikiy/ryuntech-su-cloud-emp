@@ -79,7 +79,7 @@ public class SysRoleController extends ModuleBaseController {
             roleService.edit(roleForm);
             return new Result();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("编辑角色发生异常", e);
             return new Result(CommonEnums.OPERATE_ERROR, e.getMessage());
         }
     }

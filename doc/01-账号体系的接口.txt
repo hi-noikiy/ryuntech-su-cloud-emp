@@ -23,7 +23,7 @@
 角色权限 role
     0. 查询角色列表 role/list
 	1. 查询所有资源列表，两级 role/allResources
-	2. 查询当前角色的资源 role/currentResources
+	2. 查询当前角色的资源 role/detail
 	3. 编辑角色（新增修改） role/edit
 	4. 删除角色 role/delete
 	5. 角色名称列表（编辑员工使用） role/nameList

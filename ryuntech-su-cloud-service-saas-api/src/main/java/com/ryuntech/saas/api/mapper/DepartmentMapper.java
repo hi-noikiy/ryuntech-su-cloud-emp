@@ -1,8 +1,12 @@
 package com.ryuntech.saas.api.mapper;
 
 import com.ryuntech.common.mapper.IBaseMapper;
+import com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO;
 import com.ryuntech.saas.api.model.Department;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * <p>
@@ -15,4 +19,5 @@ import org.springframework.stereotype.Component;
 @Component
 public interface DepartmentMapper extends IBaseMapper<Department> {
 
+    List<DepartmetnTreeNodeDTO> getDepartmentTreeByCompanyId(@Param("companyId") String companyId);
 }

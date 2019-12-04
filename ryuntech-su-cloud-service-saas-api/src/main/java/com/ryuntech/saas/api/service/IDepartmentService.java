@@ -1,6 +1,8 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO;
+import com.ryuntech.saas.api.form.DepartmentForm;
 import com.ryuntech.saas.api.model.Department;
 
 import java.util.ArrayList;
@@ -57,4 +59,8 @@ public interface IDepartmentService extends IBaseService<Department> {
      * @return
      */
     List<Department> findByDepartment(Department department);
+
+    List<DepartmetnTreeNodeDTO> getDepartmentTree();
+
+    void edit(DepartmentForm form);
 }
