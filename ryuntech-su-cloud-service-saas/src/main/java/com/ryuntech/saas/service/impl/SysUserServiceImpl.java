@@ -291,7 +291,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
             sysRoleMapper.insert(sysRole);
 
             List<SysRolePerm> list = null;
-            switch (SysRoleEnum.valueOf(sysRole.getRname())) {
+            switch (SysRoleEnum.getByValue(sysRole.getRname())) {
                 case ADMIN:
                     list = initAdminRolePerm(sysRole.getRid());
                     break;
@@ -420,8 +420,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
 
     private List<SysRole> initRole() {
         List<SysRole> roleList = new ArrayList<>();
-        String roleNames[] = (String[]) SysRoleEnum.list().toArray();
-        for (String roleName : roleNames) {
+        List<String> roleNamesList = SysRoleEnum.list();
+        for (String roleName : roleNamesList) {
             SysRole sysRole = new SysRole();
             if ("管理员".equals(roleName)) {
                 sysRole.setIsAdmin(1);
