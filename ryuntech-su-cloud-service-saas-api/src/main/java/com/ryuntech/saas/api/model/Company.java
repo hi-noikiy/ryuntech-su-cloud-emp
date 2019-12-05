@@ -196,6 +196,13 @@ public class Company implements Serializable {
     @TableField("is_del")
     private Boolean isDel;
 
+
+    /**
+     * 企查查是否存在 0 否，1存在
+     */
+    @TableField("is_qichacha")
+    private Boolean isQichacha;
+
     /**
      * 更新时间
      */

@@ -32,6 +32,7 @@
         <result column="invoice_bank_account" property="invoiceBankAccount" />
         <result column="hotline_tel" property="hotlineTel" />
         <result column="is_del" property="isDel" />
+        <result column="is_qichacha" property="isQichacha" />
         <result column="updated_at" property="updatedAt" />
         <result column="created_at" property="createdAt" />
     </resultMap>

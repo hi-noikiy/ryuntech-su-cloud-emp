@@ -151,7 +151,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (user.getMobile() != null) {
             queryWrapper.eq("mobile", user.getMobile());
         }
-        return baseMapper.selectOne(queryWrapper);
+        return sysUserMapper.selectOne(queryWrapper);
     }
 
 
@@ -219,17 +219,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         String urlName = geteciImage + "&keyWord=" + customerName;
         String content = HttpUtils.Get(urlName, reqHeader);
         ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
-        /*if (null==apiGetEciImage){
-            company.setIsQichacha("0");
+        if (null==apiGetEciImage){
+            company.setIsQichacha(false);
         }
         if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
             String status = apiGetEciImage.getStatus();
             if (!status.equals("200")){
-                company.setIsQichacha("0");
+                company.setIsQichacha(false);
             }else {
-                company.setIsQichacha("1");
+                company.setIsQichacha(true);
             }
-        }*/
+        }
         companyMapper.insert(company);
 
 

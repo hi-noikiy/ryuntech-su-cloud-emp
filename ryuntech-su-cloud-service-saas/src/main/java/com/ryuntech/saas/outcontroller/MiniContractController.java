@@ -234,7 +234,12 @@ public class MiniContractController extends ModuleBaseController {
 //        合同名称
         receivableContract.setContractName(receivableContractFrom.getContractName());
         //        待还款金额
-        receivableContract.setBalanceAmount(receivableContractFrom.getBalanceAmount());
+        if(StringUtils.isNotBlank(receivableContractFrom.getBalanceAmount())){
+            receivableContract.setBalanceAmount(receivableContractFrom.getBalanceAmount());
+        }else {
+            receivableContract.setBalanceAmount(receivableContractFrom.getContractAmount());
+        }
+
 //        合同总额
         receivableContract.setContractAmount(receivableContractFrom.getContractAmount());
 //        合同时间

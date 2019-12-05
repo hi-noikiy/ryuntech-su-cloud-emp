@@ -92,10 +92,9 @@ public class MiniRegisterController extends ModuleBaseController {
         /**
          * 开始注册操作
          */
-        SysUser register = sysUserService.register(sysUserForm);
+        boolean register = sysUserService.saveRegister(sysUserForm.getCompanyName(),sysUserForm.getName(),sysUserForm.getMobile(),sysUserForm.getPassword());
 
-
-        if (register!=null){
+        if (register){
             SysUser sysUser = sysUserService.selectByUser(new SysUser().setMobile(sysUserForm.getMobile()));
             List<Employee> employeeList = iEmployeeService.selectByEmployeeList(new Employee().setSysUserId(sysUser.getSysUserId()));
             /**
@@ -116,7 +115,6 @@ public class MiniRegisterController extends ModuleBaseController {
             sysUserDTO.setAvatar(sysUser.getAvatar());
             sysUserDTO.setMobile(sysUser.getMobile());
             sysUserDTO.setStatus(sysUser.getStatus());
-
             if (sysUser!=null){
                 return new Result(sysUserDTO);
             }else {
