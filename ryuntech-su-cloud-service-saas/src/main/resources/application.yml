@@ -5,9 +5,9 @@ spring:
   application:
     name: ryuntech-su-cloud-service-saas
   redis:
-    host: 192.168.30.103
+    host: 127.0.0.1
     port: 6379
-    password: vsxd@redis
+    password:
     database: 1
     lettuce:
         pool:
