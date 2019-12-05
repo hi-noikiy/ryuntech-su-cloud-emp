@@ -2,6 +2,8 @@
 https://www.aliyun.com
 用户名：ryuntech
 密码：weiShi_jiajie12
+docker
+weiShi@jiajie12
 
 测试服务器
 47.112.142.186

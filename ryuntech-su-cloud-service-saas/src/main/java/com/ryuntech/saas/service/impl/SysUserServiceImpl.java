@@ -165,101 +165,6 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         return new String[]{DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstant.SECKEY)).toUpperCase(), timeSpan};
     }
 
-    @Override
-    public SysUser register(SysUserForm sysUserForm) throws Exception {
-        //生成用户
-        //生成主键
-        UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
-
-        Long id = uniqueIdGenerator.nextId();
-        SysUser sysUser = new SysUser();
-        sysUser.setSysUserId(String.valueOf(id));
-//        登陆名默认为手机号
-        sysUser.setUsername(sysUserForm.getMobile());
-        sysUser.setMobile(sysUserForm.getMobile());
-        sysUser.setAvatar(sysUserForm.getAvatar());
-        sysUser.setPassword(sysUserForm.getPassword());
-        sysUser.setCreatedAt(new Date());
-        sysUser.setUpdatedAt(new Date());
-        sysUserMapper.insert(sysUser);
-
-        //生成员工
-        Employee employee = new Employee();
-        String employeeId = String.valueOf(uniqueIdGenerator.nextId());
-        employee.setEmployeeId(employeeId);
-        employee.setSysUserId(sysUser.getSysUserId());
-        employee.setCompanyName(sysUserForm.getCompanyName());
-        employee.setName(sysUserForm.getName());
-//        账号状态正常
-        employee.setStatus(1);
-        employee.setCreatedAt(new Date());
-        employee.setUpdatedAt(new Date());
-        employeeMapper.insert(employee);
-
-
-        //创建公司
-        Company company = new Company();
-        String companyId = String.valueOf(uniqueIdGenerator.nextId());
-        company.setCompanyId(companyId);
-        company.setName(sysUserForm.getCompanyName());
-//        设置负责员工为当前
-        company.setEmployeeId(employee.getEmployeeId());
-        company.setCreatedAt(new Date());
-        company.setUpdatedAt(new Date());
-//        判断企查查是否存在公司
-//        is_qichacha
-        String geteciImage = ApiConstant.GETECIIMAGE + "?key=" + APPKEY;
-
-        String[] autherHeader = randomAuthentHeader();
-        HashMap<String, String> reqHeader = new HashMap<>();
-        reqHeader.put("Token", autherHeader[0]);
-        reqHeader.put("Timespan", autherHeader[1]);
-        Gson gson = new Gson();
-        String customerName = sysUserForm.getCompanyName();
-        String urlName = geteciImage + "&keyWord=" + customerName;
-        String content = HttpUtils.Get(urlName, reqHeader);
-        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
-        if (null==apiGetEciImage){
-            company.setIsQichacha(false);
-        }
-        if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
-            String status = apiGetEciImage.getStatus();
-            if (!status.equals("200")){
-                company.setIsQichacha(false);
-            }else {
-                company.setIsQichacha(true);
-            }
-        }
-        companyMapper.insert(company);
-
-
-        //默认分配管理员角色
-        SysRole sysRole = new SysRole();
-        Long roleId = uniqueIdGenerator.nextId();
-        sysRole.setRid(String.valueOf(roleId));
-        //  sysRole.setRval(RoleConstants.ADMINROOT);
-        sysRole.setRname(RoleConstants.ADMIN);
-        sysRole.setRdesc(RoleConstants.ADMINDESC);
-        sysRole.setCreated(new Date());
-        sysRole.setUpdated(new Date());
-        sysRole.setIsAdmin(Integer.parseInt(RoleConstants.ISADMIN));
-        sysRole.setCompanyId(employee.getEmployeeId());
-        sysRoleMapper.insert(sysRole);
-
-
-        /*EmployeeRole employeeRole = new EmployeeRole();
-        employeeRole.setEmployeeId(employee.getEmployeeId());
-        Long employeeRoleId = uniqueIdGenerator.nextId();
-        employeeRole.setId(String.valueOf(employeeRoleId));
-        employeeRole.setRoleId(sysRole.getRid());
-        employeeRole.setCreatedAt(new Date());
-        employeeRole.setUpdatedAt(new Date());
-        employeeRoleMapper.insert(employeeRole);*/
-
-
-        return sysUser;
-    }
-
 
     @Override
     public boolean sendRegisterSms(String mobile) throws Exception {
@@ -287,11 +192,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         }
 
         //TODO 校验公司是否真实存在（企查查接口）
-
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
         Date time = new Date();
         String adminRoleId = null;
-
         // 添加公司表数据
         company = new Company();
         company.setCompanyId(uniqueIdGenerator.nextStrId());
@@ -299,6 +202,26 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         company.setIsDel(false);
         company.setCreatedAt(time);
         company.setUpdatedAt(time);
+        String[] autherHeader = randomAuthentHeader();
+        HashMap<String, String> reqHeader = new HashMap<>();
+        reqHeader.put("Token", autherHeader[0]);
+        reqHeader.put("Timespan", autherHeader[1]);
+        Gson gson = new Gson();
+        String urlName = ApiConstant.GETECIIMAGE + "?key=" + APPKEY + "&keyWord=" + companyName;
+        String content = HttpUtils.Get(urlName, reqHeader);
+        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
+        if (null==apiGetEciImage){
+            company.setIsQichacha(false);
+        }
+        if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
+            String status = apiGetEciImage.getStatus();
+            if (!status.equals("200")){
+                company.setIsQichacha(false);
+            }else {
+                company.setIsQichacha(true);
+            }
+        }
+
         companyMapper.insert(company);
 
         // 初始化角色信息

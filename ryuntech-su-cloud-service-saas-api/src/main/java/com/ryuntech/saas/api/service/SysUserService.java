@@ -88,14 +88,16 @@ public interface SysUserService extends IBaseService<SysUser> {
      */
     SysUser selectByUserDTO(SysUserDTO userDTO);
 
-    /**
-     * 注册方法
-     *
-     * @param sysUserForm
-     * @return
-     */
-    SysUser register(SysUserForm sysUserForm) throws Exception;
 
+    /**
+     * 注册
+     * @param companyName
+     * @param employeeName
+     * @param mobile
+     * @param password
+     * @return
+     * @throws Exception
+     */
     boolean saveRegister(String companyName, String employeeName, String mobile, String password) throws Exception;
 
     boolean sendRegisterSms(String mobile) throws Exception;
