@@ -20,6 +20,12 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.ryuntech</groupId>
+            <artifactId>ryuntech-su-cloud-authorization-api</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- Web依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

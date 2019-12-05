@@ -1,6 +1,7 @@
 package com.ryuntech.saas.api.mapper;
 
 import com.ryuntech.common.mapper.IBaseMapper;
+import com.ryuntech.saas.api.dto.PermUriDTO;
 import com.ryuntech.saas.api.model.SysPerm;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -30,4 +31,6 @@ public interface SysPermMapper extends IBaseMapper<SysPerm> {
     List<SysPerm> getPermsByUserId(@Param("userId") String userId);
 
     List<SysPerm> queryByIdListAndCompanyId(@Param("newPermIdList") List<String> newPermIdList);
+
+    List<PermUriDTO> getPermUri(@Param("companyId")String companyId,@Param("sysUserId") String sysUserId);
 }

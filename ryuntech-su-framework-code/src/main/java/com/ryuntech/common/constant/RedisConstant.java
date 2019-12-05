@@ -4,6 +4,11 @@ package com.ryuntech.common.constant;
  * 命名用 英文冒号(:) 隔开，key不要太长或太短，尽量可读性高
  */
 public class RedisConstant {
+    // 根据token存储客户信息(user对象)
+    public static final String PRE_LOGIN_USER = "login:user:";// [string]
+    // 用户信息
+    public static final String PRE_LOGIN_USER_TOKEN = "login:user:token:";// [string]
+
     // 短信验证码 例 sms:verification_code:{type}:{mobile}
     public static final String PRE_SMS_VERIFICATION_CODE = "sms:verification_code:";// [string]
     public static final int PRE_SMS_VERIFICATION_CODE_EXPIRE = 5 * 60;// [string]

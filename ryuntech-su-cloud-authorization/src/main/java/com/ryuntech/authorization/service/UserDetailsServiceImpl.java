@@ -6,7 +6,6 @@ package com.ryuntech.authorization.service;
         import com.ryuntech.saas.api.model.SysUser;
         import com.ryuntech.saas.api.service.RemoteUserService;
         import lombok.extern.slf4j.Slf4j;
-        import org.apache.commons.lang3.StringUtils;
         import org.springframework.beans.factory.annotation.Autowired;
         import org.springframework.security.authentication.BadCredentialsException;
         import org.springframework.security.core.userdetails.UserDetails;

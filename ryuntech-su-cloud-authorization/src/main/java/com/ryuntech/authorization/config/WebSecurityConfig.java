@@ -62,7 +62,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         // 暴露`/oauth/check_token`端点
-        //web.ignoring().mvcMatchers("/oauth/check_token");
+        web.ignoring().mvcMatchers("/oauth/check_token", "/sys/getLoginUserDetail");
     }
 
     // 自定义认证方法，默认执行DaoAuthenticationProvider

@@ -193,5 +193,4 @@ public class EmployeeController extends ModuleBaseController {
             return new Result(CommonEnums.OPERATE_ERROR, e.getLocalizedMessage());
         }
     }
-
 }
