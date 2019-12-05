@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author EDZ
  */
 @EnableRyunResourceServer
-@EnableFeignClients
+@EnableFeignClients("com.ryuntech.authorization.api")
 @EnableEurekaClient
 @EnableScheduling
 @SpringBootApplication(scanBasePackages={"com.ryuntech"})

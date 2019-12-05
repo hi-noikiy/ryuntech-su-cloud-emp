@@ -34,5 +34,29 @@
         </foreach>
     </select>
 
+    <select id="getPermUri" resultType="com.ryuntech.saas.api.dto.PermUriDTO">
+        SELECT
+          sp.`RES_KEY` resKey,
+          spu.`URL` uri
+        FROM
+          `ryn_employee` re,
+          `sys_user` su,
+          `sys_user_role` sur,
+          `sys_role` sr,
+          `sys_role_perm` srp,
+          `sys_perm` sp
+          LEFT JOIN `sys_perm_url` spu
+            ON sp.`PERM_ID` = spu.`PERM_ID`
+        WHERE re.`SYS_USER_ID` = su.`SYS_USER_ID`
+          AND re.`EMPLOYEE_ID` = sur.`EMPLOYEE_ID`
+          AND sur.`ROLE_ID` = sr.`RID`
+          AND sr.`RID` = srp.`ROLE_ID`
+          AND srp.`PERM_ID` = sp.`PERM_ID`
+          AND su.`STATUS` = 1
+          AND re.`STATUS` = 1
+          AND su.`SYS_USER_ID` = #{sysUserId}
+          AND re.`COMPANY_ID` = #{companyId}
+    </select>
+
 
 </mapper>

@@ -1,5 +1,6 @@
 package com.ryuntech.saas.api.service;
 
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.saas.api.dto.LoginConpanyDTO;
 import com.ryuntech.saas.api.model.Company;
 
@@ -23,4 +24,6 @@ public interface ICompanyService extends IBaseService<Company> {
     Company selectByCompany(Company company);
 
     List<LoginConpanyDTO> listBySysUserId(String sysUserId);
+
+    boolean choose(String companyId, String token);
 }

@@ -1,7 +1,9 @@
 package com.ryuntech.authorization.service;
 
+import com.ryuntech.common.constant.RedisConstant;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.common.utils.redis.JedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
@@ -17,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,6 +39,9 @@ public class LoginService {
 
     @Autowired
     RestTemplate restTemplate;
+
+    @Autowired
+    JedisUtil jedisUtil;
 
     public Result login(String username, String password) {
         // 申请令牌
@@ -64,7 +70,22 @@ public class LoginService {
             return new Result(CommonEnums.LOGIN_ERROR, String.valueOf(errorMsg));
         }
 
-        return new Result(response.getBody().get("access_token"));
+        int expires = (int) response.getBody().get("expires_in");
+        String token = (String) response.getBody().get("access_token");
+        if (jedisUtil.exists(RedisConstant.PRE_LOGIN_USER + token)) {
+            if (expires > 6 * 60 * 60) {
+                return new Result(token);
+            } else {
+                // 重新生成token
+                // token = "";
+            }
+        }
+
+        Map<String, String> hash = new HashMap<>();
+        hash.put("init", "init");
+        jedisUtil.hmset(RedisConstant.PRE_LOGIN_USER + token, hash);
+        jedisUtil.expire(RedisConstant.PRE_LOGIN_USER + token, expires);
+        return new Result(token);
     }
 
     private String getHttpBasic(String client, String secret) {

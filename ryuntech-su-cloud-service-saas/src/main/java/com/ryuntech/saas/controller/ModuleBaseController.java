@@ -19,9 +19,6 @@ public class ModuleBaseController extends BaseController {
         return UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId()).nextId();
     }
 
-
-
-
     protected HttpSession getSession() {
         return getRequest().getSession();
     }

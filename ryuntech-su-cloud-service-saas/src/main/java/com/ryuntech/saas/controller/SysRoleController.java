@@ -32,6 +32,7 @@ public class SysRoleController extends ModuleBaseController {
 
     /**
      * 获取角色名称列表, 编辑员工时用
+     *
      * @return 角色名称与id 的列表
      */
     @GetMapping("nameList")
@@ -41,15 +42,17 @@ public class SysRoleController extends ModuleBaseController {
 
     /**
      * 获取角色列表, 含各角色拥有的资源名称
+     *
      * @return 角色列表(含资源名称)
      */
     @GetMapping("list")
-    public Result<List> getList(){
+    public Result<List> getList() {
         return new Result<>(roleService.getRoleInfoList());
     }
 
     /**
      * 获取当前角色的详情, 包括资源的名称与id
+     *
      * @return 角色详情(拥有资源的列表)
      */
     @GetMapping("detail")
@@ -63,6 +66,7 @@ public class SysRoleController extends ModuleBaseController {
 
     /**
      * 获取系统中所有资源
+     *
      * @return 所有资源, 按所属组分成多个list
      */
     @GetMapping("allResources")
@@ -72,6 +76,7 @@ public class SysRoleController extends ModuleBaseController {
 
     /**
      * 编辑角色, 包含新增与修改
+     *
      * @return 操作结果(成功 or 失败)
      */
     @PostMapping("edit")
@@ -90,10 +95,11 @@ public class SysRoleController extends ModuleBaseController {
 
     /**
      * 删除角色
+     *
      * @return 操作结果(成功 or 失败)
      */
     @PostMapping("delete")
-    public Result delete(String roleId){
+    public Result delete(String roleId) {
         try {
             roleService.delete(roleId);
             return new Result();

@@ -3,7 +3,6 @@ package com.ryuntech.authorization.service;
 import com.ryuntech.authorization.entity.LoginUserDetail;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +12,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -44,15 +44,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         Set<String> uris = new HashSet<>();
         uris.add("uri1");
         uris.add("uri2");
-        keys.add("uri1");
-        keys.add("uri2");
+        keys.add("key1");
+        keys.add("key2");
 
-        List<GrantedAuthority> list = AuthorityUtils.createAuthorityList(uris.toArray(new String[uris.size()]));
+        List<GrantedAuthority> list = new ArrayList<>();
         loginUserDetail.setAuthorities(new HashSet(list));
 
         loginUserDetail.setUris(uris);
         loginUserDetail.setKeys(keys);
-        return new UsernamePasswordAuthenticationToken(loginUserDetail, password, list);
+        return new UsernamePasswordAuthenticationToken(loginUserDetail, password, new ArrayList<>());
     }
 
     /**

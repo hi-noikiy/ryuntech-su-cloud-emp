@@ -10,10 +10,7 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
-import com.ryuntech.saas.api.dto.PermGroupDTO;
-import com.ryuntech.saas.api.dto.RoleDetailDTO;
-import com.ryuntech.saas.api.dto.RoleInfoDTO;
-import com.ryuntech.saas.api.dto.RoleNameDTO;
+import com.ryuntech.saas.api.dto.*;
 import com.ryuntech.saas.api.form.RoleForm;
 import com.ryuntech.saas.api.mapper.SysPermMapper;
 import com.ryuntech.saas.api.mapper.SysRoleMapper;
@@ -33,7 +30,7 @@ import java.util.List;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author antu
@@ -55,10 +52,10 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Override
     public Result<IPage<SysRole>> pageList(SysRole sysRole, QueryPage queryPage) {
         Page<SysRole> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
-        if (sysRole.getRname()!=null) {
+        if (sysRole.getRname() != null) {
             queryWrapper.eq("rname", sysRole.getRname());
         }
-        return super.pageList(queryWrapper,page);
+        return super.pageList(queryWrapper, page);
     }
 
 
@@ -73,7 +70,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             return false;
         }
         Boolean re = baseMapper.checkRidsContainRval(rids, rval);
-        return re==null?false:re.booleanValue();
+        return re == null ? false : re.booleanValue();
     }
 
     @Override
@@ -149,7 +146,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             // 更新权限 删除旧权限, 重新插入
             sysRolePermMapper.delete(new QueryWrapper<SysRolePerm>().eq("ROLE_ID", roleId));
             rolePermList = roleForm.convertToSysRolePermList();
-            if (rolePermList.size() > 0){
+            if (rolePermList.size() > 0) {
                 sysRolePermMapper.batchInsert(rolePermList);
             }
             log.info("员工【{}】修改了角色详情：{}", empId, newRole);
@@ -189,7 +186,7 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             throw new RyunBizException("管理员角色不允许删除, 操作失败");
         }
         // 检查角色下有没有员工
-        List<SysUserRole> roleEmpList = sysUserRoleMapper.selectList(new QueryWrapper<SysUserRole>().eq("ROLE_ID",roleId));
+        List<SysUserRole> roleEmpList = sysUserRoleMapper.selectList(new QueryWrapper<SysUserRole>().eq("ROLE_ID", roleId));
         if (roleEmpList.size() > 0) {
             throw new RyunBizException("该角色下有关联员工, 请先为员工分配新角色. ");
         }
