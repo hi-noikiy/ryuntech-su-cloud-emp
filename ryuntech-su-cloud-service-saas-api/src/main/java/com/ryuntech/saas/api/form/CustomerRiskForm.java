@@ -15,10 +15,19 @@ import java.util.Date;
 @Accessors(chain = true)
 public class CustomerRiskForm {
 
+    /**
+     * 风险编号
+     */
     private String riskId;
 
+    /**
+     * 客户编号
+     */
     private String customerId;
 
+    /**
+     * 客户名称
+     */
     private String customerName;
 
     /**

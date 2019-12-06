@@ -10,6 +10,12 @@ weiShi@jiajie12
 root
 aliCha21QoTe
 
+jenkins
+http://wx.ryuntech.com:8080/job
+账号：root
+密码：ryuntech
+文件：0a02719676bb47db9d7c8006f8d5c739(路径/var/lib/jenkins/secrets/initialAdminPassword)
+
 数据库
 账号：root
 密码：ryuntech
@@ -28,7 +34,6 @@ aliCha21QoTe
 47.112.142.186
 账号：root
 密码：ryuntech
-
 
 小程序
 账号：gaojiangjian@ykdtech.cn
@@ -56,20 +61,16 @@ gitee账号
 公众号appId:wxba0f3b19e65fbbc6
 公众号appSecret:8e1c04167012aefad852501f34a5d898
 
-
 小程序地址:git@github.com:gjjbase/yktech-received-mini.git
-前端地址:https://github.com/gjjbase/ryuntech-su-cloud-service-saas-web.git
+前端地址:https://github.com/gjjbase/ykdtech-su-cloud-saas-web.git
 API文档https://taro-ui.jd.com/#/docs/introduction
-
 
 后台地址:git@github.com:gjjbase/ryuntech-su-cloud-emp.git
 API文档https://element.faas.ele.me/#/zh-CN/
 
-
 企查查接口平台  https://openapi.qichacha.com
 用户名：13120698711
 密码：3c9dbab1
-
 
 小程序原型：https://next.modao.cc/app/baa8369e6e593d00eea1795ad09a1976f5bbbe87
 PC端原型：  https://next.modao.cc/app/9adfffd959215345eb3f976a33a3a153e194ffe0

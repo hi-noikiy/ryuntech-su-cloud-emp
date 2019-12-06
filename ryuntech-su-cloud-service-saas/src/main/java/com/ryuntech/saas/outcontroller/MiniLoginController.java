@@ -10,6 +10,7 @@ import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.model.UserWechat;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import com.ryuntech.saas.api.service.IUserWechatService;
+import com.ryuntech.saas.api.service.RiskWarningScheduleService;
 import com.ryuntech.saas.api.service.SysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,6 +48,10 @@ public class MiniLoginController extends ModuleBaseController{
 
     @Autowired
     IUserWechatService iUserWechatService;
+
+
+    @Autowired
+    RiskWarningScheduleService riskWarningScheduleService;
     /**
      * 注册第一步
      *
@@ -55,6 +60,7 @@ public class MiniLoginController extends ModuleBaseController{
     @PostMapping("/outfrist")
     @ApiOperation(value = "登录第一步验证手机号")
     public Result<SysUserDTO> frist(@RequestBody SysUserForm sysUserForm) {
+        /*riskWarningScheduleService.riskWarning();*/
         Object value =   redisTemplate.opsForValue().get(sysUserForm.getMobile() + "ryun_code");
         if(StringUtils.isBlank(sysUserForm.getMobile())){
             return new Result(OPERATE_ERROR,"手机号不能为空");

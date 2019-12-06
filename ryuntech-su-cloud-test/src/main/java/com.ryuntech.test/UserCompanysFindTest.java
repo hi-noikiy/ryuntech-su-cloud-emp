@@ -9,6 +9,8 @@ import com.ryuntech.saas.api.model.UserRoleLimit;
 import com.ryuntech.saas.api.service.IDepartmentService;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import com.ryuntech.zipkin.RyunCloudTestApplication;
+import groovy.util.logging.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.*;
 
 //@RunWith(SpringRunner.class)
+@Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes={RyunCloudTestApplication.class,UserCompanysFindTest.class})
 //@WebAppConfiguration
@@ -31,6 +34,11 @@ public class UserCompanysFindTest {
 
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    @Test
+    public void riskWarningSchedule(){
+        log.info("riskWarningSchedule");
+    }
 
     @Test
     public void companyList() {
@@ -179,7 +187,7 @@ public class UserCompanysFindTest {
         if(employee != null) {
             departmentId = employee.getDepartmentId();
             indexDepartmentDTO.setDepartmentId(departmentId);
-            indexDepartmentDTO.setDepartmentName(employee.getDepartmentName());
+            indexDepartmentDTO.setDepartmentName(employee.getDataDepartmentId());
         }
 
         List<IndexDepartmentDTO> list = new ArrayList<>();

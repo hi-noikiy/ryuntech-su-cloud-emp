@@ -103,4 +103,9 @@ public class ApiConstant {
      */
     public static final String GETECIIMAGE="http://api.qichacha.com/ECIImage/GetEciImage";
 
+    /**
+     * 工商详情Basic版
+     */
+    public static final String GETBASICDETAILSBYNAME = "http://api.qichacha.com/ECIV4/GetBasicDetailsByName";
+
 }

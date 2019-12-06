@@ -15,6 +15,7 @@ public interface PushMessageScheduleService {
 
     /**
      * 风险监控日报提醒
+     * @throws Exception
      */
     void riskMonitorPush() throws Exception;
 

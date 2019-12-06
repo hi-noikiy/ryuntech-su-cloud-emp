@@ -207,9 +207,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         reqHeader.put("Token", autherHeader[0]);
         reqHeader.put("Timespan", autherHeader[1]);
         Gson gson = new Gson();
-        String urlName = ApiConstant.GETECIIMAGE + "?key=" + APPKEY + "&keyWord=" + companyName;
+        String urlName = ApiConstant.GETBASICDETAILSBYNAME + "?key=" + APPKEY + "&keyWord=" + companyName;
         String content = HttpUtils.Get(urlName, reqHeader);
-        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
+        ApiGetBasicDetailsByName apiGetEciImage = gson.fromJson(content, ApiGetBasicDetailsByName.class);
         if (null==apiGetEciImage){
             company.setIsQichacha(false);
         }
@@ -219,6 +219,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
                 company.setIsQichacha(false);
             }else {
                 company.setIsQichacha(true);
+//                查询法人
+                String operName = apiGetEciImage.getResult().getOperName();
+                company.setOperName(operName);
             }
         }
 
