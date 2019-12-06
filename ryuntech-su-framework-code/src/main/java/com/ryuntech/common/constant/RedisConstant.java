@@ -4,8 +4,11 @@ package com.ryuntech.common.constant;
  * 命名用 英文冒号(:) 隔开，key不要太长或太短，尽量可读性高
  */
 public class RedisConstant {
+    public static final String PRE_LOGIN_USER_SUCCESS = "login:user:success:";// [string]
+    public static final int PRE_LOGIN_USER_SUCCESS_EXPIRE = 5 * 60;// [string]
+
     // 根据token存储客户信息(user对象)
-    public static final String PRE_LOGIN_USER = "login:user:";// [string]
+    public static final String PRE_CURRENT_USER = "login:user:";// [string]
     // 用户信息
     public static final String PRE_LOGIN_USER_TOKEN = "login:user:token:";// [string]
 

@@ -45,17 +45,20 @@
         invoice_bank_account, hotline_tel, is_del, updated_at, created_at
     </sql>
 
-    <select id="listBySysUserId" resultType="com.ryuntech.saas.api.dto.LoginConpanyDTO">
+    <select id="listByUsername" resultType="com.ryuntech.saas.api.dto.LoginConpanyDTO">
         SELECT
           rc.`COMPANY_ID` companyId,
           rc.`name` NAME
         FROM
           `ryn_employee` re,
-          `ryn_company` rc
+          `ryn_company` rc,
+          `sys_user` su
         WHERE re.`COMPANY_ID` = rc.`COMPANY_ID`
+          AND su.`SYS_USER_ID` = re.`SYS_USER_ID`
           AND re.`STATUS` = 1
+          AND su.`STATUS` = 1
           AND rc.`IS_DEL` = 0
-          AND re.`SYS_USER_ID` = #{sysUserId}
+          AND su.`USERNAME` = #{username}
     </select>
 
 </mapper>

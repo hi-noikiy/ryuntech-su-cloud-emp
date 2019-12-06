@@ -22,6 +22,10 @@ spring:
     config:
       name: ${spring.application.name}
       profile: ${spring.profiles.active}
+  auth:
+    client_id: client
+    client_secret: secret
+    grant_type: password
   mail:
     host: smtp.qq.com
     username: 851597995@qq.com
@@ -89,7 +93,3 @@ pagehelper:
 logging:
   level:
     com.ryuntech.saas.api.mapper: DEBUG
-
-  #默认收件人
-mail:
-  receiveEmail: 1591867719@qq.com
