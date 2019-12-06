@@ -9,7 +9,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Set;
 
 public class SystemTool {
     public static String getToken() {
@@ -18,23 +17,12 @@ public class SystemTool {
         return request.getHeader(HttpHeaders.AUTHORIZATION).replace("Bearer", "").trim();
     }
 
-    public static CurrentUser currentUser(JedisUtil jedisUtil, String companyId) {
-        Object u = jedisUtil.hget(RedisConstant.PRE_LOGIN_USER + getToken(), companyId);
+    public static CurrentUser currentUser(JedisUtil jedisUtil) {
+        Object u = jedisUtil.get(RedisConstant.PRE_CURRENT_USER + getToken());
         try {
             return new Gson().fromJson(String.valueOf(u), CurrentUser.class);
         } catch (Exception e) {
             return null;
         }
     }
-
-    public static Set<String> uris(JedisUtil jedisUtil, String companyId) {
-        CurrentUser currentUser = currentUser(jedisUtil, companyId);
-        return currentUser == null ? null : currentUser.getUris();
-    }
-
-    public static Set<String> keys(JedisUtil jedisUtil, String companyId) {
-        CurrentUser currentUser = currentUser(jedisUtil, companyId);
-        return currentUser == null ? null : currentUser.getKeys();
-    }
-
 }

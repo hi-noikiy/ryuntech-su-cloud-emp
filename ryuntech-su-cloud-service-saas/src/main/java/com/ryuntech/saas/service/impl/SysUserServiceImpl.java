@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
 import com.ryuntech.common.constant.RedisConstant;
+import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.constant.enums.RolePermEnum;
 import com.ryuntech.common.constant.enums.SysRoleEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
@@ -12,8 +13,11 @@ import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
+import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.common.utils.redis.JedisUtil;
+import com.ryuntech.saas.api.dto.LoginConpanyDTO;
+import com.ryuntech.saas.api.dto.LoginDTO;
 import com.ryuntech.saas.api.dto.Sms;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
@@ -36,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
 
@@ -182,6 +187,26 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         return messageSendService.send(new Sms(mobile, SmsConstants.TEMPLATECODE, 1, StringUtil.sixRandomNum()));
     }
 
+    @Override
+    public Result login(String username, String password) {
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("username", username));
+        if (sysUser == null || !new BCryptPasswordEncoder().matches(password, sysUser.getPassword())) {
+            return new Result(CommonEnums.LOGIN_ERROR.getMsg());
+        }
+
+        List<LoginConpanyDTO> list = companyMapper.listByUsername(username);
+        if (list == null || list.size() == 0) {
+            return new Result(CommonEnums.OPERATE_ERROR, "未找到公司信息");
+        }
+
+        List<String> ids = list.stream().map(l -> l.getCompanyId()).collect(Collectors.toList());
+
+        String sysUserId = sysUser.getSysUserId();
+        jedisUtil.sadd(RedisConstant.PRE_LOGIN_USER_SUCCESS + sysUserId, ids.toArray(new String[ids.size()]));
+        jedisUtil.expire(RedisConstant.PRE_LOGIN_USER_SUCCESS + sysUserId, RedisConstant.PRE_LOGIN_USER_SUCCESS_EXPIRE);
+        return new Result(new LoginDTO(list, sysUserId));
+    }
+
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public boolean saveRegister(String companyName, String employeeName, String mobile, String password) throws Exception {
@@ -209,8 +234,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         Gson gson = new Gson();
         String urlName = ApiConstant.GETBASICDETAILSBYNAME + "?key=" + APPKEY + "&keyWord=" + companyName;
         String content = HttpUtils.Get(urlName, reqHeader);
-        ApiGetBasicDetailsByName apiGetEciImage = gson.fromJson(content, ApiGetBasicDetailsByName.class);
-        if (null==apiGetEciImage){
+        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
+        if (null == apiGetEciImage) {
             company.setIsQichacha(false);
         }
         if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
