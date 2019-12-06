@@ -18,8 +18,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public static final String[] WHITELIST = {
             "/actuator/**",
             "/user/info/*",
+            "/user/login",
             "/user/sendRegisterSms",
             "/user/checkRegisterSmsCode",
+            "/company/listByUsername",
+            "/company/choose",
             "/user/register",
             "/sms/*",
             "/storage/local/upload",

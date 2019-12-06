@@ -162,6 +162,20 @@ public class SysUserController extends ModuleBaseController {
         return new Result();
     }
 
+
+    @PostMapping("/login")
+    public Result login(String username, String password) {
+        if (!StringUtil.isMobile(username)) {
+            return new Result(CommonEnums.LOGIN_ERROR.getMsg());
+        }
+
+        if (StringUtil.isEmpty(password)) {
+            return new Result(CommonEnums.LOGIN_ERROR.getMsg());
+        }
+
+        return sysUserService.login(username, password);
+    }
+
     @PostMapping("sendRegisterSms")
     public Result sendRegisterSms(
             @RequestParam("mobile") String mobile) {

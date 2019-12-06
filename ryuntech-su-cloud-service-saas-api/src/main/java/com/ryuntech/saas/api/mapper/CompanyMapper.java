@@ -18,5 +18,5 @@ import java.util.List;
 @Component
 public interface CompanyMapper extends IBaseMapper<Company> {
 
-    List<LoginConpanyDTO> listBySysUserId(String sysUserId);
+    List<LoginConpanyDTO> listByUsername(String username);
 }

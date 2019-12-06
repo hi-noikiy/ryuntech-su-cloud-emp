@@ -1,4 +1,4 @@
-package com.ryuntech.authorization.service;
+package com.ryuntech.saas.api.helper;
 
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.web.client.ResponseErrorHandler;
