@@ -16,10 +16,7 @@ import com.ryuntech.saas.api.dto.EmployeeDTO;
 import com.ryuntech.saas.api.dto.EmployeeDetailDTO;
 import com.ryuntech.saas.api.form.EmployeeEditForm;
 import com.ryuntech.saas.api.form.EmployeeForm;
-import com.ryuntech.saas.api.mapper.CompanyMapper;
-import com.ryuntech.saas.api.mapper.EmployeeMapper;
-import com.ryuntech.saas.api.mapper.SysUserMapper;
-import com.ryuntech.saas.api.mapper.SysUserRoleMapper;
+import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.Company;
 import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.model.SysUser;
@@ -60,6 +57,9 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
 
     @Override
     public Employee selectByEmployee(Employee employee) {
@@ -158,7 +158,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public Result<IPage<EmployeeDTO>> getPager(EmployeeForm employeeForm) {
-        // TODO 数据权限校验
         PageHelper.startPage(employeeForm.getPageCode(), employeeForm.getPageSize());
         List<EmployeeDTO> list = employeeMapper.getPager(employeeForm);
         PageInfo<EmployeeDTO> pageInfo = new PageInfo(list);
@@ -174,8 +173,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public EmployeeDetailDTO detail(String employeeId) {
-        // TODO 数据权限校验
-
         return employeeMapper.detail(employeeId);
     }
 
@@ -187,7 +184,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             throw new Exception("数据异常");
         }
 
-        // TODO 数据权限校验，是否可以操作这个员工
         employee.setEmployeeId(emplyoeeId);
         employee.setStatus(Integer.parseInt(status));
         employee.setUpdatedAt(new Date());
@@ -197,8 +193,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public boolean edit(EmployeeEditForm employeeEditForm) {
-        // TODO 数据权限校验，是否可以操作这个员工
-
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
         Date time = new Date();
         if (employeeEditForm.getEmployeeId() == null) {
@@ -207,7 +201,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             sysUser.setSysUserId(uniqueIdGenerator.nextStrId());
             sysUser.setUsername(employeeEditForm.getMobile());
             sysUser.setMobile(employeeEditForm.getMobile());
-            // TODO 暂时使用这个密码，生产时不需要设置密码，短信登录-忘记密码
             sysUser.setPassword(new BCryptPasswordEncoder().encode("123456"));
             //   sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
             sysUser.setStatus("1");

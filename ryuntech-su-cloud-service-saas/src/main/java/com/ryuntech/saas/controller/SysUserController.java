@@ -238,4 +238,17 @@ public class SysUserController extends ModuleBaseController {
         return new Result();
     }
 
+    // TODO 测试使用
+    @Autowired
+    IDepartmentService departmentService;
+
+    @PostMapping("test")
+    public Result test() {
+        try {
+            return departmentService.getDataTypeDepartment();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

@@ -20,9 +20,7 @@ import com.ryuntech.saas.api.dto.LoginConpanyDTO;
 import com.ryuntech.saas.api.dto.LoginDTO;
 import com.ryuntech.saas.api.dto.Sms;
 import com.ryuntech.saas.api.dto.SysUserDTO;
-import com.ryuntech.saas.api.form.SysUserForm;
 import com.ryuntech.saas.api.helper.ApiConstant;
-import com.ryuntech.saas.api.helper.constant.RoleConstants;
 import com.ryuntech.saas.api.helper.constant.SmsConstants;
 import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.*;
@@ -216,10 +214,10 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
             throw new Exception(companyName + "已经存在");
         }
 
-        //TODO 校验公司是否真实存在（企查查接口）
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
         Date time = new Date();
         String adminRoleId = null;
+
         // 添加公司表数据
         company = new Company();
         company.setCompanyId(uniqueIdGenerator.nextStrId());
@@ -227,26 +225,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         company.setIsDel(false);
         company.setCreatedAt(time);
         company.setUpdatedAt(time);
-        String[] autherHeader = randomAuthentHeader();
-        HashMap<String, String> reqHeader = new HashMap<>();
-        reqHeader.put("Token", autherHeader[0]);
-        reqHeader.put("Timespan", autherHeader[1]);
-        Gson gson = new Gson();
-        String urlName = ApiConstant.GETECIIMAGE + "?key=" + APPKEY + "&keyWord=" + companyName;
-        String content = HttpUtils.Get(urlName, reqHeader);
-        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
-        if (null == apiGetEciImage) {
-            company.setIsQichacha(false);
+        // 公司是否存在企查查内
+        try {
+            company.setIsQichacha(isQichacha(companyName));
+        } catch (Exception e) {
+            log.error("查询公司是否存在企查查接口异常,{}", e);
         }
-        if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
-            String status = apiGetEciImage.getStatus();
-            if (!status.equals("200")) {
-                company.setIsQichacha(false);
-            } else {
-                company.setIsQichacha(true);
-            }
-        }
-
         companyMapper.insert(company);
 
         // 初始化角色信息
@@ -327,6 +311,17 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         sysUserRole.setRoleId(adminRoleId);
         sysUserRoleMapper.insert(sysUserRole);
         return true;
+    }
+
+    private boolean isQichacha(String companyName) throws Exception {
+        String[] autherHeader = randomAuthentHeader();
+        HashMap<String, String> reqHeader = new HashMap<>();
+        reqHeader.put("Token", autherHeader[0]);
+        reqHeader.put("Timespan", autherHeader[1]);
+        String urlName = ApiConstant.GETECIIMAGE + "?key=" + APPKEY + "&keyWord=" + companyName;
+        String content = HttpUtils.Get(urlName, reqHeader);
+        ApiGetEciImage apiGetEciImage = new Gson().fromJson(content, ApiGetEciImage.class);
+        return apiGetEciImage == null ? false : "200".equals(apiGetEciImage.getStatus());
     }
 
 
