@@ -2,7 +2,6 @@ package com.ryuntech.saas.outcontroller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
@@ -10,7 +9,6 @@ import com.ryuntech.saas.api.dto.*;
 import com.ryuntech.saas.api.form.CustomerRiskForm;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.helper.constant.RiskWarnConstants;
-import com.ryuntech.saas.api.model.CustomerMonitor;
 import com.ryuntech.saas.api.model.CustomerRisk;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import com.ryuntech.saas.api.service.ICustomerRiskService;
@@ -19,7 +17,6 @@ import com.ryuntech.saas.api.service.IReceivableContractService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +51,7 @@ public class MiniCustRiskController {
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType = "body")
     public Result monitorList(@RequestBody CustomerRiskForm customerRiskForm, QueryPage queryPage) {
-        log.info("customerRiskDTO.getCustomerId()"+customerRiskForm.getCustomerId());
+        log.info("customerRiskForm.getCustomerId()"+customerRiskForm.getCustomerId());
         List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(new CustomerRiskForm());
 
         if (customerRiskDTOS.isEmpty()){
@@ -98,8 +95,6 @@ public class MiniCustRiskController {
                         falgLength++;
                     }
 
-
-
                     CustomerRiskListDTO.OnCompany onCompany = new CustomerRiskListDTO.OnCompany();
 
                     onCompany.setCustomerName(customerR.getCustomerName());
@@ -136,6 +131,14 @@ public class MiniCustRiskController {
     }
 
 
+    @PostMapping("/outwxlist")
+    @ApiOperation(value = "分页、条件查询预警详情微信列表信息")
+    @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType ="body")
+    public Result wxList(@RequestBody CustomerRiskForm customerRiskForm) {
+        return new Result();
+    }
+
+
     @PostMapping("/outdetaillist")
     @ApiOperation(value = "分页、条件查询预警详情列表信息")
     @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType ="body")
@@ -155,11 +158,13 @@ public class MiniCustRiskController {
             CustomerUserInfo customerUserInfo = iCustomerUserInfoService.selectByCustomerF(new CustomerUserInfoForm().setCustomerId(customerId));
             if (null!=customerUserInfo){
 //                负责员工
-                customerRiskDetailListDTO.setStaffName(customerUserInfo.getStaffName());
+                customerRiskDetailListDTO.setStaffName(customerUserInfo.getStaffName()==null?"0.00":customerUserInfo.getStaffName());
+            }else {
+                customerRiskDetailListDTO.setStaffName("无");
             }
 //            查询待收款
             String balanceAmounts = iReceivableContractService.selectSumByRContract(new ReceivableContractDTO().setCustomerId(customerId));
-            customerRiskDetailListDTO.setBalanceAmount(balanceAmounts);
+            customerRiskDetailListDTO.setBalanceAmount(balanceAmounts==null?"0.00":balanceAmounts);
 //            查询详情数据，风险列表
             List<CustomerRisk> customerRisks = iCustomerRiskService.list(
                     new QueryWrapper<CustomerRisk>().
@@ -169,14 +174,67 @@ public class MiniCustRiskController {
                 CustomerRiskDetailListDTO.RiskListDetail riskListDetail = new CustomerRiskDetailListDTO.RiskListDetail();
 //                风险类型
                 String riskType = customerRisk.getRiskType();
-                if (riskType.equals("1")){
-                    riskListDetail.setTiskType("法人变更");
+                riskListDetail.setRiskType(riskType);
+                switch (riskType){
+                    case RiskWarnConstants.TYPE1:
+                        riskListDetail.setRiskName("法人变更");
+                        break;
+                    case RiskWarnConstants.TYPE2:
+                        riskListDetail.setRiskName("公司名称变更");
+                        break;
+                    case RiskWarnConstants.TYPE3:
+                        riskListDetail.setRiskName("大股东变更");
+                        break;
+                    case RiskWarnConstants.TYPE4:
+                        riskListDetail.setRiskName("失信被执行人");
+                        break;
+                    case RiskWarnConstants.TYPE5:
+                        riskListDetail.setRiskName("失信执行人");
+                        break;
+                    case RiskWarnConstants.TYPE6:
+                        riskListDetail.setRiskName("股权冻结");
+                        break;
+                    case RiskWarnConstants.TYPE7:
+                        riskListDetail.setRiskName("法院公告");
+                        break;
+                    case RiskWarnConstants.TYPE8:
+                        riskListDetail.setRiskName("立案消息");
+                        break;
+                    case RiskWarnConstants.TYPE10:
+                        riskListDetail.setRiskName("司法拍卖");
+                        break;
+                    case RiskWarnConstants.TYPE11:
+                        riskListDetail.setRiskName("土地抵押");
+                        break;
+                    case RiskWarnConstants.TYPE12:
+                        riskListDetail.setRiskName("环保处罚");
+                        break;
+                    case RiskWarnConstants.TYPE13:
+                        riskListDetail.setRiskName("动产抵押");
+                        break;
+                    case RiskWarnConstants.TYPE14:
+                        riskListDetail.setRiskName("严重违法");
+                        break;
+                    case RiskWarnConstants.TYPE15:
+                        riskListDetail.setRiskName("欠税公告");
+                        break;
+                    case RiskWarnConstants.TYPE16:
+                        riskListDetail.setRiskName("税收违法");
+                        break;
+                    case RiskWarnConstants.TYPE17:
+                        riskListDetail.setRiskName("行政处罚");
+                        break;
+                    case RiskWarnConstants.TYPE18:
+                        riskListDetail.setRiskName("企业经营异常");
+                        break;
                 }
+//                风险级别
+                riskListDetail.setRiskLevel(customerRisk.getRiskLevel());
 //                查询当前客户当前风险类型的条数
                 List<CustomerRisk> list = iCustomerRiskService.list(
                         new QueryWrapper<CustomerRisk>()
                                 .eq("customer_id", customerId).eq("risk_type", riskType));
-                riskListDetail.setTiskSize(String.valueOf(list.size()));
+                riskListDetail.setRiskSize(String.valueOf(list.size()));
 
                 ArrayList<CustomerRiskDetailListDTO.RiskListDetail.RiskListDetail2> riskListDetail2s = new ArrayList<>();
                 for (CustomerRisk customerRisk1:list){

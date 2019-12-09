@@ -60,7 +60,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
 
     @Override
     public List<Map<String, String>> selectCustomerMap(CustomerUserInfo customerUserInfo) {
-        return baseMapper.selectCustomerMap(customerUserInfo);
+        return customerUserInfoMapper.selectCustomerMap(customerUserInfo);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
             queryWrapper = new QueryWrapper<>();
             queryWrapper.eq("customer_id", customerUserInfo.getCustomerId());
         }
-        CustomerUserInfo cUserInfo = baseMapper.selectOne(queryWrapper);
+        CustomerUserInfo cUserInfo = customerUserInfoMapper.selectOne(queryWrapper);
         CustomerUserInfoDTO customerUserInfoDTO = new CustomerUserInfoDTO();
         customerUserInfoDTO.setCustomerId(cUserInfo.getCustomerId());
         customerUserInfoDTO.setCustomerName(cUserInfo.getCustomerName());
@@ -90,13 +90,13 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         customerUserInfoDTO.setCustomerRiskList(customerRiskList);
 
 //        总待收
-        String balanceAmounts = baseMapper.selectAllBalanceAmounts(customerUserInfo);
+        String balanceAmounts = customerUserInfoMapper.selectAllBalanceAmounts(customerUserInfo);
         customerUserInfoDTO.setAllBalanceAmounts(balanceAmounts);
 //        总收款
-        String collectionAmount = baseMapper.selectAllCollectionAmount(customerUserInfo);
+        String collectionAmount = customerUserInfoMapper.selectAllCollectionAmount(customerUserInfo);
         customerUserInfoDTO.setAllCollectionAmount(collectionAmount);
 //        总合同金额
-        String allContractAmount = baseMapper.selectAllContractAmount(customerUserInfo);
+        String allContractAmount = customerUserInfoMapper.selectAllContractAmount(customerUserInfo);
         customerUserInfoDTO.setAllContractAmount(allContractAmount);
 
 //        回款率  已回款/合同总额
@@ -118,7 +118,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         if (StringUtils.isNotBlank(customerUserInfoForm.getCustomerName())){
             queryWrapper.eq("customer_name",customerUserInfoForm.getCustomerName());
         }
-        List<CustomerUserInfo> customerUserInfoList = baseMapper.selectList(queryWrapper);
+        List<CustomerUserInfo> customerUserInfoList = customerUserInfoMapper.selectList(queryWrapper);
         return customerUserInfoList;
     }
 
@@ -131,7 +131,7 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
         if (StringUtils.isNotBlank(customerUserInfoForm.getCustomerName())){
             queryWrapper.eq("customer_name",customerUserInfoForm.getCustomerName());
         }
-        return baseMapper.selectOne(queryWrapper);
+        return customerUserInfoMapper.selectOne(queryWrapper);
     }
 
     @Override

@@ -9,7 +9,7 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.helper.SecurityUtils;
 import com.ryuntech.saas.api.helper.constant.PartnerConstants;
-import com.ryuntech.saas.api.helper.constant.WeChatConstant;
+import com.ryuntech.saas.api.helper.constant.WeChatConstants;
 import com.ryuntech.saas.api.model.Partner;
 import com.ryuntech.saas.api.model.WeChatSession;
 import com.ryuntech.saas.api.service.IPartnerService;
@@ -226,8 +226,8 @@ public class PartnerController extends ModuleBaseController {
 
      {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid="
-                + WeChatConstant.MINIAPPID+
-                "&secret="+WeChatConstant.MINIAPPSECRET+
+                + WeChatConstants.MINIAPPID+
+                "&secret="+ WeChatConstants.MINIAPPSECRET+
                 "&js_code="+ partner.getCodeValue() +
                 "&grant_type=authorization_code";
         //发送post请求读取调用微信接口获取openid用户唯一标识

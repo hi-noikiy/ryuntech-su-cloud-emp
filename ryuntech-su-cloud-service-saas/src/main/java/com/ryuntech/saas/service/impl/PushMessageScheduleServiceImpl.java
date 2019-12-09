@@ -3,16 +3,13 @@ package com.ryuntech.saas.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.HttpUtils;
-import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.dto.RiskMonitorPushDTO;
 import com.ryuntech.saas.api.form.CustomerMonitorForm;
-import com.ryuntech.saas.api.helper.constant.WeChatConstant;
+import com.ryuntech.saas.api.helper.constant.WeChatConstants;
 import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.*;
-import com.ryuntech.saas.api.service.ICustomerRiskService;
 import com.ryuntech.saas.api.service.ITemplateMessageService;
 import com.ryuntech.saas.api.service.PushMessageScheduleService;
 import lombok.extern.slf4j.Slf4j;
@@ -72,13 +69,13 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
         for (HashMap<String,String> hashMap :hashMaps){
 //            一个跟进人对应多个客户
             RiskMonitorPushDTO riskMonitorPushDTO = new RiskMonitorPushDTO();
-            String staff_id = hashMap.get("staff_id");
-            String staff_name = hashMap.get("staff_name");
+            String staff_id = hashMap.get("staffId");
+            String staff_name = hashMap.get("staffName");
             riskMonitorPushDTO.setStaffId(staff_id);
             riskMonitorPushDTO.setStaffName(staff_name);
             Integer riskSize = 0;
             Integer companySize = 0;
-            String customer_ids = hashMap.get("customer_ids").toString();
+            String customer_ids = hashMap.get("customerIds");
 //            查询公司对应的风险
             if (StringUtils.isNotBlank(customer_ids)){
                 String[] split = customer_ids.split(",");
@@ -104,19 +101,15 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
                 UserWechat userWechat = userWechatMapper.selectOne(new QueryWrapper<UserWechat>().eq("union_id", unionId));
                 String gongzhonghaoOpenid = userWechat.getGongzhonghaoOpenid();
                 SendTemplateReq weixinTemplate=new SendTemplateReq();
-                weixinTemplate.setTemplate_id(WeChatConstant.TEMPLATEID);
-//         oKvCSv3pfx_wOYq7oXJLQpPJxFSc  oKvCSvz_OO70H8Iy-Wqh4REbVZNs
+                weixinTemplate.setTemplate_id(WeChatConstants.RISKTEMPLATEID);
                 weixinTemplate.setTouser(gongzhonghaoOpenid);
                 DoctorReplyMsgData doctorReplyMsgData = new DoctorReplyMsgData();
-                doctorReplyMsgData.setFrist(new KeyNote().setValue("您好，您监控的"+companySize+"家公司，共发生了"+riskSize+"条风险，请做好防范工作"));
-                doctorReplyMsgData.setKeyword1(new KeyNote().setValue("风险监控日报查看跟进"));
-                doctorReplyMsgData.setKeyword2(new KeyNote().setValue(riskSize+"条"));
-                doctorReplyMsgData.setKeyword3(new KeyNote().setValue(DateUtil.formatDate(new Date())));
-                doctorReplyMsgData.setRemake(new KeyNote().setValue("点击查看详情"));
+                doctorReplyMsgData.setKeyword1(new KeyNote().setValue("您好，您监控的"+companySize+"家公司，共发生了"+riskSize+"条风险，请做好防范工作"));
+                doctorReplyMsgData.setKeyword2(new KeyNote().setValue(DateUtil.formatDate(new Date())));
                 weixinTemplate.setData(doctorReplyMsgData);
                 weixinTemplate.setUrl("https://www.baidu.com");
                 weixinTemplate.setJsonContent(JSON.toJSONString(doctorReplyMsgData));
-                String url = TOKEN+"&appid=" +WeChatConstant.WXGZHAPPID+"&secret="+WeChatConstant.WXGZHAPPSECRET;
+                String url = TOKEN+"&appid=" + WeChatConstants.WXGZHAPPID+"&secret="+ WeChatConstants.WXGZHAPPSECRET;
                 String content = HttpUtils.Get(url);
                 String accessToken = (String) JSON.parseObject(content).get("access_token");
                 SendTemplateResponse sendTemplateResponse = iTemplateMessageService.sendTemplateMessage(accessToken, weixinTemplate);
@@ -127,8 +120,6 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
                     log.info("用户"+gongzhonghaoOpenid+"推送失败");
                 }
             }
-
-
         }
 
     }

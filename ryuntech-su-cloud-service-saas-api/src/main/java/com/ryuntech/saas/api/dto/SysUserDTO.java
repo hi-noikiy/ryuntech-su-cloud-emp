@@ -21,7 +21,7 @@ public class SysUserDTO extends BaseDto {
      * 主键
      */
     @Id
-    private String id;
+    private String sysUserId;
     private String unionId;
 
     /**
@@ -71,6 +71,10 @@ public class SysUserDTO extends BaseDto {
      */
     private String status;
 
+    /**
+     * 市
+     */
+    private String province;
 
     /**
      * 小程序openid

@@ -10,7 +10,8 @@ import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.WxAuthForm;
 import com.ryuntech.saas.api.helper.CheckoutUtil;
 import com.ryuntech.saas.api.helper.HttpConstant;
-import com.ryuntech.saas.api.helper.constant.WeChatConstant;
+import com.ryuntech.saas.api.helper.constant.HttpConstants;
+import com.ryuntech.saas.api.helper.constant.WeChatConstants;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
@@ -18,7 +19,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.aspectj.bridge.MessageUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ import java.util.List;
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 import static com.ryuntech.saas.api.helper.HttpConstant.INFOUNIONID;
 import static com.ryuntech.saas.api.helper.HttpConstant.TOKEN;
-import static com.ryuntech.saas.api.helper.constant.WeChatConstant.*;
+import static com.ryuntech.saas.api.helper.constant.WeChatConstants.*;
 
 
 /**
@@ -85,19 +85,19 @@ public class MiniWxMsgController extends ModuleBaseController{
 //        open_id ='oxzcO5KaNB6_ZLNUBOvN3_phHIC0'
 //        测试模板数据
         weixinTemplate=new SendTemplateReq();
-        weixinTemplate.setTemplate_id(WeChatConstant.TEMPLATEID);
+        weixinTemplate.setTemplate_id(WeChatConstants.RISKTEMPLATEID);
 //         oKvCSv3pfx_wOYq7oXJLQpPJxFSc  oKvCSvz_OO70H8Iy-Wqh4REbVZNs
         weixinTemplate.setTouser("oKvCSv3pfx_wOYq7oXJLQpPJxFSc");
         DoctorReplyMsgData doctorReplyMsgData = new DoctorReplyMsgData();
         doctorReplyMsgData.setFrist(new KeyNote().setValue("您好，您监控的5家公司，共发生了5条风险，请做好防范工作"));
-        doctorReplyMsgData.setKeyword1(new KeyNote().setValue("风险监控日报查看跟进"));
-        doctorReplyMsgData.setKeyword2(new KeyNote().setValue("5条"));
-        doctorReplyMsgData.setKeyword3(new KeyNote().setValue("2019-09-09"));
+        doctorReplyMsgData.setKeyword1(new KeyNote().setValue("监控风险5条"));
+        doctorReplyMsgData.setKeyword2(new KeyNote().setValue("2019-09-09"));
         doctorReplyMsgData.setRemake(new KeyNote().setValue("点击查看详情"));
         weixinTemplate.setData(doctorReplyMsgData);
-        weixinTemplate.setUrl("https://www.baidu.com");
+        weixinTemplate.setUrl("baidu.com");
+        weixinTemplate.setUrl(HttpConstants.HOST+":"+HttpConstants.PORT+"");
         weixinTemplate.setJsonContent(JSON.toJSONString(doctorReplyMsgData));
-        String url = TOKEN+"&appid=" +WeChatConstant.WXGZHAPPID+"&secret="+WeChatConstant.WXGZHAPPSECRET;
+        String url = TOKEN+"&appid=" + WeChatConstants.WXGZHAPPID+"&secret="+ WeChatConstants.WXGZHAPPSECRET;
         String content = HttpUtils.Get(url);
         accessToken = (String) JSON.parseObject(content).get("access_token");
         SendTemplateResponse sendTemplateResponse = iTemplateMessageService.sendTemplateMessage(accessToken, weixinTemplate);
@@ -120,8 +120,8 @@ public class MiniWxMsgController extends ModuleBaseController{
         }
         log.info("wxAuthForm.getCode()="+wxAuthForm.getCodeValue());
         String url = HttpConstant.JSCODE2SESSION+"?appid="
-                + WeChatConstant.MINIAPPID+
-                "&secret="+WeChatConstant.MINIAPPSECRET+
+                + WeChatConstants.MINIAPPID+
+                "&secret="+ WeChatConstants.MINIAPPSECRET+
                 "&js_code="+ wxAuthForm.getCodeValue() +
                 "&grant_type=authorization_code";
         //发送post请求读取调用微信接口获取openid用户唯一标识
@@ -151,7 +151,7 @@ public class MiniWxMsgController extends ModuleBaseController{
                 userId = employees.get(0).getSysUserId();
             }
 
-            SysUser sysUser = sysUserService.selectByUserDTO(new SysUserDTO().setId(userId));
+            SysUser sysUser = sysUserService.selectByUserDTO(new SysUserDTO().setSysUserId(userId));
             if (StringUtils.isBlank(sysUser.getUnionId())){
                 //开始更新用户的对象信息
                 sysUser.setUnionId(unionid);
@@ -225,7 +225,7 @@ public class MiniWxMsgController extends ModuleBaseController{
                 log.info("用户："+ fromUserName +"关注~");
                 //开始获取公众号用户的UnionID
                 //获取access_token
-                String url = TOKEN+"&appid=" +WeChatConstant.WXGZHAPPID+"&secret="+WeChatConstant.WXGZHAPPSECRET;
+                String url = TOKEN+"&appid=" + WeChatConstants.WXGZHAPPID+"&secret="+ WeChatConstants.WXGZHAPPSECRET;
                 String content = null;
                 try {
                     content = HttpUtils.Get(url);

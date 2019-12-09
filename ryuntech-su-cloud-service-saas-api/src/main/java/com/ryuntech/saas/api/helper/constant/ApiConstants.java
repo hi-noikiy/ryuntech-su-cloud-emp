@@ -1,9 +1,9 @@
-package com.ryuntech.saas.api.helper;
+package com.ryuntech.saas.api.helper.constant;
 
 /**
  * @author EDZ
  */
-public class ApiConstant {
+public class ApiConstants {
 
     public static final String APPKEY = "d84df38ffa9e44b9bdbe94105d106a79";
     public static final String SECKEY = "74D256F4CA4D05758A30FC06BEAD6972";

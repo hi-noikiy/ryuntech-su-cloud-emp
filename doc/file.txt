@@ -72,9 +72,17 @@ API文档https://element.faas.ele.me/#/zh-CN/
 用户名：13120698711
 密码：3c9dbab1
 
-小程序原型：https://next.modao.cc/app/baa8369e6e593d00eea1795ad09a1976f5bbbe87
-PC端原型：  https://next.modao.cc/app/9adfffd959215345eb3f976a33a3a153e194ffe0
+API文档管理工具  https://www.showdoc.cc
+账号：ykdtech
 密码：123456
+API文档管理线上  http://wx.ryuntech.com:4999/
+账号：showdoc
+密码：123456
+
+
+小程序原型：https://next.modao.cc/app/baa8369e6e593d00eea1795ad09a1976f5bbbe87
+PC端原型：  https://next.modao.cc/app/9adfffd959215345eb3f976a33a3a153e194ffe0  密码：123456
+文档：https://docs.qq.com/sheet/DY1JJSXZNb1FCRER3?tab=BB08J2&c=G5E0B0
 
 设计稿
 PC：https://lanhuapp.com/url/nxmOZ-xs8kn

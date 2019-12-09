@@ -94,6 +94,12 @@ import java.util.Date;
     @TableField("RISK_MTYPE")
     private String riskMType;
 
+    /**
+     * 风险级别
+     */
+    @TableField("RISK_LEVEL")
+    private String riskLevel;
+
 
     /**
      * 未读已读标记

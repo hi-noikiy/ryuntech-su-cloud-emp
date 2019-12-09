@@ -6,7 +6,7 @@ import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.utils.DateUtil;
 import com.ryuntech.common.utils.HttpUtils;
-import com.ryuntech.saas.api.helper.ApiConstant;
+import com.ryuntech.saas.api.helper.constant.ApiConstants;
 import com.ryuntech.saas.api.helper.constant.RiskWarnConstants;
 import com.ryuntech.saas.api.mapper.CompanyMapper;
 import com.ryuntech.saas.api.mapper.CustomerMonitorMapper;
@@ -22,26 +22,26 @@ import org.springframework.stereotype.Component;
 
 import java.util.*;
 
-import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHCOURTNOTICE;
-import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
-import static com.ryuntech.saas.api.helper.ApiConstant.SEARCH;
-import static com.ryuntech.saas.api.helper.ApiConstant.PRRSTOCKHOLDERCHANGE;
-import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHSHIXIN;
-import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHZHIXING;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETJUDICIALASSISTANCE;
-import static com.ryuntech.saas.api.helper.ApiConstant.SEARCHCOURTANNOUNCEMENT;
-import static com.ryuntech.saas.api.helper.ApiConstant.CASEFILING;
-import static com.ryuntech.saas.api.helper.ApiConstant.PRROPER;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.SEARCHCOURTNOTICE;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.APPKEY;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.SEARCH;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.PRRSTOCKHOLDERCHANGE;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.SEARCHSHIXIN;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.SEARCHZHIXING;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETJUDICIALASSISTANCE;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.SEARCHCOURTANNOUNCEMENT;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.CASEFILING;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.PRROPER;
 
-import static com.ryuntech.saas.api.helper.ApiConstant.GETJUDICIALSALELIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETLANDMORTGAGELIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETENVPUNISHMENTLIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETCHATTELMORTGAGE;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETSERIOUSVIOLATIONLIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETTAXOWENOTICELIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.TAXILLEGALLIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETGSADMINISTRATIVEPENALTYLIST;
-import static com.ryuntech.saas.api.helper.ApiConstant.GETOPEXCEPTION;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETJUDICIALSALELIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETLANDMORTGAGELIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETENVPUNISHMENTLIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETCHATTELMORTGAGE;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETSERIOUSVIOLATIONLIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETTAXOWENOTICELIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.TAXILLEGALLIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETGSADMINISTRATIVEPENALTYLIST;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.GETOPEXCEPTION;
 
 /**
  * @author EDZ
@@ -107,8 +107,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
      * 每天凌晨2点执行
      */
     @Override
-    @Scheduled(cron = "0 05 03 ? * *")
-//    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void riskWarning() {
         /**
          * 轮询客户风险监控列表
@@ -141,7 +140,6 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                         log.info("开始法人变更");
 //                        法人变更
 //                        查询公司
-
                         urlName=urlName+"&searchKey="+customerName+"&personName="+company.getOperName();
                         String content = HttpUtils.Get(urlName,reqHeader);
                         ApiPrroper riskWarning = gson.fromJson(content, ApiPrroper.class);
@@ -481,6 +479,6 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
      */
     protected static final String[] randomAuthentHeader() {
         String timeSpan = String.valueOf(System.currentTimeMillis() / 1000);
-        return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstant.SECKEY)).toUpperCase(), timeSpan };
+        return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan };
     }
 }

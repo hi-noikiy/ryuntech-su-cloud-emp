@@ -10,7 +10,7 @@ import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.form.CustomerMonitorForm;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
-import com.ryuntech.saas.api.helper.ApiConstant;
+import com.ryuntech.saas.api.helper.constant.ApiConstants;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerMonitorService;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
@@ -31,7 +31,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
-import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.APPKEY;
 
 /**
  * @author EDZ
@@ -75,7 +75,7 @@ public class MiniMonitorController extends ModuleBaseController{
      */
     protected static final String[] randomAuthentHeader() {
         String timeSpan = String.valueOf(System.currentTimeMillis() / 1000);
-        return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstant.SECKEY)).toUpperCase(), timeSpan };
+        return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan };
     }
     /**
      * 添加合同跟进信息
@@ -101,7 +101,7 @@ public class MiniMonitorController extends ModuleBaseController{
 
                 CustomerUserInfoDTO customerUserInfoDTO = iCustomerUserInfoService.selectCustomerUserInfoDTO(new CustomerUserInfo().setCustomerId(customerId));
 
-                String geteciImage = ApiConstant.SEARCH+"?key="+APPKEY;
+                String geteciImage = ApiConstants.SEARCH+"?key="+APPKEY;
 
                 String[] autherHeader = randomAuthentHeader();
                 HashMap<String, String> reqHeader = new HashMap<>();

@@ -20,9 +20,7 @@ import com.ryuntech.saas.api.dto.LoginConpanyDTO;
 import com.ryuntech.saas.api.dto.LoginDTO;
 import com.ryuntech.saas.api.dto.Sms;
 import com.ryuntech.saas.api.dto.SysUserDTO;
-import com.ryuntech.saas.api.form.SysUserForm;
-import com.ryuntech.saas.api.helper.ApiConstant;
-import com.ryuntech.saas.api.helper.constant.RoleConstants;
+import com.ryuntech.saas.api.helper.constant.ApiConstants;
 import com.ryuntech.saas.api.helper.constant.SmsConstants;
 import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.*;
@@ -42,7 +40,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.ryuntech.saas.api.helper.ApiConstant.APPKEY;
+import static com.ryuntech.saas.api.helper.constant.ApiConstants.APPKEY;
 
 /**
  * @author antu
@@ -139,8 +137,8 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (userDTO.getMobile() != null) {
             queryWrapper.eq("mobile", userDTO.getMobile());
         }
-        if (StringUtils.isNotBlank(userDTO.getId())) {
-            queryWrapper.eq("id", userDTO.getId());
+        if (StringUtils.isNotBlank(userDTO.getSysUserId())) {
+            queryWrapper.eq("sys_user_id", userDTO.getSysUserId());
         }
         if (userDTO.getUnionId() != null) {
             queryWrapper.eq("union_id", userDTO.getUnionId());
@@ -167,7 +165,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
      */
     protected static final String[] randomAuthentHeader() {
         String timeSpan = String.valueOf(System.currentTimeMillis() / 1000);
-        return new String[]{DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstant.SECKEY)).toUpperCase(), timeSpan};
+        return new String[]{DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan};
     }
 
 
@@ -232,20 +230,20 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         reqHeader.put("Token", autherHeader[0]);
         reqHeader.put("Timespan", autherHeader[1]);
         Gson gson = new Gson();
-        String urlName = ApiConstant.GETBASICDETAILSBYNAME + "?key=" + APPKEY + "&keyWord=" + companyName;
+        String urlName = ApiConstants.GETBASICDETAILSBYNAME + "?key=" + APPKEY + "&keyWord=" + companyName;
         String content = HttpUtils.Get(urlName, reqHeader);
-        ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
-        if (null == apiGetEciImage) {
+        ApiGetBasicDetailsByName apiGetBasicDetailsByName = gson.fromJson(content, ApiGetBasicDetailsByName.class);
+        if (null == apiGetBasicDetailsByName) {
             company.setIsQichacha(false);
         }
-        if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
-            String status = apiGetEciImage.getStatus();
+        if (apiGetBasicDetailsByName != null && StringUtils.isNotBlank(apiGetBasicDetailsByName.getStatus())) {
+            String status = apiGetBasicDetailsByName.getStatus();
             if (!status.equals("200")){
                 company.setIsQichacha(false);
             }else {
                 company.setIsQichacha(true);
 //                查询法人
-                String operName = apiGetEciImage.getResult().getOperName();
+                String operName = apiGetBasicDetailsByName.getResult().getOperName();
                 company.setOperName(operName);
             }
         }
