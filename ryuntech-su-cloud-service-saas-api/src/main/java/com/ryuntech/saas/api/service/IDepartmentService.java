@@ -1,6 +1,7 @@
 package com.ryuntech.saas.api.service;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO;
 import com.ryuntech.saas.api.form.DepartmentForm;
 import com.ryuntech.saas.api.model.Department;
@@ -67,4 +68,6 @@ public interface IDepartmentService extends IBaseService<Department> {
     void delete(String deptId);
 
     int migrateToAnotherDept(String oldDeptId, String newDeptId);
+
+    Result getDataTypeDepartment() throws Exception;
 }

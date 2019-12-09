@@ -23,6 +23,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             "/user/checkRegisterSmsCode",
             "/company/listByUsername",
             "/company/choose",
+            "/company/closeChoose",
             "/user/register",
             "/sms/*",
             "/storage/local/upload",

@@ -6,10 +6,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.exception.RyunBizException;
+import com.ryuntech.common.model.CurrentUser;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.SystemTool;
+import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.dto.*;
 import com.ryuntech.saas.api.form.RoleForm;
 import com.ryuntech.saas.api.mapper.SysPermMapper;
@@ -49,6 +52,9 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
 
+    @Autowired
+    private JedisUtil jedisUtil;
+
     @Override
     public Result<IPage<SysRole>> pageList(SysRole sysRole, QueryPage queryPage) {
         Page<SysRole> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
@@ -75,8 +81,12 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public List<RoleInfoDTO> getRoleInfoList() {
-        // todo 获取当前员工的公司id;
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String companyId = employee.getCompanyId();
+
         List<RoleDetailDTO> roleDetailList = baseMapper.getRoleDetailList(companyId);
         List<RoleInfoDTO> roleInfoList = new ArrayList<>();
         for (RoleDetailDTO detail : roleDetailList) {
@@ -92,23 +102,33 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public RoleDetailDTO getRoleDetail(String roleId) {
-        // todo 获取当前员工的公司id;
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String companyId = employee.getCompanyId();
         return baseMapper.getRoleDetailByCompanyIdAndRoleId(companyId, roleId);
     }
 
     @Override
     public List<RoleNameDTO> getNameList() {
-        // todo 获取当前员工的公司id;
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String companyId = employee.getCompanyId();
         return baseMapper.getNameList(companyId);
     }
 
     @Override
     public void edit(RoleForm roleForm) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
+
         // 查询同名岗位
         SysRole sameNameRole = baseMapper.selectOne(
                 new QueryWrapper<SysRole>().eq("RNAME", roleForm.getRoleName()).eq("COMPANY_ID", companyId));
@@ -174,9 +194,13 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public void delete(String roleId) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "empId";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
+
         // 获取旧角色并检验
         SysRole oldRole = baseMapper.selectOne(new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
         if (oldRole == null) {

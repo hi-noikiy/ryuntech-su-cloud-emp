@@ -59,4 +59,11 @@
           and d1.LEVEL = '1';
     </select>
 
+    <select id="getChildren" resultType="com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO">
+        select d.DEPARTMENT_ID   deptId,
+               d.DEPARTMENT_NAME name
+        from ryn_department d
+        where d.COMPANY_ID = #{companyId} and d.PID = #{pId}
+    </select>
+
 </mapper>

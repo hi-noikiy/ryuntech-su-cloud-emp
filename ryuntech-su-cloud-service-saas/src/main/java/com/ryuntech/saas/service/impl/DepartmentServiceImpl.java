@@ -5,8 +5,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.exception.RyunBizException;
+import com.ryuntech.common.model.CurrentUser;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
+import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.SystemTool;
+import com.ryuntech.common.utils.redis.JedisUtil;
+import com.ryuntech.saas.api.dto.DepartmentDataTypeTreeNodeDTO;
 import com.ryuntech.saas.api.dto.DepartmetnTreeNodeDTO;
 import com.ryuntech.saas.api.form.DepartmentForm;
 import com.ryuntech.saas.api.mapper.DepartmentMapper;
@@ -19,14 +24,11 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author antu
@@ -39,6 +41,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     private DepartmentMapper departmentMapper;
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired
+    private JedisUtil jedisUtil;
+
     @Override
 
     /*
@@ -53,19 +58,19 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
        ]}
          */
     public List<Map> selectDepartmentTree(String company_id, String pid, ArrayList path) {
-        List<Department> departments = departmentMapper.selectList(new QueryWrapper<Department>().eq("company_id", company_id).eq("pid",pid));
+        List<Department> departments = departmentMapper.selectList(new QueryWrapper<Department>().eq("company_id", company_id).eq("pid", pid));
         List<Map> res = new ArrayList<>();
         for (Department department : departments) {
             Map item = new HashMap<>();
-            item.put("department_id",department.getDepartmentId());
-            item.put("department_name",department.getDepartmentName());
-            item.put("level",department.getLevel());
-            item.put("pid",department.getPid());
-            item.put("opened",false);
+            item.put("department_id", department.getDepartmentId());
+            item.put("department_name", department.getDepartmentName());
+            item.put("level", department.getLevel());
+            item.put("pid", department.getPid());
+            item.put("opened", false);
             ArrayList newPath = (ArrayList) path.clone();
             newPath.add(department.getDepartmentId());
-            item.put("path",newPath);
-            item.put("children",selectDepartmentTree(company_id,department.getDepartmentId(),newPath));
+            item.put("path", newPath);
+            item.put("children", selectDepartmentTree(company_id, department.getDepartmentId(), newPath));
             res.add(item);
         }
         return res;
@@ -94,13 +99,13 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public boolean remove(Wrapper wrapper) {
-       return super.remove(wrapper);
+        return super.remove(wrapper);
     }
 
     @Override
     public List<Department> findByDepartment(Department department) {
-        if (StringUtils.isNotBlank(department.getCompanyId())){
-            queryWrapper.eq("company_id",department.getCompanyId());
+        if (StringUtils.isNotBlank(department.getCompanyId())) {
+            queryWrapper.eq("company_id", department.getCompanyId());
         }
         List<Department> departments = baseMapper.selectList(queryWrapper);
         return departments;
@@ -108,16 +113,22 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public List<DepartmetnTreeNodeDTO> getDepartmentTree() {
-        // todo 获取公司id
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String companyId = employee.getCompanyId();
         return departmentMapper.getDepartmentTreeByCompanyId(companyId);
     }
 
     @Override
-    public void edit(DepartmentForm form) {
-        // todo 获取公司id
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+    public void edit(DepartmentForm form) {        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
 
         // 查询同名部门
         Department sameNameDept = baseMapper.selectOne(
@@ -131,7 +142,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         if (!StringUtil.isEmpty(form.getParentId())) {
             Department parentDept = baseMapper.selectOne(
                     new QueryWrapper<Department>().eq("DEPARTMENT_ID", form.getParentId()).eq("COMPANY_ID", companyId));
-            if (parentDept ==null){
+            if (parentDept == null) {
                 throw new RyunBizException("上级部门不存在, 请指定新的上级部门.");
             }
             int parentLevel = Integer.parseInt(parentDept.getLevel());
@@ -139,6 +150,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
                 throw new RyunBizException("目前系统最高仅支持 4 级部门, 请重新指定其他的上级部门.");
             }
             level = parentLevel + 1;
+        } else {
+            // 父级id 为空, 设为空字符串以清除pid
+            form.setParentId("");
         }
 
         // 数据库实体
@@ -153,6 +167,10 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
                 throw new RyunBizException("部门不存在, 操作失败");
             }
 
+            // 不能选择自己为父级部门
+            if (newDept.getDepartmentId().equals(newDept.getPid())) {
+                throw new RyunBizException("不能选择自己为父级部门");
+            }
             // 更新部门
             newDept.setLevel(String.valueOf(level));
             baseMapper.update(newDept, new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
@@ -173,9 +191,12 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public void delete(String deptId) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
         // 获取旧部门并检验
         Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
         if (oldDept == null) {
@@ -184,7 +205,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         // 至少保留一个一级部门
         if ("1".equals(oldDept.getLevel())) {
             List<Department> lv1DeptList = baseMapper.selectList(new QueryWrapper<Department>().eq("LEVEL", "1").eq("COMPANY_ID", companyId));
-            if(lv1DeptList.size() == 1) {
+            if (lv1DeptList.size() == 1) {
                 throw new RyunBizException("至少保留一个一级部门");
             }
         }
@@ -205,9 +226,12 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public int migrateToAnotherDept(String oldDeptId, String newDeptId) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
 
         // 检查旧部门是否存在
         Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", oldDeptId).eq("COMPANY_ID", companyId));
@@ -222,5 +246,53 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
         int result = employeeMapper.migrateToAnotherDept(oldDeptId, newDeptId);
         log.info("员工【{}】将 {} 个员工从 {} 迁移到 {}", empId, result, oldDept.getDepartmentName(), newDept.getDepartmentName());
         return result;
+    }
+
+    // 根据当前用户数据权限获取下属所有部门信息及员工id集合
+    @Override
+    public Result getDataTypeDepartment() throws Exception {
+        CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
+        int dataType = currentUser.getDataType();
+        // 数据权限（1=本人2=本部门及下属部门3=全部4=指定部门）
+        // dataType = 1时，返回当前用户的员工姓名与员工id
+        switch (dataType) {
+            case 1:
+                return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName()));
+            case 2:
+                // 查询该部门的下属部门信息
+                Employee employee = employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id", currentUser.getEmployeeId()));
+                return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName(), Arrays.asList(getDepartmentTreeNodeDTO(employee.getDepartmentId()))));
+            case 3:
+                return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName(), departmentMapper.getDepartmentTreeByCompanyId(currentUser.getCompanyId())));
+            case 4:
+                List<DepartmetnTreeNodeDTO> rs = new ArrayList<>();
+                String[] departmentIds = currentUser.getDataDepartmentId().split(",");
+                for (String departmentId : departmentIds) {
+                    DepartmetnTreeNodeDTO departmetnTreeNodeDTO = getDepartmentTreeNodeDTO(departmentId);
+                    rs.add(departmetnTreeNodeDTO);
+                }
+                return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName(), rs));
+        }
+        throw new Exception("员工：" + currentUser.getEmployeeName() + "数据权限值：" + currentUser.getDataType() + "，系统暂未匹配到该权限信息");
+    }
+
+    private DepartmetnTreeNodeDTO getDepartmentTreeNodeDTO(String departmentId) {
+        CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
+        Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("department_id", departmentId));
+        List<DepartmetnTreeNodeDTO> rsList = new ArrayList<>();
+        getChildren(rsList, currentUser.getCompanyId(), currentUser.getDataDepartmentId());
+        DepartmetnTreeNodeDTO departmetnTreeNodeDTO = new DepartmetnTreeNodeDTO(department.getDepartmentName(), currentUser.getEmployeeId(), rsList);
+        return departmetnTreeNodeDTO;
+    }
+
+    private void getChildren(List<DepartmetnTreeNodeDTO> rsList, String companyId, String departmentId) {
+        List<DepartmetnTreeNodeDTO> list = departmentMapper.getChildren(companyId, departmentId);
+
+        if (list != null) {
+            for (DepartmetnTreeNodeDTO departmetnTreeNodeDTO : list) {
+                getChildren(rsList, companyId, departmetnTreeNodeDTO.getDeptId());
+            }
+        }
+        rsList.addAll(list);
     }
 }
