@@ -122,8 +122,8 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     }
 
     @Override
-    public void edit(DepartmentForm form) {
-        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+    public void edit(DepartmentForm form) {        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+
         if (employee == null) {
             throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
         }
@@ -150,6 +150,9 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
                 throw new RyunBizException("目前系统最高仅支持 4 级部门, 请重新指定其他的上级部门.");
             }
             level = parentLevel + 1;
+        } else {
+            // 父级id 为空, 设为空字符串以清除pid
+            form.setParentId("");
         }
 
         // 数据库实体
@@ -164,6 +167,10 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
                 throw new RyunBizException("部门不存在, 操作失败");
             }
 
+            // 不能选择自己为父级部门
+            if (newDept.getDepartmentId().equals(newDept.getPid())) {
+                throw new RyunBizException("不能选择自己为父级部门");
+            }
             // 更新部门
             newDept.setLevel(String.valueOf(level));
             baseMapper.update(newDept, new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
