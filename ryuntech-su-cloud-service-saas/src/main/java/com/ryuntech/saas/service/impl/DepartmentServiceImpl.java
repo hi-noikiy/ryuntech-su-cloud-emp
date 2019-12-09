@@ -113,16 +113,22 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public List<DepartmetnTreeNodeDTO> getDepartmentTree() {
-        // todo 获取公司id
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String companyId = employee.getCompanyId();
         return departmentMapper.getDepartmentTreeByCompanyId(companyId);
     }
 
     @Override
     public void edit(DepartmentForm form) {
-        // todo 获取公司id
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
 
         // 查询同名部门
         Department sameNameDept = baseMapper.selectOne(
@@ -178,9 +184,12 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public void delete(String deptId) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
         // 获取旧部门并检验
         Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", deptId).eq("COMPANY_ID", companyId));
         if (oldDept == null) {
@@ -210,9 +219,12 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     @Override
     public int migrateToAnotherDept(String oldDeptId, String newDeptId) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new RyunBizException("系统错误, 无法获取当前操作用户信息");
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
 
         // 检查旧部门是否存在
         Department oldDept = baseMapper.selectOne(new QueryWrapper<Department>().eq("DEPARTMENT_ID", oldDeptId).eq("COMPANY_ID", companyId));
