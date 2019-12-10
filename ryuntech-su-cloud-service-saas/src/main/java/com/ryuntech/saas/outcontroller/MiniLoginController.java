@@ -106,7 +106,7 @@ public class MiniLoginController extends ModuleBaseController{
              */
             UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getSysUserId()));
             if (null!=userWechat){
-                sysUserDTO.setUserWechat(userWechat);
+                sysUserDTO.setNickname(userWechat.getNickname());
             }
 
             sysUserDTO.setUsername(sysUser.getUsername());

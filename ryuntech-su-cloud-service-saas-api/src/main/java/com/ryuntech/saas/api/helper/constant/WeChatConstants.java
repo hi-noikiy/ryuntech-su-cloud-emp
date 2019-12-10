@@ -36,6 +36,17 @@ public class WeChatConstants {
 
 
     /**
+     * 到期提醒模板编号
+     */
+    public static final String EXPIRETEMPLATEID="Oro26WiLxBiK5Usq7-BHGp80taRJ9SuEHYYkJ4LisoQ";
+
+    /**
+     * 还款逾期提醒
+     */
+    public static final String OVERDUETEMPLATEID="OROaVpWajw9lIWqXsGCukGsTCVd1AU6WjYYGJqfsmf8";
+
+
+    /**
      * 请求消息类型：事件
      */
     public static final String REQ_MESSAGE_TYPE_EVENT = "event";

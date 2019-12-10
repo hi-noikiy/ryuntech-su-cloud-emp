@@ -16,6 +16,7 @@ import com.ryuntech.saas.api.helper.constant.ApiConstants;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerMonitorService;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
+import com.ryuntech.saas.api.service.IEmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -23,10 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -51,10 +49,14 @@ public class MiniMonitorController extends ModuleBaseController{
     private ICustomerUserInfoService iCustomerUserInfoService;
 
 
+    @Autowired
+    private IEmployeeService iEmployeeService;
+
+
 
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询用户列表信息")
-    @ApiImplicitParam(name = "followupRecord", value = "查询条件", required = true, dataType = "FollowupRecord", paramType = "body")
+    @ApiImplicitParam(name = "customerMonitor", value = "查询条件", required = true, dataType = "CustomerMonitor", paramType = "body")
     public Result<IPage<CustomerMonitor>> list(@RequestBody CustomerMonitor customerMonitor, QueryPage queryPage) {
         log.info("customerMonitor.getMonitorId()"+customerMonitor.getMonitorId());
         return  iCustomerMonitorService.pageList(customerMonitor, queryPage);
@@ -63,7 +65,7 @@ public class MiniMonitorController extends ModuleBaseController{
 
     @PostMapping("/outaddlist")
     @ApiOperation(value = "分页、条件查询客户列表信息")
-    @ApiImplicitParam(name = "customerUserInfo", value = "查询条件", required = true, dataType = "CustomerUserInfo", paramType = "body")
+    @ApiImplicitParam(name = "customerUserInfoForm", value = "查询条件", required = true, dataType = "CustomerUserInfoForm", paramType = "body")
     public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
         log.info("customerUserInfoForm.getCustomerId()"+customerUserInfoForm.getCustomerId());
 //        查询非监控列表的数据
@@ -80,10 +82,10 @@ public class MiniMonitorController extends ModuleBaseController{
         return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan };
     }
 
-    @PostMapping("/outcancel")
+    @GetMapping("/outcancel")
     @ApiOperation(value = "添加客户监控信息")
     @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
-    public Result cancel(@RequestBody CustomerMonitorForm customerMonitorForm) throws Exception {
+    public Result cancel(CustomerMonitorForm customerMonitorForm) throws Exception {
         if (StringUtils.isBlank(customerMonitorForm.getMonitorId())){
             return new Result(OPERATE_ERROR,"监控编号为空，不能取消");
         }
@@ -157,6 +159,8 @@ public class MiniMonitorController extends ModuleBaseController{
                         return new Result(OPERATE_ERROR,"您还未购买过该接口，请先购买");
                     }
                 }
+//                查询添加该监控的员工
+                Employee employee = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(customerMonitorForm.getEmployeeId()));
 
                 String  monitorId = String.valueOf(generateId());
                 CustomerMonitor customerM = new CustomerMonitor();
@@ -167,9 +171,11 @@ public class MiniMonitorController extends ModuleBaseController{
                 customerM.setStaffId(customerUserInfoDTO.getStaffId());
                 customerM.setStaffName(customerUserInfoDTO.getStaffName());
                 customerM.setCustomerName(customerUserInfoDTO.getCustomerName());
+                customerM.setEmployeeId(employee.getEmployeeId());
+                customerM.setEmployeeName(employee.getName());
                 iCustomerMonitorService.saveOrUpdate(customerM);
             }
         }
-        return new Result();
+        return new Result("添加成功");
     }
 }

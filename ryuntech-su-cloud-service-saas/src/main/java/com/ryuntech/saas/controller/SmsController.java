@@ -5,6 +5,7 @@ import com.ryuntech.common.utils.RandomUtil;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.Sms;
 import com.ryuntech.saas.api.dto.SmsResponse;
+import com.ryuntech.saas.api.service.ISysParamsService;
 import com.ryuntech.saas.api.service.MessageSendService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,6 +32,9 @@ public class SmsController extends ModuleBaseController {
     @Autowired
     RedisTemplate redisTemplate;
 
+    @Autowired
+    ISysParamsService iSysParamsService;
+
 
     /**
      * 根据ID查询用户信息
@@ -51,11 +55,18 @@ public class SmsController extends ModuleBaseController {
             log.info("生成验证码成功:"+numberCode);
             getSession().setAttribute(phone+"ryun_code",numberCode);
             redisTemplate.opsForValue().set(phone+"ryun_code",numberCode,60*10, TimeUnit.SECONDS);
-            Sms sms = new Sms();
-            sms.setPhoneNumbers(phone);
-            sms.setContent("{\"code\":\"" + numberCode + "\"}");
-            SmsResponse smsResponse = messageSendService.sendSms(sms);
-            return new Result(smsResponse);
+            String valueByInnerName = iSysParamsService.getValueByInnerName("sms.flag");
+            if (valueByInnerName.equals("1")){
+                //说明可以发送短息
+                Sms sms = new Sms();
+                sms.setPhoneNumbers(phone);
+                sms.setContent("{\"code\":\"" + numberCode + "\"}");
+                SmsResponse smsResponse = messageSendService.sendSms(sms);
+                return new Result(smsResponse);
+            }else {
+                return new Result();
+            }
+
         }
     }
 }

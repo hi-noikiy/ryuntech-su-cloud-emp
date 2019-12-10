@@ -25,6 +25,7 @@ public class CustomerRiskDetailListDTO {
     public static class RiskListDetail{
 
         private String riskType;
+        private String riskMType;
         private String riskLevel;
         private String riskName;
         private String riskSize;

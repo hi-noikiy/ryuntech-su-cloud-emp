@@ -168,14 +168,14 @@ public class MiniCustRiskController {
 //            查询详情数据，风险列表
             List<CustomerRisk> customerRisks = iCustomerRiskService.list(
                     new QueryWrapper<CustomerRisk>().
-                            eq("customer_id", customerId).groupBy("risk_type"));
+                            eq("customer_id", customerId).groupBy("risk_mtype"));
             List<CustomerRiskDetailListDTO.RiskListDetail> riskListDetails = new ArrayList<>();
             for (CustomerRisk customerRisk:customerRisks){
                 CustomerRiskDetailListDTO.RiskListDetail riskListDetail = new CustomerRiskDetailListDTO.RiskListDetail();
 //                风险类型
-                String riskType = customerRisk.getRiskType();
-                riskListDetail.setRiskType(riskType);
-                switch (riskType){
+                String riskMType = customerRisk.getRiskMType();
+                riskListDetail.setRiskType(riskMType);
+                switch (riskMType){
                     case RiskWarnConstants.TYPE1:
                         riskListDetail.setRiskName("法人变更");
                         break;
@@ -233,7 +233,7 @@ public class MiniCustRiskController {
 //                查询当前客户当前风险类型的条数
                 List<CustomerRisk> list = iCustomerRiskService.list(
                         new QueryWrapper<CustomerRisk>()
-                                .eq("customer_id", customerId).eq("risk_type", riskType));
+                                .eq("customer_id", customerId).eq("risk_mtype", riskMType));
                 riskListDetail.setRiskSize(String.valueOf(list.size()));
 
                 ArrayList<CustomerRiskDetailListDTO.RiskListDetail.RiskListDetail2> riskListDetail2s = new ArrayList<>();

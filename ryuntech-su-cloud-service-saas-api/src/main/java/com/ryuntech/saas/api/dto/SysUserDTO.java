@@ -24,15 +24,20 @@ public class SysUserDTO extends BaseDto {
     private String sysUserId;
     private String unionId;
 
-    /**
-     * 小程序用户对象
-     */
-    private UserWechat userWechat;
 
     /**
      * 用户名
      */
     private String username;
+
+    /**
+     * 昵称
+     */
+    private String nickname;
+    /**
+     * 头像
+     */
+    private String headimgurl;
 
     /**
      * 密码

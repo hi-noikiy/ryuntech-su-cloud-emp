@@ -15,6 +15,7 @@ public class CustomerMonitorForm {
 
 
     private String customerId;
+    private String employeeId;
     private String monitorId;
     private List<String> customerIds;
     /**
