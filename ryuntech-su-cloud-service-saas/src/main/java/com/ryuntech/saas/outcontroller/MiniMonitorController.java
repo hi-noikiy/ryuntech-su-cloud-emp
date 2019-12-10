@@ -4,6 +4,8 @@ package com.ryuntech.saas.outcontroller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.google.gson.Gson;
+import com.ryuntech.common.constant.enums.ExceptionEnum;
+import com.ryuntech.common.exception.YkControllerException;
 import com.ryuntech.common.utils.HttpUtils;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
@@ -77,6 +79,31 @@ public class MiniMonitorController extends ModuleBaseController{
         String timeSpan = String.valueOf(System.currentTimeMillis() / 1000);
         return new String[] { DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan };
     }
+
+    @PostMapping("/outcancel")
+    @ApiOperation(value = "添加客户监控信息")
+    @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
+    public Result cancel(@RequestBody CustomerMonitorForm customerMonitorForm) throws Exception {
+        if (StringUtils.isBlank(customerMonitorForm.getMonitorId())){
+            return new Result(OPERATE_ERROR,"监控编号为空，不能取消");
+        }
+        String monitorId = customerMonitorForm.getMonitorId();
+
+        CustomerMonitor byId = iCustomerMonitorService.getById(monitorId);
+        if (null==byId){
+            return new Result(OPERATE_ERROR,"未查找到对应的监控对象不能取消");
+        }
+        byId.setStatus(false);
+        boolean b = iCustomerMonitorService.updateById(byId);
+        if (b){
+            return new Result("取消成功");
+        }else {
+            return new Result("取消失败");
+        }
+    }
+
+
+
     /**
      * 添加合同跟进信息
      *
@@ -86,7 +113,7 @@ public class MiniMonitorController extends ModuleBaseController{
     @PostMapping("/outadd")
     @ApiOperation(value = "添加客户监控信息")
     @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
-    public Result add(@RequestBody CustomerMonitorForm customerMonitorForm) throws Exception {
+    public Result add(@RequestBody CustomerMonitorForm customerMonitorForm) throws YkControllerException {
         if (null!=customerMonitorForm){
             List<String> customerIds = customerMonitorForm.getCustomerIds();
             for (String customerId:customerIds){
@@ -110,7 +137,13 @@ public class MiniMonitorController extends ModuleBaseController{
                 Gson gson = new Gson();
                 String customerName = customerUserInfoDTO.getCustomerName();
                 String urlName=geteciImage+"&keyword="+customerName;
-                String content = HttpUtils.Get(urlName,reqHeader);
+                String content = "";
+                try {
+                    content = HttpUtils.Get(urlName,reqHeader);
+                }catch (Exception e){
+                    throw new YkControllerException(ExceptionEnum.HTTP_ERROR);
+                }
+
                 ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
                 if (null==apiGetEciImage){
                     return new Result();

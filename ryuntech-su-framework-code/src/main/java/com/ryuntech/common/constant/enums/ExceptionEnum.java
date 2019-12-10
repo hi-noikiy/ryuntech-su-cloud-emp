@@ -18,9 +18,13 @@ public enum ExceptionEnum {
     INVALID_NOTIFY_PARAM(400, "回调参数有误！"),
     INVALID_NOTIFY_SIGN(400, "回调签名有误！"),
 
+
+
     APPLICATION_NOT_FOUND(404, "应用不存在！"),
     ORDER_NOT_FOUND(404, "订单不存在！"),
     ORDER_DETAIL_NOT_FOUND(404, "合同数据不存在！"),
+
+    HTTP_ERROR(500, "网络请求错误！"),
 
     DATA_TRANSFER_ERROR(500, "数据转换异常！"),
     INSERT_OPERATION_FAIL(500, "新增操作失败！"),

@@ -51,9 +51,19 @@ import java.util.Date;
         @TableField("STAFF_ID")
     private String staffId;
 
+        @TableField("EMPLOYEE_ID")
+    private String employeeId;
+
+        @TableField("EMPLOYEE_NAME")
+    private String employeeName;
+
 
         @TableField("STAFF_NAME")
     private String staffName;
+
+
+        @TableField("STATUS")
+    private Boolean status;
 
             /**
             * 创建时间

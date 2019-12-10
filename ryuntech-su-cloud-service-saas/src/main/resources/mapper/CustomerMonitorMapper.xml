@@ -9,13 +9,16 @@
         <result column="CUSTOMER_NAME" property="customerName" />
         <result column="STAFF_ID" property="staffId" />
         <result column="STAFF_NAME" property="staffName" />
+        <result column="EMPLOYEE_ID" property="employeeId" />
+        <result column="EMPLOYEE_NAME" property="employeeName" />
+        <result column="STATUS" property="status" />
         <result column="CREATED" property="created" />
         <result column="UPDATED" property="updated" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        MONITOR_ID, CUSTOMER_ID, CUSTOMER_NAME, CREATED, UPDATED,STAFF_ID,STAFF_NAME
+        MONITOR_ID, CUSTOMER_ID, CUSTOMER_NAME, CREATED, UPDATED,STAFF_ID,STAFF_NAME,EMPLOYEE_ID,EMPLOYEE_NAME,STATUS
     </sql>
 
     <select id="selectGroupMonitorByStaffId" resultType="java.util.HashMap">

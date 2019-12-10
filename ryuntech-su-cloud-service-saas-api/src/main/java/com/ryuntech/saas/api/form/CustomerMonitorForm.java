@@ -15,6 +15,7 @@ public class CustomerMonitorForm {
 
 
     private String customerId;
+    private String monitorId;
     private List<String> customerIds;
     /**
      * 客户编号集合

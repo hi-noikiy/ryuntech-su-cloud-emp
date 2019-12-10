@@ -58,6 +58,10 @@ public class MiniLoginController extends ModuleBaseController{
     @Autowired
     PushMessageScheduleService pushMessageScheduleService;
 
+
+    @Autowired
+    ISysParamsService iSysParamsService;
+
     /**
      * 注册第一步
      *
@@ -67,7 +71,9 @@ public class MiniLoginController extends ModuleBaseController{
     @ApiOperation(value = "登录第一步验证手机号")
     public Result<SysUserDTO> frist(@RequestBody SysUserForm sysUserForm) throws YkControllerException {
 
-        int i = 1/0;
+        String valueByInnerName = iSysParamsService.getValueByInnerName("sms.flag");
+
+        log.info("valueByInnerName"+valueByInnerName);
 
        /* riskWarningScheduleService.riskWarning();
         try {
