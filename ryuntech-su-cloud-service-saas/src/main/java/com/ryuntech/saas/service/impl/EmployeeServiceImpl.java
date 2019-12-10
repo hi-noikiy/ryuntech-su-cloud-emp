@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ryuntech.common.constant.Global;
+import com.ryuntech.common.constant.enums.EmployeeEnum;
+import com.ryuntech.common.constant.enums.SysUserStatusEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
@@ -201,9 +204,10 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             sysUser.setSysUserId(uniqueIdGenerator.nextStrId());
             sysUser.setUsername(employeeEditForm.getMobile());
             sysUser.setMobile(employeeEditForm.getMobile());
-            sysUser.setPassword(new BCryptPasswordEncoder().encode("123456"));
+            // TODO 添加员工时，暂用这个密码
+            sysUser.setPassword(new BCryptPasswordEncoder().encode(Global.REGISTER_PASSWORD));
             //   sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
-            sysUser.setStatus("1");
+            sysUser.setStatus(String.valueOf(SysUserStatusEnum.NORMAL.getStatus()));
             sysUser.setCreatedAt(time);
             sysUser.setUpdatedAt(time);
             sysUserMapper.insert(sysUser);
@@ -221,7 +225,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             employee.setEmail(employeeEditForm.getEmail());
             employee.setIsCharger(employee.getIsCharger());
             employee.setDataType(Integer.parseInt(employeeEditForm.getDataType()));
-            employee.setStatus(1);
+            employee.setStatus(EmployeeEnum.NORMAL.getStatus());
             employee.setCreatedAt(time);
             employee.setUpdatedAt(time);
             employeeMapper.insert(employee);

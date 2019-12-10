@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Component
 @FeignClient(name = "ryuntech-su-cloud-authorization")
 public interface SysUserFeign {
-    @PostMapping("/sys/getSysUserId")
-    Result getSysUserId(@RequestParam("token") String token);
+
+    @PostMapping("/sys/logout")
+    Result logout(@RequestParam("token") String token);
 }

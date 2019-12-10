@@ -1,11 +1,7 @@
 package com.ryuntech.authorization.service;
 
 import com.ryuntech.authorization.entity.CompanyDetail;
-import com.ryuntech.common.constant.enums.CommonEnums;
-import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.model.SysUser;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

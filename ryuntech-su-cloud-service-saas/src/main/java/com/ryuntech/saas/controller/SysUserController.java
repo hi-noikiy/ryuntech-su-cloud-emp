@@ -1,11 +1,14 @@
 package com.ryuntech.saas.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.authorization.api.SysUserFeign;
 import com.ryuntech.common.constant.RedisConstant;
 import com.ryuntech.common.constant.enums.CommonEnums;
+import com.ryuntech.common.constant.enums.SmsEnum;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.SystemTool;
 import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.helper.SecurityUtils;
 import com.ryuntech.saas.api.model.SysUser;
@@ -43,6 +46,9 @@ public class SysUserController extends ModuleBaseController {
 
     @Autowired
     MessageSendService messageSendService;
+
+    @Autowired
+    SysUserFeign sysUserFeign;
 
     @Autowired
     JedisUtil jedisUtil;
@@ -162,7 +168,15 @@ public class SysUserController extends ModuleBaseController {
         return new Result();
     }
 
+    //region 登录、登出、注册
 
+    /**
+     * 账号密码登录
+     *
+     * @param username
+     * @param password
+     * @return
+     */
     @PostMapping("/login")
     public Result login(String username, String password) {
         if (!StringUtil.isMobile(username)) {
@@ -176,6 +190,25 @@ public class SysUserController extends ModuleBaseController {
         return sysUserService.login(username, password);
     }
 
+    /**
+     * 登出
+     *
+     * @return
+     */
+    @PostMapping("/logout")
+    public Result logout() {
+        String token = SystemTool.getToken();
+        // 清除当前的token信息
+        jedisUtil.del(RedisConstant.PRE_CURRENT_USER + token);
+        return sysUserFeign.logout(token);
+    }
+
+    /**
+     * 注册时发送短信验证码
+     *
+     * @param mobile
+     * @return
+     */
     @PostMapping("sendRegisterSms")
     public Result sendRegisterSms(
             @RequestParam("mobile") String mobile) {
@@ -189,11 +222,18 @@ public class SysUserController extends ModuleBaseController {
         }
     }
 
+    /**
+     * 核对短信验证码是否正确
+     *
+     * @param mobile
+     * @param code
+     * @return
+     */
     @PostMapping("checkRegisterSmsCode")
     public Result checkRegisterSmsCode(
             @RequestParam("mobile") String mobile,
             @RequestParam("code") String code) {
-        if (!messageSendService.checkSmsCode(1, mobile, code)) {
+        if (!messageSendService.checkSmsCode(SmsEnum.REGISTER.getStatus(), mobile, code)) {
             return new Result(CommonEnums.PARAM_ERROR, "您输入的手机校验码不正确");
         }
 
@@ -203,6 +243,15 @@ public class SysUserController extends ModuleBaseController {
         return new Result(randomId);
     }
 
+    /**
+     * 注册保存
+     *
+     * @param companyName
+     * @param employeeName
+     * @param password
+     * @param uId
+     * @return
+     */
     @PostMapping("register")
     public Result register(
             @RequestParam("companyName") String companyName,
@@ -242,13 +291,24 @@ public class SysUserController extends ModuleBaseController {
     @Autowired
     IDepartmentService departmentService;
 
-    @PostMapping("test")
-    public Result test() {
+    @PostMapping("test1")
+    public Result test1() {
         try {
-            return departmentService.getDataTypeDepartment();
+            return departmentService.getDataTypeDepartmentTree();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
+
+    @PostMapping("test2")
+    public Result test2() {
+        try {
+            return new Result(departmentService.getDataTypeDepartments());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    //endregion
 }

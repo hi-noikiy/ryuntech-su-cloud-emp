@@ -1,5 +1,3 @@
-/*
-package com.ryuntech.authorization.entity;*/
 package com.ryuntech.authorization.entity;
 
 import org.springframework.security.core.GrantedAuthority;
