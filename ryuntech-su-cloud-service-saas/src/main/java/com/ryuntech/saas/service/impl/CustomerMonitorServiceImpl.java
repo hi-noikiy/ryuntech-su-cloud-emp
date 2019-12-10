@@ -32,6 +32,7 @@ public class CustomerMonitorServiceImpl extends BaseServiceImpl<CustomerMonitorM
         if (customerMonitor.getMonitorId()!=null) {
             queryWrapper.eq("monitor_id", customerMonitor.getMonitorId());
         }
+        queryWrapper.eq("status",true);
         return super.pageList(queryWrapper,page);
     }
 }

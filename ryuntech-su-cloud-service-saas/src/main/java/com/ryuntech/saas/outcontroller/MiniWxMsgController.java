@@ -171,7 +171,7 @@ public class MiniWxMsgController extends ModuleBaseController{
                 userWechat.setUnionId(unionid);
                 userWechat.setNickname(wxAuthForm.getNickname());
                 userWechat.setMiniprogramOpenid(openid);
-                userWechat.setSex(Integer.parseInt(wxAuthForm.getSex()));
+                userWechat.setSex(Integer.parseInt(null==wxAuthForm.getSex()?"0":wxAuthForm.getSex()));
                 boolean b = sysUserService.updateById(sysUser);
                 if (b){
                     boolean save = iUserWechatService.save(userWechat);

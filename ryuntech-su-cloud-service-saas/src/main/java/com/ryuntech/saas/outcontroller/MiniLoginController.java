@@ -108,7 +108,6 @@ public class MiniLoginController extends ModuleBaseController{
             if (null!=userWechat){
                 sysUserDTO.setNickname(userWechat.getNickname());
             }
-
             sysUserDTO.setUsername(sysUser.getUsername());
             sysUserDTO.setSysUserId(sysUser.getSysUserId());
             sysUserDTO.setUnionId(sysUser.getUnionId());
