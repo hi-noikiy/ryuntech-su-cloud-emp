@@ -280,22 +280,25 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     private DepartmetnTreeNodeDTO getDepartmentTreeNodeDTO(String departmentId) {
         CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
-        Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("department_id", departmentId));
         List<DepartmetnTreeNodeDTO> rsList = new ArrayList<>();
-        getChildren(rsList, currentUser.getCompanyId(), currentUser.getDataDepartmentId());
-        DepartmetnTreeNodeDTO departmetnTreeNodeDTO = new DepartmetnTreeNodeDTO(department.getDepartmentName(), currentUser.getEmployeeId(), rsList);
+        Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("department_id", departmentId));
+
+
+        DepartmetnTreeNodeDTO departmetnTreeNodeDTO = new DepartmetnTreeNodeDTO(department.getDepartmentName(), departmentId, rsList);
+        getChildren(departmetnTreeNodeDTO, currentUser.getCompanyId());
+
         return departmetnTreeNodeDTO;
     }
 
-    private void getChildren(List<DepartmetnTreeNodeDTO> rsList, String companyId, String departmentId) {
-        List<DepartmetnTreeNodeDTO> list = departmentMapper.getChildren(companyId, departmentId);
+    private void getChildren(DepartmetnTreeNodeDTO departmetnTreeNodeDTO, String companyId) {
+        List<DepartmetnTreeNodeDTO> list = departmentMapper.getChildren(companyId, departmetnTreeNodeDTO.getDeptId());
 
         if (list != null) {
-            for (DepartmetnTreeNodeDTO departmetnTreeNodeDTO : list) {
-                getChildren(rsList, companyId, departmetnTreeNodeDTO.getDeptId());
+            for (DepartmetnTreeNodeDTO d : list) {
+                getChildren(d, companyId);
             }
         }
-        rsList.addAll(list);
+        departmetnTreeNodeDTO.setSubDept(list);
     }
 
     @Override

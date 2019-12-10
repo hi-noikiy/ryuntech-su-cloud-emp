@@ -170,10 +170,6 @@ public class MessageSendServiceImpl implements MessageSendService {
             return false;
         }
 
-        if (!StringUtil.isNumber(code, 6)) {
-            return false;
-        }
-
         String v = jedisUtil.get(RedisConstant.PRE_SMS_VERIFICATION_CODE + templateType + ":" + mobile);
         if (!code.equals(v)) {
             return false;

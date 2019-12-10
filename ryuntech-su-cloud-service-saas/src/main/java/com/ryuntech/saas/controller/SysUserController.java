@@ -170,6 +170,30 @@ public class SysUserController extends ModuleBaseController {
 
     //region 登录、登出、注册
 
+    @PostMapping("sendLoginSms")
+    public Result sendLoginSms(
+            @RequestParam("mobile") String mobile) {
+        if (!StringUtil.isMobile(mobile)) {
+            return new Result(CommonEnums.PARAM_ERROR, "手机号码不合法");
+        }
+        try {
+            return new Result(sysUserService.sendLoginSms(mobile));
+        } catch (Exception e) {
+            return new Result(CommonEnums.OPERATE_ERROR, e.getLocalizedMessage());
+        }
+    }
+
+    @PostMapping("/checkLoginSms")
+    public Result checkLoginSms(
+            @RequestParam("mobile") String mobile,
+            @RequestParam("code") String code) {
+        if (!StringUtil.isMobile(mobile)) {
+            return new Result(CommonEnums.LOGIN_ERROR.getMsg());
+        }
+
+        return sysUserService.checkLoginSms(mobile, code);
+    }
+
     /**
      * 账号密码登录
      *
@@ -287,28 +311,5 @@ public class SysUserController extends ModuleBaseController {
         return new Result();
     }
 
-    // TODO 测试使用
-    @Autowired
-    IDepartmentService departmentService;
-
-    @PostMapping("test1")
-    public Result test1() {
-        try {
-            return departmentService.getDataTypeDepartmentTree();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @PostMapping("test2")
-    public Result test2() {
-        try {
-            return new Result(departmentService.getDataTypeDepartments());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
     //endregion
 }

@@ -168,6 +168,42 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         return new String[]{DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan};
     }
 
+    @Override
+    public boolean sendLoginSms(String mobile) throws Exception {
+        // 手机号码已经存在sysuser表，则不允许继续注册，后面走添加公司流程
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("mobile", mobile));
+        if (sysUser == null && SysUserStatusEnum.NORMAL.getStatus() != Integer.parseInt(sysUser.getStatus())) {
+            throw new Exception("用户手机号码不存在，请重新输入");
+        }
+
+        // TODO 等后续添加了短信模板再限制
+        // 手机号码发送的频率限制
+        /*if (jedisUtil.exists(RedisConstant.PRE_SMS_EXIST_IN_MINUTE + SmsConstants.TEMPLATECODE + ":" + mobile)) {
+            throw new Exception("您获取验证码太频繁，每分钟仅支持发送一条短信");
+        }*/
+
+        return messageSendService.send(new Sms(mobile, SmsConstants.TEMPLATECODE, SmsEnum.LOGIN.getStatus(), StringUtil.sixRandomNum()));
+    }
+
+    @Override
+    public Result checkLoginSms(String username, String code) {
+        if (!messageSendService.checkSmsCode(SmsEnum.LOGIN.getStatus(), username, code)) {
+            return new Result(CommonEnums.PARAM_ERROR, "您输入的手机校验码不正确");
+        }
+
+        List<LoginConpanyDTO> list = companyMapper.listByUsername(username);
+        if (list == null || list.size() == 0) {
+            return new Result(CommonEnums.OPERATE_ERROR, "未找到公司信息");
+        }
+
+        List<String> ids = list.stream().map(l -> l.getCompanyId()).collect(Collectors.toList());
+
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("username", username));
+        String sysUserId = sysUser.getSysUserId();
+        jedisUtil.sadd(RedisConstant.PRE_LOGIN_USER_SUCCESS + sysUserId, ids.toArray(new String[ids.size()]));
+        jedisUtil.expire(RedisConstant.PRE_LOGIN_USER_SUCCESS + sysUserId, RedisConstant.PRE_LOGIN_USER_SUCCESS_EXPIRE);
+        return new Result(new LoginDTO(list, sysUserId));
+    }
 
     @Override
     public boolean sendRegisterSms(String mobile) throws Exception {

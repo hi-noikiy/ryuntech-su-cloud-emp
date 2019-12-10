@@ -19,6 +19,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             "/actuator/**",
             "/user/info/*",
             "/user/login",
+            "/user/sendLoginSms",
+            "/user/checkLoginSms",
             "/user/sendRegisterSms",
             "/user/checkRegisterSmsCode",
             "/company/listByUsername",
