@@ -2,7 +2,7 @@ package com.ryuntech.saas.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.google.gson.Gson;
-import com.ryuntech.authorization.api.SysUserFeign;
+import com.ryuntech.common.constant.Global;
 import com.ryuntech.common.constant.RedisConstant;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.model.CurrentUser;
@@ -54,9 +54,6 @@ public class CompanyServiceImpl extends BaseServiceImpl<CompanyMapper, Company> 
     private EmployeeMapper employeeMapper;
 
     @Autowired
-    private SysUserFeign sysUserFeign;
-
-    @Autowired
     private JedisUtil jedisUtil;
 
     @Autowired
@@ -96,12 +93,14 @@ public class CompanyServiceImpl extends BaseServiceImpl<CompanyMapper, Company> 
         ResponseEntity<Map> response = getAccessToken(companyId, sysUserId);
         int expires = (int) response.getBody().get("expires_in");
         String token = (String) response.getBody().get("access_token");
+        String refreshToken = (String) response.getBody().get("refresh_token");
 
         if (jedisUtil.exists(RedisConstant.PRE_CURRENT_USER + token)) {
-            if (expires < 6 * 60 * 60) {
+            if (expires < Global.ACCESS_TOKEN_EXPIRE / 2) {
                 // 重新生成token及获取有效时间
-                // token = "";
-                // expires = ;
+                response = refreshAccessToken(refreshToken);
+                expires = (int) response.getBody().get("expires_in");
+                token = (String) response.getBody().get("access_token");
             }
         }
 
@@ -139,6 +138,34 @@ public class CompanyServiceImpl extends BaseServiceImpl<CompanyMapper, Company> 
         body.add("grant_type", grantType);
         body.add("username", companyId);
         body.add("password", uuid);
+
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, header);
+
+        restTemplate.setErrorHandler(new CustomErrorHandler());
+        ResponseEntity<Map> response = restTemplate.exchange(authUri, HttpMethod.POST, httpEntity, Map.class);
+        if (response.getStatusCode() != HttpStatus.OK) {
+            LinkedHashMap hashMap = (LinkedHashMap) response.getBody();
+            Object errorMsg = hashMap.get("error_description");
+            throw new Exception(String.valueOf(errorMsg));
+        }
+        return response;
+    }
+
+    // auth刷新token
+    private ResponseEntity<Map> refreshAccessToken(String refreshToken) throws Exception {
+        ServiceInstance serviceInstance = loadBalancerClient.choose("ryuntech-su-cloud-gateway");
+        URI uri = serviceInstance.getUri();
+        String authUri = uri + "/api/auth/oauth/token";
+        //authUri = authUri.replace("http", "https");
+        authUri = "https://wx.ryuntech.com:9999/api/auth/oauth/token";
+
+        LinkedMultiValueMap<String, String> header = new LinkedMultiValueMap<>();
+        String httpBasic = getHttpBasic(clientId, clientSecret);
+        header.add("Authorization", httpBasic);
+
+        LinkedMultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("grant_type", "refresh_token");
+        body.add("refresh_token", refreshToken);
 
         HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(body, header);
 

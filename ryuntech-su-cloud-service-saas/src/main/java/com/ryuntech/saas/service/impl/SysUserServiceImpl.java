@@ -4,10 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.google.gson.Gson;
+import com.ryuntech.common.constant.Global;
 import com.ryuntech.common.constant.RedisConstant;
-import com.ryuntech.common.constant.enums.CommonEnums;
-import com.ryuntech.common.constant.enums.RolePermEnum;
-import com.ryuntech.common.constant.enums.SysRoleEnum;
+import com.ryuntech.common.constant.enums.*;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
@@ -148,7 +147,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
 
     @Override
     public SysUser selectByUser(SysUser user) {
-        queryWrapper= new QueryWrapper<>();
+        queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(user.getSysUserId())) {
             queryWrapper.eq("sys_user_id", user.getSysUserId());
         }
@@ -169,12 +168,48 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         return new String[]{DigestUtils.md5Hex(APPKEY.concat(timeSpan).concat(ApiConstants.SECKEY)).toUpperCase(), timeSpan};
     }
 
+    @Override
+    public boolean sendLoginSms(String mobile) throws Exception {
+        // 手机号码已经存在sysuser表，则不允许继续注册，后面走添加公司流程
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("mobile", mobile));
+        if (sysUser == null && SysUserStatusEnum.NORMAL.getStatus() != Integer.parseInt(sysUser.getStatus())) {
+            throw new Exception("用户手机号码不存在，请重新输入");
+        }
+
+        // TODO 等后续添加了短信模板再限制
+        // 手机号码发送的频率限制
+        /*if (jedisUtil.exists(RedisConstant.PRE_SMS_EXIST_IN_MINUTE + SmsConstants.TEMPLATECODE + ":" + mobile)) {
+            throw new Exception("您获取验证码太频繁，每分钟仅支持发送一条短信");
+        }*/
+
+        return messageSendService.send(new Sms(mobile, SmsConstants.TEMPLATECODE, SmsEnum.LOGIN.getStatus(), StringUtil.sixRandomNum()));
+    }
+
+    @Override
+    public Result checkLoginSms(String username, String code) {
+        if (!messageSendService.checkSmsCode(SmsEnum.LOGIN.getStatus(), username, code)) {
+            return new Result(CommonEnums.PARAM_ERROR, "您输入的手机校验码不正确");
+        }
+
+        List<LoginConpanyDTO> list = companyMapper.listByUsername(username);
+        if (list == null || list.size() == 0) {
+            return new Result(CommonEnums.OPERATE_ERROR, "未找到公司信息");
+        }
+
+        List<String> ids = list.stream().map(l -> l.getCompanyId()).collect(Collectors.toList());
+
+        SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("username", username));
+        String sysUserId = sysUser.getSysUserId();
+        jedisUtil.sadd(RedisConstant.PRE_LOGIN_USER_SUCCESS + sysUserId, ids.toArray(new String[ids.size()]));
+        jedisUtil.expire(RedisConstant.PRE_LOGIN_USER_SUCCESS + sysUserId, RedisConstant.PRE_LOGIN_USER_SUCCESS_EXPIRE);
+        return new Result(new LoginDTO(list, sysUserId));
+    }
 
     @Override
     public boolean sendRegisterSms(String mobile) throws Exception {
         // 手机号码已经存在sysuser表，则不允许继续注册，后面走添加公司流程
         SysUser sysUser = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("mobile", mobile));
-        if (sysUser != null && "1".equals(sysUser.getStatus())) {
+        if (sysUser != null && SysUserStatusEnum.NORMAL.getStatus() == Integer.parseInt(sysUser.getStatus())) {
             throw new Exception("用户账号已经存在，不能重复注册");
         }
 
@@ -183,7 +218,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
             throw new Exception("您获取验证码太频繁，每分钟仅支持发送一条短信");
         }
 
-        return messageSendService.send(new Sms(mobile, SmsConstants.TEMPLATECODE, 1, StringUtil.sixRandomNum()));
+        return messageSendService.send(new Sms(mobile, SmsConstants.TEMPLATECODE, SmsEnum.REGISTER.getStatus(), StringUtil.sixRandomNum()));
     }
 
     @Override
@@ -239,9 +274,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         }
         if (apiGetBasicDetailsByName != null && StringUtils.isNotBlank(apiGetBasicDetailsByName.getStatus())) {
             String status = apiGetBasicDetailsByName.getStatus();
-            if (!status.equals("200")){
+            if (!status.equals("200")) {
                 company.setIsQichacha(false);
-            }else {
+            } else {
                 company.setIsQichacha(true);
 //                查询法人
                 String operName = apiGetBasicDetailsByName.getResult().getOperName();
@@ -255,7 +290,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         List<SysRole> roleList = initRole();
         for (SysRole sysRole : roleList) {
             sysRole.setRid(uniqueIdGenerator.nextStrId());
-            if (sysRole.getIsAdmin() == 1) {
+            if (sysRole.getIsAdmin() == RoleEnum.ADMIN.getStatus()) {
                 adminRoleId = sysRole.getRid();
             }
             sysRole.setCompanyId(company.getCompanyId());
@@ -291,6 +326,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         // 初始化部门信息
         Department department = new Department();
         department.setDepartmentId(uniqueIdGenerator.nextStrId());
+        department.setDepartmentName(Global.INIT_DEPARTNAME);
         department.setCompanyId(company.getCompanyId());
         department.setLevel("1");
         department.setCreatedAt(time);
@@ -303,7 +339,7 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         sysUser.setUsername(mobile);
         sysUser.setMobile(mobile);
         sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
-        sysUser.setStatus("1");
+        sysUser.setStatus(String.valueOf(SysUserStatusEnum.NORMAL.getStatus()));
         sysUser.setCreatedAt(time);
         sysUser.setUpdatedAt(time);
         sysUserMapper.insert(sysUser);
@@ -316,9 +352,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         employee.setCompanyId(company.getCompanyId());
         employee.setCompanyName(company.getName());
         employee.setDepartmentId(department.getDepartmentId());
-        employee.setIsCharger("1");
-        employee.setDataType(3);
-        employee.setStatus(1);
+        employee.setIsCharger(String.valueOf(EmployeeEnum.CHARGER.getStatus()));
+        employee.setDataType(DataTypeEnum.ALL.getStatus());
+        employee.setStatus(EmployeeEnum.NORMAL.getStatus());
         employee.setCreatedAt(time);
         employee.setUpdatedAt(time);
         employeeMapper.insert(employee);
@@ -397,12 +433,12 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         List<String> roleNamesList = SysRoleEnum.list();
         for (String roleName : roleNamesList) {
             SysRole sysRole = new SysRole();
-            if ("管理员".equals(roleName)) {
-                sysRole.setIsAdmin(1);
+            if (Global.ADMIN_ROLE_NAME.equals(roleName)) {
+                sysRole.setIsAdmin(RoleEnum.ADMIN.getStatus());
             } else {
-                sysRole.setIsAdmin(0);
+                sysRole.setIsAdmin(RoleEnum.UN_ADMIN.getStatus());
             }
-            sysRole.setIsPreset(1);
+            sysRole.setIsPreset(RoleEnum.PRE.getStatus());
             sysRole.setRname(roleName);
             roleList.add(sysRole);
         }

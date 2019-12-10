@@ -104,4 +104,8 @@ public interface SysUserService extends IBaseService<SysUser> {
     boolean sendRegisterSms(String mobile) throws Exception;
 
     Result login(String username, String password);
+
+    boolean sendLoginSms(String mobile) throws Exception;
+
+    Result checkLoginSms(String mobile, String code);
 }

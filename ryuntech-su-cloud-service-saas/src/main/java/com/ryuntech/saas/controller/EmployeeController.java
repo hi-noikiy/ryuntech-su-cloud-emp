@@ -1,9 +1,12 @@
 package com.ryuntech.saas.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.ryuntech.common.constant.Global;
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.SystemTool;
+import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.dto.EmployeeDTO;
 import com.ryuntech.saas.api.form.EmployeeEditForm;
 import com.ryuntech.saas.api.form.EmployeeForm;
@@ -25,10 +28,12 @@ public class EmployeeController extends ModuleBaseController {
     @Autowired
     private IEmployeeService employeeService;
 
+    @Autowired
+    private JedisUtil jedisUtil;
+
     /**
      * 员工列表
      *
-     * @param companyId
      * @param departmentId
      * @param status
      * @param keyWord      模糊匹配 姓名、手机号码
@@ -36,16 +41,11 @@ public class EmployeeController extends ModuleBaseController {
      */
     @GetMapping("getPager")
     public Result<IPage<EmployeeDTO>> getPager(
-            @RequestParam("companyId") String companyId,
             @RequestParam("departmentId") String departmentId,
             @RequestParam("status") String status,
             @RequestParam("keyWord") String keyWord,
             @RequestParam(value = "pageCode", required = false) String pageCode,
             @RequestParam(value = "pageSize", required = false) String pageSize) {
-        if (!StringUtil.isNumber(companyId, 18)) {
-            return new Result(CommonEnums.PARAM_ERROR, "公司ID不合法");
-        }
-
         if (!StringUtil.isEmpty(departmentId) && !StringUtil.isNumber(departmentId, 18)) {
             return new Result(CommonEnums.PARAM_ERROR, "部门不合法");
         }
@@ -59,14 +59,14 @@ public class EmployeeController extends ModuleBaseController {
         }
 
         if (!StringUtil.isNumber(pageCode)) {
-            pageCode = "1";
+            pageCode = Global.PAGE;
         }
 
         if (!StringUtil.isNumber(pageSize)) {
-            pageSize = "10";
+            pageSize = Global.PAGE_SIZE;
         }
 
-        EmployeeForm employeeForm = new EmployeeForm(companyId, departmentId, status, keyWord, Integer.parseInt(pageCode), Integer.parseInt(pageSize));
+        EmployeeForm employeeForm = new EmployeeForm(SystemTool.currentUser(jedisUtil).getCompanyId(), departmentId, status, keyWord, Integer.parseInt(pageCode), Integer.parseInt(pageSize));
         try {
             return new Result(employeeService.getPager(employeeForm));
         } catch (Exception e) {
@@ -89,7 +89,8 @@ public class EmployeeController extends ModuleBaseController {
     }
 
     /**
-     * @param companyId
+     * 编辑员工
+     *
      * @param employeeId
      * @param mobile
      * @param employeeName
@@ -103,7 +104,6 @@ public class EmployeeController extends ModuleBaseController {
      */
     @PostMapping("edit")
     public Result edit(
-            @RequestParam("companyId") String companyId,
             @RequestParam("employeeId") String employeeId,
             @RequestParam("mobile") String mobile,
             @RequestParam("employeeName") String employeeName,
@@ -117,18 +117,12 @@ public class EmployeeController extends ModuleBaseController {
         employeeName = StringUtil.trim(employeeName);
         email = StringUtil.trim(email);
 
-        // 新增操作时，companyId有效，employeeId为空
-        // 编辑操作时，companyId为空，employeeId有效
         if (StringUtil.isEmpty(employeeId)) {
-            if (!StringUtil.isNumber(companyId, 18)) {
-                return new Result(CommonEnums.PARAM_ERROR, "公司ID不合法");
-            }
             employeeId = null;
         } else {
             if (!StringUtil.isNumber(employeeId, 18)) {
                 return new Result(CommonEnums.PARAM_ERROR, "员工ID不合法");
             }
-            companyId = null;
         }
 
         if (!StringUtil.length(employeeName, 1, 50)) {
@@ -167,7 +161,7 @@ public class EmployeeController extends ModuleBaseController {
             return new Result(CommonEnums.PARAM_ERROR, "账号权限不合法");
         }
 
-        EmployeeEditForm employeeEditForm = new EmployeeEditForm(companyId, employeeId, mobile, employeeName, departmentId, email, isCharger, dataType, dataDepartmentId, roleIds);
+        EmployeeEditForm employeeEditForm = new EmployeeEditForm(SystemTool.currentUser(jedisUtil).getCompanyId(), employeeId, mobile, employeeName, departmentId, email, isCharger, dataType, dataDepartmentId, roleIds);
         try {
             return new Result(employeeService.edit(employeeEditForm));
         } catch (Exception e) {

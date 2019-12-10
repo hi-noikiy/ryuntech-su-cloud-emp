@@ -2,6 +2,7 @@ package com.ryuntech.saas.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.ryuntech.common.constant.enums.DataTypeEnum;
 import com.ryuntech.common.constant.enums.ExceptionEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
@@ -26,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -123,7 +125,8 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     }
 
     @Override
-    public void edit(DepartmentForm form) {        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+    public void edit(DepartmentForm form) {
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
 
         if (employee == null) {
             throw new YkServiceException(ExceptionEnum.USER_NOT_FOUND);
@@ -251,21 +254,19 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     // 根据当前用户数据权限获取下属所有部门信息及员工id集合
     @Override
-    public Result getDataTypeDepartment() throws Exception {
+    public Result getDataTypeDepartmentTree() throws Exception {
         CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
         int dataType = currentUser.getDataType();
-        // 数据权限（1=本人2=本部门及下属部门3=全部4=指定部门）
-        // dataType = 1时，返回当前用户的员工姓名与员工id
-        switch (dataType) {
-            case 1:
+        switch (DataTypeEnum.getByValue(dataType)) {
+            case SELF:
                 return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName()));
-            case 2:
-                // 查询该部门的下属部门信息
+            case SELF_AND_SUBORDINATE:
+                // 查询该部门及其下属部门信息
                 Employee employee = employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id", currentUser.getEmployeeId()));
                 return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName(), Arrays.asList(getDepartmentTreeNodeDTO(employee.getDepartmentId()))));
-            case 3:
+            case ALL:
                 return new Result<>(new DepartmentDataTypeTreeNodeDTO(currentUser.getEmployeeId(), currentUser.getEmployeeName(), departmentMapper.getDepartmentTreeByCompanyId(currentUser.getCompanyId())));
-            case 4:
+            case APPOINT:
                 List<DepartmetnTreeNodeDTO> rs = new ArrayList<>();
                 String[] departmentIds = currentUser.getDataDepartmentId().split(",");
                 for (String departmentId : departmentIds) {
@@ -279,21 +280,67 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
 
     private DepartmetnTreeNodeDTO getDepartmentTreeNodeDTO(String departmentId) {
         CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
-        Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("department_id", departmentId));
         List<DepartmetnTreeNodeDTO> rsList = new ArrayList<>();
-        getChildren(rsList, currentUser.getCompanyId(), currentUser.getDataDepartmentId());
-        DepartmetnTreeNodeDTO departmetnTreeNodeDTO = new DepartmetnTreeNodeDTO(department.getDepartmentName(), currentUser.getEmployeeId(), rsList);
+        Department department = departmentMapper.selectOne(new QueryWrapper<Department>().eq("department_id", departmentId));
+
+
+        DepartmetnTreeNodeDTO departmetnTreeNodeDTO = new DepartmetnTreeNodeDTO(department.getDepartmentName(), departmentId, rsList);
+        getChildren(departmetnTreeNodeDTO, currentUser.getCompanyId());
+
         return departmetnTreeNodeDTO;
     }
 
-    private void getChildren(List<DepartmetnTreeNodeDTO> rsList, String companyId, String departmentId) {
-        List<DepartmetnTreeNodeDTO> list = departmentMapper.getChildren(companyId, departmentId);
+    private void getChildren(DepartmetnTreeNodeDTO departmetnTreeNodeDTO, String companyId) {
+        List<DepartmetnTreeNodeDTO> list = departmentMapper.getChildren(companyId, departmetnTreeNodeDTO.getDeptId());
 
         if (list != null) {
-            for (DepartmetnTreeNodeDTO departmetnTreeNodeDTO : list) {
-                getChildren(rsList, companyId, departmetnTreeNodeDTO.getDeptId());
+            for (DepartmetnTreeNodeDTO d : list) {
+                getChildren(d, companyId);
             }
         }
-        rsList.addAll(list);
+        departmetnTreeNodeDTO.setSubDept(list);
     }
+
+    @Override
+    public List<String> getDataTypeDepartments() throws Exception {
+        CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
+        List<String> rs = new ArrayList<>();
+        int dataType = currentUser.getDataType();
+        switch (DataTypeEnum.getByValue(dataType)) {
+            case SELF:
+                Employee employee = employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id", currentUser.getEmployeeId()));
+                String currentDepartmentId = employee.getDepartmentId();
+                rs.add(currentDepartmentId);
+                return rs;
+            case SELF_AND_SUBORDINATE:
+                employee = employeeMapper.selectOne(new QueryWrapper<Employee>().eq("employee_id", currentUser.getEmployeeId()));
+                currentDepartmentId = employee.getDepartmentId();
+                rs.add(currentDepartmentId);
+                getChildrenDepartmentIds(rs, currentUser.getCompanyId(), currentDepartmentId);
+                return rs;
+            case ALL:
+                List<Department> departmentList = departmentMapper.selectList(new QueryWrapper<Department>().eq("company_id", currentUser.getCompanyId()));
+                return departmentList.stream().map(d -> d.getDepartmentId()).collect(Collectors.toList());
+            case APPOINT:
+                String[] departmentIds = currentUser.getDataDepartmentId().split(",");
+                for (String departmentId : departmentIds) {
+                    rs.add(departmentId);
+                    getChildrenDepartmentIds(rs, currentUser.getCompanyId(), departmentId);
+                }
+                return rs;
+        }
+        throw new Exception("员工：" + currentUser.getEmployeeName() + "数据权限值：" + currentUser.getDataType() + "，系统暂未匹配到该权限信息");
+    }
+
+    private void getChildrenDepartmentIds(List<String> rsList, String companyId, String departmentId) {
+        // 查询子集
+        List<DepartmetnTreeNodeDTO> list = departmentMapper.getChildren(companyId, departmentId);
+        if (list != null) {
+            for (DepartmetnTreeNodeDTO departmetnTreeNodeDTO : list) {
+                getChildrenDepartmentIds(rsList, companyId, departmetnTreeNodeDTO.getDeptId());
+            }
+        }
+        rsList.addAll(list.stream().map(d -> d.getDeptId()).collect(Collectors.toList()));
+    }
+
 }
