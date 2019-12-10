@@ -10,14 +10,54 @@
         <result column="DEPART_HEAD" property="departHead" />
         <result column="EMAIL_TYPE" property="emailType" />
         <result column="WECHAT_TYPE" property="wechatType" />
+        <result column="LAST_REMIND_TIME" property="lastRemindTime" />
         <result column="INTERVAL_DAY" property="intervalDay" />
         <result column="CREATE_TIME" property="createTime" />
         <result column="UPDATE_TIME" property="updateTime" />
     </resultMap>
 
+    <!-- 合同计划存在且未还款 -->
+    <resultMap id="PlanMessageRemindResultMap" type="com.ryuntech.saas.api.dto.ContractPlanRemindDTO">
+        <result column="CONTRACT_NAME" property="contractName" />
+        <result column="CUSTOMER_NAME" property="customerName" />
+        <result column="CONTRACT_AMOUNT" property="contractAmount" />
+        <result column="COLLECTION_AMOUNT" property="collectionAmount" />
+        <result column="TOTAL_PLAN_PERIODES" property="totalPlanPeriodes" />
+        <result column="DEPARTMENT_ID" property="departmentId" />
+        <result column="DEPARTMENT_NAME" property="departmentName" />
+        <result column="EMPLOYEE_ID" property="employeeId" />
+        <result column="NAME" property="name" />
+        <result column="COMPANY_ID" property="companyId" />
+        <result column="EMAIL" property="email" />
+        <result column="IS_CHARGER" property="isCharger" />
+        <result column="PLAN_AMOUNT" property="planAmount" />
+        <result column="SURPLUS_AMOUNT" property="surplusAmount" />
+        <result column="BACKED_AMOUNT" property="backedAmount" />
+        <result column="PLAN_TIME" property="planTime" />
+        <result column="PLAN_PERIODES" property="planPeriod" />
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        OVERDUE_ID, COMPANY_ID, FOLLOW_PERSON, DEPART_HEAD, EMAIL_TYPE, WECHAT_TYPE, INTERVAL_DAY, CREATE_TIME, UPDATE_TIME
+        OVERDUE_ID, COMPANY_ID, FOLLOW_PERSON, DEPART_HEAD, EMAIL_TYPE, WECHAT_TYPE, LAST_REMIND_TIME, INTERVAL_DAY, CREATE_TIME, UPDATE_TIME
     </sql>
+
+    <select id="queryPlanMessageRemind" resultMap="PlanMessageRemindResultMap">
+        SELECT
+            rc.CONTRACT_NAME, rc.CUSTOMER_NAME, rc.CONTRACT_AMOUNT, rc.COLLECTION_AMOUNT, rc.TOTAL_PLAN_PERIODES,
+            re.DEPARTMENT_ID, re.EMPLOYEE_ID, re.NAME, re.COMPANY_ID, re.EMAIL, re.IS_CHARGER,
+            rp.PLAN_AMOUNT, rp.BACKED_AMOUNT, rp.SURPLUS_AMOUNT, rp.PLAN_TIME, rp.PLAN_PERIODES, rd.DEPARTMENT_NAME
+        FROM
+            ryn_receivable_collection_plan rp,
+            ryn_receivable_contract rc,
+            ryn_employee re,
+            ryn_department rd
+        WHERE
+            rp.CONTRACT_ID = rc.CONTRACT_ID
+            AND rc.staff_id = re.EMPLOYEE_ID
+            AND re.DEPARTMENT_ID = rd.DEPARTMENT_ID
+            AND <![CDATA[ rp.STATUS <> "1" AND re.EMAIL <> "" ]]>
+            AND re.STATUS = 1
+    </select>
 
 </mapper>

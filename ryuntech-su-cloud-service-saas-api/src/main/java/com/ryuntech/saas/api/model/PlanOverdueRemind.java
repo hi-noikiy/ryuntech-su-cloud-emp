@@ -62,6 +62,12 @@ import java.util.Date;
         @TableField("WECHAT_TYPE")
     private String wechatType;
 
+    /**
+     * 上次提醒时间
+     */
+    @TableField("LAST_REMIND_TIME")
+    private Date lastRemindTime;
+
             /**
             * 间隔提醒天数
             */

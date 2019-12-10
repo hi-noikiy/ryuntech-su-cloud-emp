@@ -225,4 +225,29 @@ public class DateUtil {
         return str.toString();
     }
 
+    /**
+     * past：正数，past天后；负数，past天前
+     * @param past
+     * @return
+     */
+    public static String getFutureDate(int past) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + past);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        return result;
+    }
+
+    /**
+     * 两个日期相差天数
+     * @param date1
+     * @param date2
+     * @return
+     */
+    public static int differentDaysByDate(Date date1, Date date2) {
+        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+        return days;
+    }
+
 }

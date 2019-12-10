@@ -63,10 +63,10 @@ import java.util.Date;
     private String wechatType;
 
             /**
-            * 间隔提醒天数
+            * 提前提醒天数
             */
-        @TableField("INTERVAL_Day")
-    private Integer intervalDay;
+        @TableField("ADVANCE_DAY")
+    private Integer advanceDay;
 
             /**
             * 创建时间

@@ -63,7 +63,7 @@ public class PlanExpireRemindController extends ModuleBaseController {
             planExpireRemind.setDepartHead("0");
             planExpireRemind.setEmailType("0");
             planExpireRemind.setWechatType("0");
-            planExpireRemind.setIntervalDay(1);
+            planExpireRemind.setAdvanceDay(1);
             planExpireRemind.setCreateTime(new Date());
             planExpireRemind.setUpdateTime(new Date());
             iPlanExpireRemindService.save(planExpireRemind);
