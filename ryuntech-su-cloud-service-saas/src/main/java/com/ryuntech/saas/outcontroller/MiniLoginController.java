@@ -1,16 +1,14 @@
 package com.ryuntech.saas.outcontroller;
 
 
-import com.ryuntech.common.utils.CopyUtil;
+import com.ryuntech.common.exception.YkControllerException;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
 import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.model.UserWechat;
-import com.ryuntech.saas.api.service.IEmployeeService;
-import com.ryuntech.saas.api.service.IUserWechatService;
-import com.ryuntech.saas.api.service.SysUserService;
+import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 
@@ -47,6 +46,22 @@ public class MiniLoginController extends ModuleBaseController{
 
     @Autowired
     IUserWechatService iUserWechatService;
+
+
+    @Autowired
+    RiskWarningScheduleService riskWarningScheduleService;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+
+    @Autowired
+    PushMessageScheduleService pushMessageScheduleService;
+
+
+    @Autowired
+    ISysParamsService iSysParamsService;
+
     /**
      * 注册第一步
      *
@@ -54,7 +69,19 @@ public class MiniLoginController extends ModuleBaseController{
      */
     @PostMapping("/outfrist")
     @ApiOperation(value = "登录第一步验证手机号")
-    public Result<SysUserDTO> frist(@RequestBody SysUserForm sysUserForm) {
+    public Result<SysUserDTO> frist(@RequestBody SysUserForm sysUserForm) throws YkControllerException {
+
+        String valueByInnerName = iSysParamsService.getValueByInnerName("sms.flag");
+
+        log.info("valueByInnerName"+valueByInnerName);
+
+       /* riskWarningScheduleService.riskWarning();
+        try {
+            pushMessageScheduleService.riskMonitorPush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
+//        CustomerUserInfoDTO customerUserInfoDTO=restTemplate.getForEntity("http://ryuntech-su-cloud-service-saas:4100/minicustomer/outFindById", CustomerUserInfoDTO.class).getBody();
         Object value =   redisTemplate.opsForValue().get(sysUserForm.getMobile() + "ryun_code");
         if(StringUtils.isBlank(sysUserForm.getMobile())){
             return new Result(OPERATE_ERROR,"手机号不能为空");
@@ -79,13 +106,15 @@ public class MiniLoginController extends ModuleBaseController{
              */
             UserWechat userWechat = iUserWechatService.selectByUserWeChat(new UserWechat().setUserId(sysUser.getSysUserId()));
             if (null!=userWechat){
-                sysUserDTO.setUserWechat(userWechat);
+                sysUserDTO.setNickname(userWechat.getNickname());
             }
 
             sysUserDTO.setUsername(sysUser.getUsername());
-            sysUserDTO.setId(sysUser.getSysUserId());
+            sysUserDTO.setSysUserId(sysUser.getSysUserId());
+            sysUserDTO.setUnionId(sysUser.getUnionId());
             sysUserDTO.setAvatar(sysUser.getAvatar());
             sysUserDTO.setMobile(sysUser.getMobile());
+            sysUserDTO.setStatus(sysUser.getStatus());
             sysUserDTO.setStatus(sysUser.getStatus());
             if (sysUser!=null){
                 //手机号

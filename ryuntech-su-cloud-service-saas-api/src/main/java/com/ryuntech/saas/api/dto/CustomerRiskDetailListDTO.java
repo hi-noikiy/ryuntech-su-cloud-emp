@@ -24,8 +24,11 @@ public class CustomerRiskDetailListDTO {
     @Accessors(chain = true)
     public static class RiskListDetail{
 
-        private String tiskType;
-        private String tiskSize;
+        private String riskType;
+        private String riskMType;
+        private String riskLevel;
+        private String riskName;
+        private String riskSize;
 
         private List<RiskListDetail2> riskListDetails2;
 

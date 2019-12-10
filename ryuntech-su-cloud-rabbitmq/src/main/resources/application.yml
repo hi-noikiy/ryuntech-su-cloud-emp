@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: ryuntech-su-cloud-rabbitmq
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: wqh
+    password: wqh
+
+  profiles:
+    active: dev
+  cloud:
+    config:
+      name: ${spring.application.name}
+      profile: ${spring.profiles.active}
+
+
+#security:
+#
+#  oauth2:
+#    client:
+#      client-id: client
+#      client-secret: secret
+#      access-token-uri: http://ryuntech-su-cloud-auth:4000/oauth/token
+#      user-authorization-uri: http://ryuntech-su-cloud-auth:4000/oauth/authorize
+#    resource:
+#      token-info-uri: http://ryuntech-su-cloud-auth:4000/oauth/check_token
+
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://ryuntech-su-cloud-eureka:8761/eureka/
+
+# 暴露监控端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+#mybatis配置
+mybatis:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  type-aliases-package: com.ryuntech.saas.api.model
+
+
+mybatis-plus:
+    mapper-locations: classpath:/mapper/*Mapper.xml
+
+#mybaatis分页插件pagehelper设置
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+
+# 打印sql
+logging:
+  level:
+    com.ryuntech.saas.api.mapper: DEBUG

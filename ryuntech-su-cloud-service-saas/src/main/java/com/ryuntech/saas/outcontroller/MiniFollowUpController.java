@@ -59,7 +59,7 @@ public class MiniFollowUpController extends ModuleBaseController{
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "followupRecord", value = "查询条件", required = true, dataType = "FollowupRecord", paramType = "body")
     public Result<IPage<FollowupRecord>> list(@RequestBody FollowupRecord followupRecord,  QueryPage queryPage) {
-        log.info("followupRecord.getContractId()"+followupRecord.getFollowupId());
+        log.info("followupRecord.getFollowupId()"+followupRecord.getFollowupId());
         if (StringUtils.isBlank(followupRecord.getContractId())) {
             return new Result<>(OPERATE_ERROR,"合同编号不能为空");
         } else {
@@ -143,9 +143,9 @@ public class MiniFollowUpController extends ModuleBaseController{
      * @return
      */
     @PostMapping("/outaddfrecordcs")
-    @ApiOperation(value = "合同跟进列表")
-    @ApiImplicitParam(name = "contractRecordForm", value = "合同跟进信息", required = true, dataType = "ContractRecordForm", paramType = "body")
-    public Result<Map<String,Object>> addfrecordcomments(@RequestBody FRecordCommentForm fRecordCommentForm) {
+    @ApiOperation(value = "添加合同跟进评论信息")
+    @ApiImplicitParam(name = "fRecordCommentForm", value = "合同跟进信息", required = true, dataType = "FRecordCommentForm", paramType = "body")
+    public Result addfrecordcomments(@RequestBody FRecordCommentForm fRecordCommentForm) {
         BaseForm baseForm = new BaseForm();
         baseForm.setAClass(FRecordCommentForm.class);
         baseForm.setT(fRecordCommentForm);
@@ -166,9 +166,9 @@ public class MiniFollowUpController extends ModuleBaseController{
 
         Boolean aBoolean = iFollowupRecordCommentService.addFollowupRecordComment(followupRecordComment);
         if (aBoolean){
-            return new Result<>();
+            return new Result("添加成功");
         }else {
-            return new Result<>(OPERATE_ERROR);
+            return new Result(OPERATE_ERROR);
         }
     }
 

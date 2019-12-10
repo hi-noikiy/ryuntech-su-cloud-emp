@@ -3,13 +3,17 @@ package com.ryuntech.saas.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ryuntech.common.constant.enums.ExceptionEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
-import com.ryuntech.common.exception.RyunBizException;
+import com.ryuntech.common.exception.YkServiceException;
+import com.ryuntech.common.model.CurrentUser;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
+import com.ryuntech.common.utils.SystemTool;
+import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.dto.*;
 import com.ryuntech.saas.api.form.RoleForm;
 import com.ryuntech.saas.api.mapper.SysPermMapper;
@@ -49,6 +53,9 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
 
+    @Autowired
+    private JedisUtil jedisUtil;
+
     @Override
     public Result<IPage<SysRole>> pageList(SysRole sysRole, QueryPage queryPage) {
         Page<SysRole> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
@@ -75,8 +82,12 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public List<RoleInfoDTO> getRoleInfoList() {
-        // todo 获取当前员工的公司id;
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new YkServiceException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        String companyId = employee.getCompanyId();
+
         List<RoleDetailDTO> roleDetailList = baseMapper.getRoleDetailList(companyId);
         List<RoleInfoDTO> roleInfoList = new ArrayList<>();
         for (RoleDetailDTO detail : roleDetailList) {
@@ -92,36 +103,46 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public RoleDetailDTO getRoleDetail(String roleId) {
-        // todo 获取当前员工的公司id;
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new YkServiceException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        String companyId = employee.getCompanyId();
         return baseMapper.getRoleDetailByCompanyIdAndRoleId(companyId, roleId);
     }
 
     @Override
     public List<RoleNameDTO> getNameList() {
-        // todo 获取当前员工的公司id;
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new YkServiceException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        String companyId = employee.getCompanyId();
         return baseMapper.getNameList(companyId);
     }
 
     @Override
     public void edit(RoleForm roleForm) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "操作员工";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new YkServiceException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
+
         // 查询同名岗位
         SysRole sameNameRole = baseMapper.selectOne(
                 new QueryWrapper<SysRole>().eq("RNAME", roleForm.getRoleName()).eq("COMPANY_ID", companyId));
         // 检测同名角色是否存在(存在同名角色, 且角色id不同)
         if (sameNameRole != null && !sameNameRole.getRid().equals(roleForm.getRoleId())) {
-            throw new RyunBizException("已经存在同名的角色, 请指定新的角色名.");
+            throw new YkServiceException(ExceptionEnum.ROLE_NOT_DIFF);
         }
 
         // 检查权限是否存在
         List<String> newPermIdList = roleForm.getPermList();
         List<SysPerm> existedPermList = sysPermMapper.queryByIdListAndCompanyId(newPermIdList);
         if (existedPermList.size() != newPermIdList.size()) {
-            throw new RyunBizException("您所选择的角色权限有误, 请重新为角色指定权限.");
+            throw new YkServiceException(ExceptionEnum.ROLE_ERROR);
         }
 
         // 数据库实体
@@ -134,10 +155,10 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
             // 获取旧角色并检验
             SysRole oldRole = baseMapper.selectOne(new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
             if (oldRole == null) {
-                throw new RyunBizException("角色不存在, 操作失败");
+                throw new YkServiceException(ExceptionEnum.ROLE_NOT_FOUND);
             }
             if (oldRole.getIsAdmin() == 1) {
-                throw new RyunBizException("管理员角色不允许编辑, 操作失败");
+                throw new YkServiceException(ExceptionEnum.ROLE_NOT_EDIT);
             }
 
             // 更新角色
@@ -174,21 +195,25 @@ public class SysRoleServiceImpl extends BaseServiceImpl<SysRoleMapper, SysRole> 
 
     @Override
     public void delete(String roleId) {
-        // todo 获取当前员工名字及公司id;
-        String empId = "empId";
-        String companyId = "773031356912366360";
+        CurrentUser employee = SystemTool.currentUser(jedisUtil);
+        if (employee == null) {
+            throw new YkServiceException(ExceptionEnum.USER_NOT_FOUND);
+        }
+        String empId = employee.getEmployeeId();
+        String companyId = employee.getCompanyId();
+
         // 获取旧角色并检验
         SysRole oldRole = baseMapper.selectOne(new QueryWrapper<SysRole>().eq("RID", roleId).eq("COMPANY_ID", companyId));
         if (oldRole == null) {
-            throw new RyunBizException("角色不存在, 操作失败");
+            throw new YkServiceException(ExceptionEnum.ROLE_NOT_FOUND);
         }
         if (oldRole.getIsAdmin() == 1) {
-            throw new RyunBizException("管理员角色不允许删除, 操作失败");
+            throw new YkServiceException(ExceptionEnum.ROLE_NOT_DELETE);
         }
         // 检查角色下有没有员工
         List<SysUserRole> roleEmpList = sysUserRoleMapper.selectList(new QueryWrapper<SysUserRole>().eq("ROLE_ID", roleId));
         if (roleEmpList.size() > 0) {
-            throw new RyunBizException("该角色下有关联员工, 请先为员工分配新角色. ");
+            throw new YkServiceException(ExceptionEnum.ROLE_IS_RELATION);
         }
         // 删除角色, 以及角色关联的权限
         baseMapper.deleteById(roleId);

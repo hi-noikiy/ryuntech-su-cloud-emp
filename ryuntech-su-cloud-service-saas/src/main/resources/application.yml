@@ -82,6 +82,8 @@ mybatis:
 
 mybatis-plus:
     mapper-locations: classpath:/mapper/*Mapper.xml
+    configuration:
+      cache-enabled: false
 
 #mybaatis分页插件pagehelper设置
 pagehelper:

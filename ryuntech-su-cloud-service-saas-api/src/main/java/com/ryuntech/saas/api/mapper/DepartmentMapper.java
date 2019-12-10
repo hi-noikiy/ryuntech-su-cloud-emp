@@ -10,7 +10,7 @@ import java.util.List;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author antu
@@ -20,4 +20,8 @@ import java.util.List;
 public interface DepartmentMapper extends IBaseMapper<Department> {
 
     List<DepartmetnTreeNodeDTO> getDepartmentTreeByCompanyId(@Param("companyId") String companyId);
+
+
+    List<DepartmetnTreeNodeDTO> getChildren(@Param("companyId") String companyId, @Param("pId") String pId);
+
 }

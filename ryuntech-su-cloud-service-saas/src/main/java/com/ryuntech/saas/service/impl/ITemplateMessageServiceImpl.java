@@ -37,9 +37,11 @@ public class ITemplateMessageServiceImpl implements ITemplateMessageService {
         try {
             JSONObject json = new JSONObject();
             JSONObject jsonFirst = new JSONObject();
-            jsonFirst.put("value", weixinTemplate.getData().getFrist().getValue());
-            jsonFirst.put("color", "#173177");
-            json.put("first", jsonFirst);
+            if (null!=weixinTemplate.getData().getFrist()){
+                jsonFirst.put("value", weixinTemplate.getData().getFrist().getValue());
+                jsonFirst.put("color", "#173177");
+                json.put("first", jsonFirst);
+            }
 
             JSONObject keyword1 = new JSONObject();
             keyword1.put("value", weixinTemplate.getData().getKeyword1().getValue());
@@ -52,16 +54,19 @@ public class ITemplateMessageServiceImpl implements ITemplateMessageService {
             keyword2.put("color", "#173177");
             json.put("keyword2", keyword2);
 
-            JSONObject keyword3 = new JSONObject();
-            keyword2.put("value", weixinTemplate.getData().getKeyword3().getValue());
-            keyword2.put("color", "#173177");
-            json.put("keyword3", keyword3);
+            if (null!=weixinTemplate.getData().getKeyword3()){
+                JSONObject keyword3 = new JSONObject();
+                keyword2.put("value", weixinTemplate.getData().getKeyword3().getValue());
+                keyword2.put("color", "#173177");
+                json.put("keyword3", keyword3);
+            }
 
-
-            JSONObject remark = new JSONObject();
-            remark.put("value", weixinTemplate.getData().getRemake().getValue());
-            remark.put("color", "#173177");
-            json.put("remark", remark);
+            if (null!=weixinTemplate.getData().getRemake()){
+                JSONObject remark = new JSONObject();
+                remark.put("value", weixinTemplate.getData().getRemake().getValue());
+                remark.put("color", "#173177");
+                json.put("remark", remark);
+            }
 
 
             data.put("touser", weixinTemplate.getTouser());

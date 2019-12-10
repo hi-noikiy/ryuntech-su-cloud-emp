@@ -1,6 +1,7 @@
 package com.ryuntech.saas.api.form;
 
-import com.ryuntech.common.exception.RyunBizException;
+import com.ryuntech.common.constant.enums.ExceptionEnum;
+import com.ryuntech.common.exception.YkServiceException;
 import com.ryuntech.common.utils.StringUtil;
 import com.ryuntech.saas.api.model.SysRole;
 import com.ryuntech.saas.api.model.SysRolePerm;
@@ -34,7 +35,7 @@ public class RoleForm {
      */
     public List<SysRolePerm> convertToSysRolePermList(){
         if (StringUtil.isEmpty(roleId)) {
-            throw new RyunBizException("角色id不能为空, 操作失败");
+            throw new YkServiceException(ExceptionEnum.ROLE_STATUS);
         }
         List<String> permIdList = this.getPermList();
         List<SysRolePerm> rolePermList = new ArrayList<>(permIdList.size());

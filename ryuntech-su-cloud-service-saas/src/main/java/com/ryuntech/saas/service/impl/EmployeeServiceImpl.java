@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.ryuntech.common.constant.Global;
+import com.ryuntech.common.constant.enums.EmployeeEnum;
+import com.ryuntech.common.constant.enums.SysUserStatusEnum;
 import com.ryuntech.common.constant.generator.IncrementIdGenerator;
 import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
@@ -16,10 +19,7 @@ import com.ryuntech.saas.api.dto.EmployeeDTO;
 import com.ryuntech.saas.api.dto.EmployeeDetailDTO;
 import com.ryuntech.saas.api.form.EmployeeEditForm;
 import com.ryuntech.saas.api.form.EmployeeForm;
-import com.ryuntech.saas.api.mapper.CompanyMapper;
-import com.ryuntech.saas.api.mapper.EmployeeMapper;
-import com.ryuntech.saas.api.mapper.SysUserMapper;
-import com.ryuntech.saas.api.mapper.SysUserRoleMapper;
+import com.ryuntech.saas.api.mapper.*;
 import com.ryuntech.saas.api.model.Company;
 import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.model.SysUser;
@@ -60,6 +60,9 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Autowired
     private SysUserRoleMapper sysUserRoleMapper;
+
+    @Autowired
+    private DepartmentMapper departmentMapper;
 
     @Override
     public Employee selectByEmployee(Employee employee) {
@@ -158,7 +161,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public Result<IPage<EmployeeDTO>> getPager(EmployeeForm employeeForm) {
-        // TODO 数据权限校验
         PageHelper.startPage(employeeForm.getPageCode(), employeeForm.getPageSize());
         List<EmployeeDTO> list = employeeMapper.getPager(employeeForm);
         PageInfo<EmployeeDTO> pageInfo = new PageInfo(list);
@@ -174,8 +176,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
 
     @Override
     public EmployeeDetailDTO detail(String employeeId) {
-        // TODO 数据权限校验
-
         return employeeMapper.detail(employeeId);
     }
 
@@ -187,7 +187,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             throw new Exception("数据异常");
         }
 
-        // TODO 数据权限校验，是否可以操作这个员工
         employee.setEmployeeId(emplyoeeId);
         employee.setStatus(Integer.parseInt(status));
         employee.setUpdatedAt(new Date());
@@ -197,8 +196,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
     @Transactional(value = "transactionManager", propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
     @Override
     public boolean edit(EmployeeEditForm employeeEditForm) {
-        // TODO 数据权限校验，是否可以操作这个员工
-
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
         Date time = new Date();
         if (employeeEditForm.getEmployeeId() == null) {
@@ -207,10 +204,10 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             sysUser.setSysUserId(uniqueIdGenerator.nextStrId());
             sysUser.setUsername(employeeEditForm.getMobile());
             sysUser.setMobile(employeeEditForm.getMobile());
-            // TODO 暂时使用这个密码，生产时不需要设置密码，短信登录-忘记密码
-            sysUser.setPassword(new BCryptPasswordEncoder().encode("123456"));
+            // TODO 添加员工时，暂用这个密码
+            sysUser.setPassword(new BCryptPasswordEncoder().encode(Global.REGISTER_PASSWORD));
             //   sysUser.setPassword(new BCryptPasswordEncoder().encode(password));
-            sysUser.setStatus("1");
+            sysUser.setStatus(String.valueOf(SysUserStatusEnum.NORMAL.getStatus()));
             sysUser.setCreatedAt(time);
             sysUser.setUpdatedAt(time);
             sysUserMapper.insert(sysUser);
@@ -228,7 +225,7 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
             employee.setEmail(employeeEditForm.getEmail());
             employee.setIsCharger(employee.getIsCharger());
             employee.setDataType(Integer.parseInt(employeeEditForm.getDataType()));
-            employee.setStatus(1);
+            employee.setStatus(EmployeeEnum.NORMAL.getStatus());
             employee.setCreatedAt(time);
             employee.setUpdatedAt(time);
             employeeMapper.insert(employee);

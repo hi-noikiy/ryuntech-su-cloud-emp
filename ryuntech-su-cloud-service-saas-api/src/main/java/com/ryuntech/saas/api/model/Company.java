@@ -191,6 +191,12 @@ public class Company implements Serializable {
     private String hotlineTel;
 
     /**
+     * 公司法人
+     */
+    @TableId("oper_name")
+    private String operName;
+
+    /**
      * 是否删除：0否 1是
      */
     @TableField("is_del")

@@ -111,7 +111,7 @@ public class MiniRegisterController extends ModuleBaseController {
                 sysUserDTO.setMiniprogramOpenid(userWechat.getMiniprogramOpenid());
                 sysUserDTO.setUnionId(userWechat.getUnionId());
             }
-            sysUserDTO.setId(sysUser.getSysUserId());
+            sysUserDTO.setSysUserId(sysUser.getSysUserId());
             sysUserDTO.setAvatar(sysUser.getAvatar());
             sysUserDTO.setMobile(sysUser.getMobile());
             sysUserDTO.setStatus(sysUser.getStatus());

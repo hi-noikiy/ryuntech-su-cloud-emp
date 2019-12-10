@@ -23,7 +23,7 @@ public class Sms extends BaseModel {
     private String signName;
     private String content;
     private String code;
-    // 短信业务类型（1.注册2.登录3.找回密码4.找回密码)
+    // 短信业务类型（1.注册2.登录3.找回密码)
     private Integer type;
     private String templatecode;
 
