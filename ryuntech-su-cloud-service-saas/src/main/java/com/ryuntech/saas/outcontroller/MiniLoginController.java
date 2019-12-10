@@ -1,9 +1,8 @@
 package com.ryuntech.saas.outcontroller;
 
 
-import com.ryuntech.common.utils.CopyUtil;
+import com.ryuntech.common.exception.YkControllerException;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.dto.SysUserDTO;
 import com.ryuntech.saas.api.form.SysUserForm;
 import com.ryuntech.saas.api.model.Employee;
@@ -66,7 +65,10 @@ public class MiniLoginController extends ModuleBaseController{
      */
     @PostMapping("/outfrist")
     @ApiOperation(value = "登录第一步验证手机号")
-    public Result<SysUserDTO> frist(@RequestBody SysUserForm sysUserForm) {
+    public Result<SysUserDTO> frist(@RequestBody SysUserForm sysUserForm) throws YkControllerException {
+
+        int i = 1/0;
+
        /* riskWarningScheduleService.riskWarning();
         try {
             pushMessageScheduleService.riskMonitorPush();

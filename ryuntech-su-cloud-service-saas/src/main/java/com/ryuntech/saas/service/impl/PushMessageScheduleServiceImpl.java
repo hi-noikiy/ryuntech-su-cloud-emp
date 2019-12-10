@@ -65,7 +65,10 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
     @Scheduled(cron = "0 0 5 * * ?")
     public void riskMonitorPush() throws Exception {
             //查询待监控的企业所有的员工
+        log.info("riskMonitorPush");
+        log.info("开始对监控员工进行消息推送");
         List<HashMap<String, String>> hashMaps = customerMonitorMapper.selectGroupMonitorByStaffId(new CustomerMonitorForm());
+        log.info("开始对监控员工进行消息推送"+hashMaps.toString());
         for (HashMap<String,String> hashMap :hashMaps){
 //            一个跟进人对应多个客户
             RiskMonitorPushDTO riskMonitorPushDTO = new RiskMonitorPushDTO();
@@ -112,7 +115,11 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
                 String url = TOKEN+"&appid=" + WeChatConstants.WXGZHAPPID+"&secret="+ WeChatConstants.WXGZHAPPSECRET;
                 String content = HttpUtils.Get(url);
                 String accessToken = (String) JSON.parseObject(content).get("access_token");
+                log.info("微信推送返回消息accessToken"+accessToken);
                 SendTemplateResponse sendTemplateResponse = iTemplateMessageService.sendTemplateMessage(accessToken, weixinTemplate);
+                log.info("微信推送返回消息"+sendTemplateResponse.toString());
+                log.info("微信推送返回消息errmsg"+sendTemplateResponse.getErrmsg());
+                log.info("微信推送返回消息errcode"+sendTemplateResponse.getErrcode());
                 if (sendTemplateResponse.getErrcode()==0){
                     //推送成功
                     log.info("用户"+gongzhonghaoOpenid+"推送成功");

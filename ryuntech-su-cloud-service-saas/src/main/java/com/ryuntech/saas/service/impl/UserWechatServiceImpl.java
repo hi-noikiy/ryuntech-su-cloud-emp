@@ -27,6 +27,7 @@ public class UserWechatServiceImpl extends BaseServiceImpl<UserWechatMapper, Use
 
     @Override
     public UserWechat selectByUserWeChat(UserWechat userWechat) {
+        queryWrapper = new QueryWrapper<>();
         if (StringUtils.isNotBlank(userWechat.getUnionId())){
             queryWrapper.eq("union_id",userWechat.getUnionId());
         }
@@ -39,6 +40,6 @@ public class UserWechatServiceImpl extends BaseServiceImpl<UserWechatMapper, Use
         if (StringUtils.isNotBlank(userWechat.getUserId())){
             queryWrapper.eq("user_id",userWechat.getUserId());
         }
-        return userWechatMapper.selectOne(queryWrapper);
+        return baseMapper.selectOne(queryWrapper);
     }
 }

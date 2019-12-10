@@ -148,8 +148,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
 
     @Override
     public SysUser selectByUser(SysUser user) {
+        queryWrapper= new QueryWrapper<>();
         if (StringUtils.isNotBlank(user.getSysUserId())) {
-            queryWrapper.eq("id", user.getSysUserId());
+            queryWrapper.eq("sys_user_id", user.getSysUserId());
         }
         if (user.getMobile() != null) {
             queryWrapper.eq("mobile", user.getMobile());
