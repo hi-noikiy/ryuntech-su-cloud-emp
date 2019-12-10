@@ -63,7 +63,7 @@ public class MiniRegisterController extends ModuleBaseController {
             SysUser sysUser1 = sysUserService.selectByUserDTO(sysUserDTO);
             if (sysUser1==null){
                 //手机号不存在用户，可以注册
-                return new Result();
+                return new Result("注册成功");
             }else {
                 return new Result(OPERATE_ERROR,"手机号已经存在");
             }
@@ -106,9 +106,7 @@ public class MiniRegisterController extends ModuleBaseController {
                 sysUserDTO.setEmployeeList(employeeList);
             }
             if (null!=userWechat){
-                sysUserDTO.setUserWechat(userWechat);
-                sysUserDTO.setGongzhonghaoOpenid(userWechat.getGongzhonghaoOpenid());
-                sysUserDTO.setMiniprogramOpenid(userWechat.getMiniprogramOpenid());
+                sysUserDTO.setNickname(userWechat.getNickname());
                 sysUserDTO.setUnionId(userWechat.getUnionId());
             }
             sysUserDTO.setSysUserId(sysUser.getSysUserId());

@@ -1,5 +1,6 @@
 package com.ryuntech.saas.api.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ryuntech.common.model.BaseDto;
 import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.model.UserWechat;
@@ -42,6 +43,7 @@ public class SysUserDTO extends BaseDto {
     /**
      * 密码
      */
+    @JsonIgnore
     private String password;
 
     /**
