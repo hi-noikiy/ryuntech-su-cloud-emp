@@ -66,7 +66,7 @@ public class EmployeeController extends ModuleBaseController {
             pageSize = Global.PAGE_SIZE;
         }
 
-        EmployeeForm employeeForm = new EmployeeForm(SystemTool.currentUser(jedisUtil).getCompanyId(), departmentId, status, keyWord, Integer.valueOf(pageCode), Integer.valueOf(pageSize));
+        EmployeeForm employeeForm = new EmployeeForm(SystemTool.currentUser(jedisUtil).getCompanyId(), departmentId, status, keyWord, Integer.parseInt(pageCode), Integer.parseInt(pageSize));
         try {
             return new Result(employeeService.getPager(employeeForm));
         } catch (Exception e) {
