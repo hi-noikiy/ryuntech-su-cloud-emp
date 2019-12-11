@@ -12,6 +12,7 @@
         <result column="UPDATED" property="updated" />
         <result column="RISK_CONTENT" property="riskContent" />
         <result column="RISK_CODE" property="riskCode" />
+        <result column="KEY_NO" property="keyNo" />
         <result column="RISK_TYPE" property="riskType" />
         <result column="RISK_MTYPE" property="riskMtype" />
         <result column="FALG" property="falg" />
@@ -28,7 +29,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE,FALG
+        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE,FALG,KEY_NO
     </sql>
 
     <select id="selectGroupConcat" resultMap="BaseResultMap2"  resultType="com.ryuntech.saas.api.dto.CustomerRiskDTO">

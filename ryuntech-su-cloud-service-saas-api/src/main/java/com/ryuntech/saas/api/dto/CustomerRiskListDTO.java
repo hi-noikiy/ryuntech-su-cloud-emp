@@ -25,7 +25,10 @@ public class CustomerRiskListDTO {
     public static class OnCompany{
         private String customerName;
         private String industrialandcommercial;
+        private String industrialandLength;
         private String actionatlaw;
+        private String actionatlawLength;
         private String operatingrisk;
+        private String operatingriskLength;
     }
 }

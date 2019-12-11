@@ -82,6 +82,9 @@ import java.util.Date;
         @TableField("RISK_CODE")
     private String riskCode;
 
+        @TableField("KEY_NO")
+    private String keyNo;
+
     /**
      * 风险小类
      */

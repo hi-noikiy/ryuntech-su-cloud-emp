@@ -68,7 +68,7 @@ public class MiniCustomerController extends ModuleBaseController{
         long id = generateId();
         String customerId = String.valueOf(id);
         customerUserInfo.setCustomerId(customerId);
-        boolean b = customerUserInfoService.saveOrUpdate(customerUserInfo);
+        boolean b = customerUserInfoService.addCustomerByF(customerUserInfo);
         if (b){
             return new Result<>();
         }else {

@@ -14,6 +14,7 @@ import com.ryuntech.saas.api.form.CustomerMonitorForm;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.helper.constant.ApiConstants;
 import com.ryuntech.saas.api.model.*;
+import com.ryuntech.saas.api.service.ICompanyService;
 import com.ryuntech.saas.api.service.ICustomerMonitorService;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
 import com.ryuntech.saas.api.service.IEmployeeService;
@@ -51,6 +52,9 @@ public class MiniMonitorController extends ModuleBaseController{
 
     @Autowired
     private IEmployeeService iEmployeeService;
+
+    @Autowired
+    private ICompanyService iCompanyService;
 
 
 
@@ -130,28 +134,25 @@ public class MiniMonitorController extends ModuleBaseController{
 
                 CustomerUserInfoDTO customerUserInfoDTO = iCustomerUserInfoService.selectCustomerUserInfoDTO(new CustomerUserInfo().setCustomerId(customerId));
 
-                String geteciImage = ApiConstants.SEARCH+"?key="+APPKEY;
-
                 String[] autherHeader = randomAuthentHeader();
                 HashMap<String, String> reqHeader = new HashMap<>();
-                reqHeader.put("Token",autherHeader[0]);
-                reqHeader.put("Timespan",autherHeader[1]);
+                reqHeader.put("Token", autherHeader[0]);
+                reqHeader.put("Timespan", autherHeader[1]);
                 Gson gson = new Gson();
-                String customerName = customerUserInfoDTO.getCustomerName();
-                String urlName=geteciImage+"&keyword="+customerName;
+                String urlName = ApiConstants.GETBASICDETAILSBYNAME + "?key=" + APPKEY + "&keyWord=" + customerUserInfoDTO.getCustomerName();
                 String content = "";
                 try {
-                    content = HttpUtils.Get(urlName,reqHeader);
+                    content = HttpUtils.Get(urlName, reqHeader);
                 }catch (Exception e){
                     throw new YkControllerException(ExceptionEnum.HTTP_ERROR);
                 }
 
-                ApiGetEciImage apiGetEciImage = gson.fromJson(content, ApiGetEciImage.class);
-                if (null==apiGetEciImage){
+                ApiGetBasicDetailsByName apiGetBasicDetailsByName = gson.fromJson(content, ApiGetBasicDetailsByName.class);
+                if (null==apiGetBasicDetailsByName){
                     return new Result();
                 }
-                if (apiGetEciImage != null && StringUtils.isNotBlank(apiGetEciImage.getStatus())) {
-                    String status = apiGetEciImage.getStatus();
+                if (apiGetBasicDetailsByName != null && StringUtils.isNotBlank(apiGetBasicDetailsByName.getStatus())) {
+                    String status = apiGetBasicDetailsByName.getStatus();
                     if (status.equals("201")){
                         return new Result(OPERATE_ERROR,"没有查询到对应的公司");
                     }
@@ -159,6 +160,14 @@ public class MiniMonitorController extends ModuleBaseController{
                         return new Result(OPERATE_ERROR,"您还未购买过该接口，请先购买");
                     }
                 }
+//                查询该客户对应的公司
+                Company company = iCompanyService.selectByCompany(new Company().setCompanyId(customerUserInfoDTO.getCompanyId()));
+                if (null!=company&&StringUtils.isBlank(company.getOperName())){
+                    company.setOperName(apiGetBasicDetailsByName.getResult().getOperName());
+                }
+                company.setIsQichacha(true);
+                iCompanyService.saveOrUpdate(company);
+
 //                查询添加该监控的员工
                 Employee employee = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(customerMonitorForm.getEmployeeId()));
 
@@ -168,9 +177,15 @@ public class MiniMonitorController extends ModuleBaseController{
                 customerM.setCustomerId(customerId);
                 customerM.setCreated(new Date());
                 customerM.setUpdated(new Date());
+                /**
+                 * 该客户的跟进人
+                 */
                 customerM.setStaffId(customerUserInfoDTO.getStaffId());
                 customerM.setStaffName(customerUserInfoDTO.getStaffName());
                 customerM.setCustomerName(customerUserInfoDTO.getCustomerName());
+                /**
+                 * 添加该客户的员工
+                 */
                 customerM.setEmployeeId(employee.getEmployeeId());
                 customerM.setEmployeeName(employee.getName());
                 customerM.setStatus(true);

@@ -66,6 +66,23 @@ public class RiskWarnConstants {
     public static final String OPERATINGRISK ="3";
 
 
+//      `RISK_LEVEL` varchar(4) COLLATE utf8mb4_bin DEFAULT NULL COMMENT '风险级别(0警示1高风险2提示信息)',
+
+
+    /**
+     * 0警示
+     */
+    public static final String RISKLEVEL_0 ="0";
+    /**
+     * 1高风险
+     */
+    public static final String RISKLEVEL_1 ="1";
+    /**
+     * 2提示信息
+     */
+    public static final String RISKLEVEL_2 ="2";
+
+
 //    风险小类
     /**
      * 法人变更

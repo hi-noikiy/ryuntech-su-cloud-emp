@@ -156,6 +156,11 @@ public class MiniWxMsgController extends ModuleBaseController{
                 //开始更新用户的对象信息
                 sysUser.setUnionId(unionid);
                 sysUser.setAvatar(wxAuthForm.getAvatar());
+                //判断是否存在微信用户
+                UserWechat userWechat1 = iUserWechatService.selectByUserWeChat(new UserWechat().setUnionId(unionid));
+                if (null!=userWechat1&&StringUtils.isNotBlank(userWechat1.getId())){
+                    return new Result(OPERATE_ERROR,"当前小程序用户已绑定账号，用户更新失败");
+                }
 
 //                创建微信用户对象
                 UserWechat userWechat = new UserWechat();

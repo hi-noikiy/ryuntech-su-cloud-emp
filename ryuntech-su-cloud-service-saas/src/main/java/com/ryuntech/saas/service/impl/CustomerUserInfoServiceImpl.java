@@ -3,23 +3,25 @@ package com.ryuntech.saas.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ryuntech.common.constant.generator.IncrementIdGenerator;
+import com.ryuntech.common.constant.generator.UniqueIdGenerator;
 import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
+import com.ryuntech.saas.api.mapper.CompanyMapper;
 import com.ryuntech.saas.api.mapper.CustomerRiskMapper;
 import com.ryuntech.saas.api.mapper.CustomerUserInfoMapper;
 import com.ryuntech.saas.api.mapper.ReceivableContractMapper;
-import com.ryuntech.saas.api.model.CustomerRisk;
-import com.ryuntech.saas.api.model.CustomerUserInfo;
-import com.ryuntech.saas.api.model.ReceivableContract;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +44,9 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
 
     @Autowired
     private CustomerUserInfoMapper customerUserInfoMapper;
+
+    @Autowired
+    private CompanyMapper companyMapper;
 
     @Override
     public Result<IPage<CustomerUserInfo>> pageList(CustomerUserInfo customerUserInfo, QueryPage queryPage) {
@@ -132,6 +137,23 @@ public class CustomerUserInfoServiceImpl extends BaseServiceImpl<CustomerUserInf
             queryWrapper.eq("customer_name",customerUserInfoForm.getCustomerName());
         }
         return customerUserInfoMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public Boolean addCustomerByF(CustomerUserInfo customerUserInfo) {
+        /**
+         * 创建公司信息
+         */
+        UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
+        Company company = new Company();
+        company.setCompanyId(uniqueIdGenerator.nextStrId());
+        company.setName(customerUserInfo.getCustomerName());
+        company.setIsDel(false);
+        company.setCreatedAt(new Date());
+        company.setUpdatedAt(new Date());
+        baseMapper.insert(customerUserInfo);
+        companyMapper.insert(company);
+        return true;
     }
 
     @Override

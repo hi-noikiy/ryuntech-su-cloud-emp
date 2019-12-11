@@ -1,6 +1,7 @@
 package com.ryuntech.saas.api.model;
 
 
+import com.ryuntech.common.model.BaseApi;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -13,9 +14,8 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-public class ApiSearchZhiXing {
-    private ApiHeader apiHeader;
-    private List<Result> results;
+public class ApiSearchZhiXing extends BaseApi {
+    private List<Result> Result;
 
     @Data
     @EqualsAndHashCode(callSuper = false)

@@ -75,12 +75,12 @@ public class MiniLoginController extends ModuleBaseController{
 
         log.info("valueByInnerName"+valueByInnerName);
 
-       /* riskWarningScheduleService.riskWarning();
+//        riskWarningScheduleService.riskWarning();
         try {
             pushMessageScheduleService.riskMonitorPush();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
 //        CustomerUserInfoDTO customerUserInfoDTO=restTemplate.getForEntity("http://ryuntech-su-cloud-service-saas:4100/minicustomer/outFindById", CustomerUserInfoDTO.class).getBody();
         Object value =   redisTemplate.opsForValue().get(sysUserForm.getMobile() + "ryun_code");
         if(StringUtils.isBlank(sysUserForm.getMobile())){

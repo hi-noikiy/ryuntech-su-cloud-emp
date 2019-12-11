@@ -35,6 +35,17 @@ public class CustomerUserInfoDTO {
      */
     private String staffName;
 
+
+    /**
+     * 客户对应公司编号
+     */
+    private String companyId;
+
+    /**
+     * 客户对应的公司名称
+     */
+    private String companyName;
+
     /**
      * 联系人
      */

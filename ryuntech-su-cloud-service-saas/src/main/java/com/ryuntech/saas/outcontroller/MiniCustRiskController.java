@@ -52,7 +52,7 @@ public class MiniCustRiskController {
     @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType = "body")
     public Result monitorList(@RequestBody CustomerRiskForm customerRiskForm, QueryPage queryPage) {
         log.info("customerRiskForm.getCustomerId()"+customerRiskForm.getCustomerId());
-        List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(new CustomerRiskForm());
+        List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(customerRiskForm);
 
         if (customerRiskDTOS.isEmpty()){
             return new Result();
@@ -78,10 +78,8 @@ public class MiniCustRiskController {
                     String[] split = riskTypes.split(",");
                     HashMap<String, String> typeMap = new HashMap<>();
                     for (String ty : split) {
-                        int length = 0;
-                        if (StringUtils.isBlank(typeMap.get(ty))) {
-                            length = 1;
-                        } else {
+                        int length = 1;
+                        if (!StringUtils.isBlank(typeMap.get(ty))) {
                             length += Integer.parseInt(typeMap.get(ty));
                         }
                         typeMap.put(ty, length + "");
@@ -99,21 +97,27 @@ public class MiniCustRiskController {
 
                     onCompany.setCustomerName(customerR.getCustomerName());
                     if (StringUtils.isNotBlank(typeMap.get(RiskWarnConstants.INDUSTRIALANDCOMMERCIALCHANGE))){
-                        onCompany.setIndustrialandcommercial("工商变更 " + typeMap.get(RiskWarnConstants.INDUSTRIALANDCOMMERCIALCHANGE));
+                        onCompany.setIndustrialandcommercial("工商变更");
+                        onCompany.setIndustrialandLength(typeMap.get(RiskWarnConstants.INDUSTRIALANDCOMMERCIALCHANGE));
                     }else {
-                        onCompany.setIndustrialandcommercial("工商变更 0");
+                        onCompany.setIndustrialandcommercial("工商变更");
+                        onCompany.setIndustrialandLength("0");
                     }
 
                     if (StringUtils.isNotBlank(typeMap.get(RiskWarnConstants.ACTIONATLAW))){
-                        onCompany.setActionatlaw("法律诉讼 " + typeMap.get(RiskWarnConstants.ACTIONATLAW));
+                        onCompany.setActionatlaw("法律诉讼");
+                        onCompany.setActionatlawLength(typeMap.get(RiskWarnConstants.ACTIONATLAW));
                     }else {
-                        onCompany.setActionatlaw("法律诉讼 0");
+                        onCompany.setActionatlaw("法律诉讼");
+                        onCompany.setActionatlawLength("0");
                     }
 
                     if (StringUtils.isNotBlank(typeMap.get(RiskWarnConstants.OPERATINGRISK))){
-                        onCompany.setOperatingrisk("经营风险 " + typeMap.get(RiskWarnConstants.OPERATINGRISK));
+                        onCompany.setOperatingrisk("经营风险");
+                        onCompany.setOperatingriskLength(typeMap.get(RiskWarnConstants.OPERATINGRISK));
                     }else {
-                        onCompany.setOperatingrisk("经营风险 0");
+                        onCompany.setOperatingrisk("经营风险");
+                        onCompany.setOperatingriskLength("0");
                     }
                     onCompanyList.add(onCompany);
                 }
@@ -240,6 +244,8 @@ public class MiniCustRiskController {
                 for (CustomerRisk customerRisk1:list){
                     CustomerRiskDetailListDTO.RiskListDetail.RiskListDetail2 riskListDetail2 = new CustomerRiskDetailListDTO.RiskListDetail.RiskListDetail2();
                     riskListDetail2.setRiskContent(customerRisk1.getRiskContent());
+                    riskListDetail2.setRiskCode(customerRisk1.getRiskCode());
+                    riskListDetail2.setKeyNo(customerRisk1.getKeyNo());
                     riskListDetail2.setRiskTime(DateUtil.formatDate(customerRisk1.getRiskTime()));
                     riskListDetail2s.add(riskListDetail2);
                     totleDynamicSize++;

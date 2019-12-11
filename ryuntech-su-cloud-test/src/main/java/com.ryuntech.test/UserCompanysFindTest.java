@@ -8,6 +8,8 @@ import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.model.UserRoleLimit;
 import com.ryuntech.saas.api.service.IDepartmentService;
 import com.ryuntech.saas.api.service.IEmployeeService;
+import com.ryuntech.saas.api.service.PushMessageScheduleService;
+import com.ryuntech.saas.api.service.RiskWarningScheduleService;
 import com.ryuntech.zipkin.RyunCloudTestApplication;
 import groovy.util.logging.Log4j;
 import lombok.extern.slf4j.Slf4j;
@@ -35,9 +37,20 @@ public class UserCompanysFindTest {
     @Autowired
     private EmployeeMapper employeeMapper;
 
+
+    @Autowired
+    RiskWarningScheduleService riskWarningScheduleService;
+
+
+
+    @Autowired
+    PushMessageScheduleService pushMessageScheduleService;
+
     @Test
-    public void riskWarningSchedule(){
+    public void riskWarningSchedule() throws Exception {
         log.info("riskWarningSchedule");
+//        riskWarningScheduleService.riskWarning();
+        pushMessageScheduleService.riskMonitorPush();
     }
 
     @Test

@@ -249,6 +249,11 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         if (company != null && !company.getIsDel()) {
             throw new Exception(companyName + "已经存在");
         }
+//        教养手机号是否存在数据库
+        SysUser sysUser2 = sysUserMapper.selectOne(new QueryWrapper<SysUser>().eq("mobile", mobile));
+        if (sysUser2 != null && StringUtils.isNotBlank(sysUser2.getSysUserId())) {
+            throw new Exception(mobile + "已经存在");
+        }
 
         //TODO 校验公司是否真实存在（企查查接口）
         UniqueIdGenerator uniqueIdGenerator = UniqueIdGenerator.getInstance(IncrementIdGenerator.getServiceId());
@@ -259,30 +264,9 @@ public class SysUserServiceImpl extends BaseServiceImpl<SysUserMapper, SysUser> 
         company.setCompanyId(uniqueIdGenerator.nextStrId());
         company.setName(companyName);
         company.setIsDel(false);
+        company.setIsQichacha(false);
         company.setCreatedAt(time);
         company.setUpdatedAt(time);
-        String[] autherHeader = randomAuthentHeader();
-        HashMap<String, String> reqHeader = new HashMap<>();
-        reqHeader.put("Token", autherHeader[0]);
-        reqHeader.put("Timespan", autherHeader[1]);
-        Gson gson = new Gson();
-        String urlName = ApiConstants.GETBASICDETAILSBYNAME + "?key=" + APPKEY + "&keyWord=" + companyName;
-        String content = HttpUtils.Get(urlName, reqHeader);
-        ApiGetBasicDetailsByName apiGetBasicDetailsByName = gson.fromJson(content, ApiGetBasicDetailsByName.class);
-        if (null == apiGetBasicDetailsByName) {
-            company.setIsQichacha(false);
-        }
-        if (apiGetBasicDetailsByName != null && StringUtils.isNotBlank(apiGetBasicDetailsByName.getStatus())) {
-            String status = apiGetBasicDetailsByName.getStatus();
-            if (!status.equals("200")) {
-                company.setIsQichacha(false);
-            } else {
-                company.setIsQichacha(true);
-//                查询法人
-                String operName = apiGetBasicDetailsByName.getResult().getOperName();
-                company.setOperName(operName);
-            }
-        }
 
         companyMapper.insert(company);
 
