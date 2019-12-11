@@ -9,11 +9,11 @@ import com.ryuntech.saas.api.dto.*;
 import com.ryuntech.saas.api.form.CustomerRiskForm;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.helper.constant.RiskWarnConstants;
+import com.ryuntech.saas.api.model.CustomerMonitor;
 import com.ryuntech.saas.api.model.CustomerRisk;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
-import com.ryuntech.saas.api.service.ICustomerRiskService;
-import com.ryuntech.saas.api.service.ICustomerUserInfoService;
-import com.ryuntech.saas.api.service.IReceivableContractService;
+import com.ryuntech.saas.api.model.Employee;
+import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -46,12 +46,20 @@ public class MiniCustRiskController {
     @Autowired
     private IReceivableContractService iReceivableContractService;
 
+    @Autowired
+    private IEmployeeService  iEmployeeService;
+
 
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType = "body")
-    public Result monitorList(@RequestBody CustomerRiskForm customerRiskForm, QueryPage queryPage) {
+    public Result monitorList(@RequestHeader String EmployeeId,@RequestBody CustomerRiskForm customerRiskForm, QueryPage queryPage) {
+        log.info("EmployeeId"+EmployeeId);
         log.info("customerRiskForm.getCustomerId()"+customerRiskForm.getCustomerId());
+        if (StringUtils.isBlank(EmployeeId)){
+            return new Result("员工编号不能为空");
+        }
+
         List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(customerRiskForm);
 
         if (customerRiskDTOS.isEmpty()){
@@ -59,7 +67,7 @@ public class MiniCustRiskController {
         }
 
         List<CustomerRiskListDTO> customerRiskList = new ArrayList<>();
-        Integer totleFalgLength=0;
+        Integer totalFlagLength=0;
         for (CustomerRiskDTO customerRiskDTO :customerRiskDTOS){
             Date riskTime = customerRiskDTO.getRiskTime();
             List<CustomerRiskDTO> customerRiskD = iCustomerRiskService.selectGroupConcat(
@@ -71,7 +79,7 @@ public class MiniCustRiskController {
             customerRiskListDTO.setRiskTime(DateUtil.formatDate(riskTime));
             List< CustomerRiskListDTO.OnCompany> onCompanyList = new ArrayList<>();
             customerRiskListDTO.setRiskLength(customerRiskD.size()+"");
-            Integer falgLength=0;
+            Integer flagLength=0;
             for (CustomerRiskDTO customerR :customerRiskD) {
                 String riskTypes = customerR.getRiskTypes();
                 if (StringUtils.isNotBlank(riskTypes)) {
@@ -90,7 +98,7 @@ public class MiniCustRiskController {
                      */
                     String falg = customerR.getFalg();
                     if (StringUtils.isNotBlank(falg)&&falg.equals("0")){
-                        falgLength++;
+                        flagLength++;
                     }
 
                     CustomerRiskListDTO.OnCompany onCompany = new CustomerRiskListDTO.OnCompany();
@@ -124,13 +132,20 @@ public class MiniCustRiskController {
             }
             customerRiskListDTO.setOnCompanyList(onCompanyList);
 
-            totleFalgLength+=falgLength;
-            customerRiskListDTO.setFalgLength(falgLength.toString());
+            totalFlagLength+=flagLength;
+            customerRiskListDTO.setFalgLength(flagLength.toString());
             customerRiskList.add(customerRiskListDTO);
         }
         HashMap<Object, Object> objectObjectHashMap = new HashMap<>();
         objectObjectHashMap.put("customerRiskList",customerRiskList);
-        objectObjectHashMap.put("totleFalgLength",totleFalgLength);
+        objectObjectHashMap.put("totalFlagLength",totalFlagLength);
+        Employee byId = iEmployeeService.getById(EmployeeId);
+        if (null!=byId){
+                objectObjectHashMap.put("isWeChat",byId.getIsWeChat());
+                objectObjectHashMap.put("isEmall",byId.getIsEmail());
+                objectObjectHashMap.put("emall",byId.getEmail());
+        }
+
         return new Result(objectObjectHashMap);
     }
 

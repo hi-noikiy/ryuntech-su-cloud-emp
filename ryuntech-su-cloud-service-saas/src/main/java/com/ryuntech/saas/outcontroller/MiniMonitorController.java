@@ -215,10 +215,19 @@ public class MiniMonitorController extends ModuleBaseController{
             return new Result(OPERATE_ERROR,"员工编号为空，不能更新");
         }
         CustomerMonitor customerMonitor =new CustomerMonitor();
-        customerMonitor.setIsWechat(customerMonitorForm.getIsWeChat());
-        customerMonitor.setIsEmall(customerMonitorForm.getIsEmall());
-        boolean b = iCustomerMonitorService.update(customerMonitor,new QueryWrapper<CustomerMonitor>().eq("employee_id",employeeId));
-        if (b){
+        Boolean isWeChat = customerMonitorForm.getIsWeChat();
+        customerMonitor.setIsWechat(isWeChat);
+        Boolean isEmall = customerMonitorForm.getIsEmall();
+        customerMonitor.setIsEmall(isEmall);
+//        更新员工信息
+
+        boolean b = iCustomerMonitorService.update(customerMonitor,
+                new QueryWrapper<CustomerMonitor>().eq("employee_id",employeeId));
+        Employee employee = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(employeeId));
+        employee.setIsWeChat(isWeChat);
+        employee.setIsEmail(isEmall);
+        boolean b1 = iEmployeeService.saveOrUpdate(employee);
+        if (b&&b1){
             return new Result("更新成功");
         }else {
             return new Result(OPERATE_ERROR,"更新异常");

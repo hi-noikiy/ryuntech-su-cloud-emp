@@ -83,6 +83,13 @@ public class Employee extends BaseModel {
     @TableField("email")
     private String email;
 
+
+    @TableField("IS_EMALL")
+    private Boolean isEmail;
+
+    @TableField("IS_WECHAT")
+    private Boolean isWeChat;
+
     /**
      * 帐号状态 0-正常 1-禁用
      */
