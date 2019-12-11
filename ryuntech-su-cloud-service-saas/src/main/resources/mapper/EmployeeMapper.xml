@@ -18,6 +18,24 @@
         <result column="CREATED_AT" property="createdAt"/>
     </resultMap>
 
+    <!-- 部门负责人查询映射结果 -->
+    <resultMap id="BaseResultMab" type="com.ryuntech.saas.api.model.Employee">
+        <id column="EMPLOYEE_ID" property="employeeId"/>
+        <result column="CODE" property="code"/>
+        <result column="SYS_USER_ID" property="sysUserId"/>
+        <result column="NAME" property="name"/>
+        <result column="COMPANY_ID" property="companyId"/>
+        <result column="COMPANY_NAME" property="companyName"/>
+        <result column="DEPARTMENT_ID" property="departmentId"/>
+        <result column="IS_CHARGER" property="isCharger"/>
+        <result column="EMAIL" property="email"/>
+        <result column="STATUS" property="status"/>
+        <result column="DATA_TYPE" property="dataType"/>
+        <result column="DATA_DEPARTMENT_ID" property="dataDepartmentId"/>
+        <result column="UPDATED_AT" property="updatedAt"/>
+        <result column="CREATED_AT" property="createdAt"/>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
          EMPLOYEE_ID, SYS_USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
@@ -28,6 +46,16 @@
             UPDATED_AT = SYSDATE()
         where DEPARTMENT_ID = #{oldDeptId}
     </update>
+
+    <select id="queryEmployeeByDepartmentId" parameterType="String" resultMap="BaseResultMab">
+        SELECT EMPLOYEE_ID, NAME, EMAIL
+        FROM ryn_employee
+        WHERE
+            DEPARTMENT_ID = #{departmentId}
+            AND <![CDATA[ EMAIL <> "" ]]>
+            AND IS_CHARGER = 1
+            AND STATUS = 1
+    </select>
 
     <select id="selectCompanys" parameterType="String" resultType="map">
         select rynem.company_name, sysro.rval, sysrope.perm_val

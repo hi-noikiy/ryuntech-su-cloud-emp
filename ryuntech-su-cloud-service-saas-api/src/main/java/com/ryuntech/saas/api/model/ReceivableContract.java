@@ -126,6 +126,11 @@ import java.util.List;
     @TableField("ATTACHMENT_CODE")
     private String attachmentCode;
 
+    /**
+     * 计划总期数
+     */
+    @TableField("TOTAL_PLAN_PERIODES")
+    private String totalPlanPeriodes;
 
     @TableField(exist = false)
     private String companyName;

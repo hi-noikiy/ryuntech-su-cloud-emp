@@ -25,6 +25,13 @@ import java.util.Map;
 public interface EmployeeMapper extends IBaseMapper<Employee> {
 
     /**
+     * 跟进部门id查询该部门的负责人
+     * @param departmentId
+     * @return
+     */
+    List<Employee> queryEmployeeByDepartmentId(String departmentId);
+
+    /**
      * 根据用户id查询该用户所在的公司
      * @param userId
      * @return

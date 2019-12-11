@@ -26,7 +26,28 @@ spring:
     client_id: client
     client_secret: secret
     grant_type: password
-
+  mail:
+    host: smtp.qq.com
+    username: 851597995@qq.com
+    password: wlmjlpiepccvbcgj
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  freemarker:
+    charset: UTF-8
+    allow-request-override: false
+    cache: false
+    expose-request-attributes: false
+    expose-session-attributes: false
+    content-type: text/html
+    template-loader-path: classpath:/static/template/
+    expose-spring-macro-helpers: false
+    check-template-location: true
+    enabled: true
 
 #security:
 #
