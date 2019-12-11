@@ -12,13 +12,15 @@
         <result column="EMPLOYEE_ID" property="employeeId" />
         <result column="EMPLOYEE_NAME" property="employeeName" />
         <result column="STATUS" property="status" />
+        <result column="IS_WECHAT" property="isWechat" />
+        <result column="IS_EMALL" property="isEmall" />
         <result column="CREATED" property="created" />
         <result column="UPDATED" property="updated" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        MONITOR_ID, CUSTOMER_ID, CUSTOMER_NAME, CREATED, UPDATED,STAFF_ID,STAFF_NAME,EMPLOYEE_ID,EMPLOYEE_NAME,STATUS
+        MONITOR_ID, CUSTOMER_ID, CUSTOMER_NAME, CREATED, UPDATED,STAFF_ID,STAFF_NAME,EMPLOYEE_ID,EMPLOYEE_NAME,STATUS,IS_WECHAT,IS_EMALL
     </sql>
 
     <select id="selectGroupMonitorByStaffId" resultType="java.util.HashMap">
@@ -35,5 +37,9 @@
         </where>
         group by staff_id
     </select>
+
+    <update id="updateByEmployeeId" >
+
+    </update>
 
 </mapper>

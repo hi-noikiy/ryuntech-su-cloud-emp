@@ -9,11 +9,14 @@ import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.CustomerUserInfoDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
+import com.ryuntech.saas.api.form.EmployeeForm;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
+import com.ryuntech.saas.api.model.Employee;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
+import com.ryuntech.saas.api.service.IEmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +40,10 @@ public class MiniCustomerController extends ModuleBaseController{
 
     @Autowired
     private ICustomerUserInfoService customerUserInfoService;
+
+
+    @Autowired
+    private IEmployeeService iEmployeeService;
 
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询客户列表信息")
@@ -117,6 +124,33 @@ public class MiniCustomerController extends ModuleBaseController{
         }
         CustomerUserInfoDTO customerUserInfoDTO = customerUserInfoService.selectCustomerUserInfoDTO(customerUserInfo);
         return new Result<>(customerUserInfoDTO);
+    }
+
+    /**
+     * 根据ID查询用户信息
+     *
+     * @param employeeForm
+     * @return
+     */
+    @GetMapping("/outupdateyee")
+    @ApiOperation(value = "更新员工信息", notes = "employeeId存在")
+    @ApiImplicitParam(name = "employeeForm", value = "员工对象", required = true, dataType = "String")
+    public Result findById(EmployeeForm employeeForm) {
+        String employeeId = employeeForm.getEmployeeId();
+        if (StringUtils.isBlank(employeeId)){
+            return new Result<>(OPERATE_ERROR,"员工编号为空");
+        }
+        Employee employeeUp = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(employeeId));
+        if (null!=employeeUp){
+            employeeUp.setEmail(employeeForm.getEmail());
+            boolean b = iEmployeeService.updateById(employeeUp);
+            if (b){
+                return new Result("更新成功");
+            }else {
+                return new Result("更新失败");
+            }
+        }
+        return new Result("更新成功");
     }
 
 

@@ -67,7 +67,11 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
             //查询待监控的企业所有的员工
         log.info("riskMonitorPush");
         log.info("开始对监控员工进行消息推送");
-        List<HashMap<String, String>> hashMaps = customerMonitorMapper.selectGroupMonitorByStaffId(new CustomerMonitorForm());
+        CustomerMonitorForm customerMonitorForm = new CustomerMonitorForm();
+        customerMonitorForm.setStatus("1");
+        customerMonitorForm.setIsWeChat(true);
+        List<HashMap<String, String>> hashMaps = customerMonitorMapper
+                .selectGroupMonitorByStaffId(customerMonitorForm);
         log.info("开始对监控员工进行消息推送"+hashMaps.toString());
         for (HashMap<String,String> hashMap :hashMaps){
 //            一个跟进人对应多个客户
@@ -128,7 +132,6 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
                 }
             }
         }
-
     }
 
     @Override

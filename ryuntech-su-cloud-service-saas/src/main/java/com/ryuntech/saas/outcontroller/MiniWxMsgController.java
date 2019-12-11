@@ -213,7 +213,6 @@ public class MiniWxMsgController extends ModuleBaseController{
     @ApiOperation(value = "用户关注")
     @ApiImplicitParam(name = "wxEvent", value = "公众号关注对象", required = true, dataType = "WxEvent", paramType = "body")
     private void checkTokenRespone(WxEvent wxEvent){
-
         log.info("消息来源于:"+wxEvent.getFromUserName());
         log.info("openid:"+wxEvent.getToUserName());
         log.info("消息类型:"+wxEvent.getMsgType());

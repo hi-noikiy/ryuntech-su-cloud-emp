@@ -189,9 +189,39 @@ public class MiniMonitorController extends ModuleBaseController{
                 customerM.setEmployeeId(employee.getEmployeeId());
                 customerM.setEmployeeName(employee.getName());
                 customerM.setStatus(true);
+                customerM.setIsWechat(false);
+                customerM.setIsEmall(false);
                 iCustomerMonitorService.saveOrUpdate(customerM);
             }
         }
         return new Result("添加成功");
+    }
+
+
+
+    /**
+     * 更新监控状态
+     *
+     * @param customerMonitorForm
+     * @return
+     */
+    @PostMapping("/outupdate")
+    @ApiOperation(value = "更新监控状态")
+    @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
+    public Result update(@RequestBody CustomerMonitorForm customerMonitorForm) throws YkControllerException {
+        String employeeId = customerMonitorForm.getEmployeeId();
+        log.info("customerMonitorForm.getEmployeeId()"+employeeId);
+        if (StringUtils.isBlank(employeeId)){
+            return new Result(OPERATE_ERROR,"员工编号为空，不能更新");
+        }
+        CustomerMonitor customerMonitor =new CustomerMonitor();
+        customerMonitor.setIsWechat(customerMonitorForm.getIsWeChat());
+        customerMonitor.setIsEmall(customerMonitorForm.getIsEmall());
+        boolean b = iCustomerMonitorService.update(customerMonitor,new QueryWrapper<CustomerMonitor>().eq("employee_id",employeeId));
+        if (b){
+            return new Result("更新成功");
+        }else {
+            return new Result(OPERATE_ERROR,"更新异常");
+        }
     }
 }

@@ -65,6 +65,12 @@ import java.util.Date;
         @TableField("STATUS")
     private Boolean status;
 
+        @TableField("IS_WECHAT")
+    private Boolean isWechat;
+
+        @TableField("IS_EMALL")
+    private Boolean isEmall;
+
             /**
             * 创建时间
             */

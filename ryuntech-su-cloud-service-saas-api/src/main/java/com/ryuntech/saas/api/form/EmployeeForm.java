@@ -10,6 +10,10 @@ import lombok.experimental.Accessors;
 public class EmployeeForm {
     private String companyId;
 
+    private String employeeId;
+
+    private String email;
+
     private String departmentId;
 
     private String status;
