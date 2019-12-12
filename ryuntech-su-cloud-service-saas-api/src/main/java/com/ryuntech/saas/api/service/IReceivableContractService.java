@@ -24,15 +24,20 @@ import java.util.List;
  */
 public interface IReceivableContractService extends IBaseService<ReceivableContract> {
 
-
     /**
-     *
+     * 分页查询合同数据
      * @param receivableContract
      * @param queryPage
      * @return
      */
     Result<IPage<ReceivableContract>> pageList(ReceivableContract receivableContract, QueryPage queryPage);
 
+    /**
+     * 分页查询合同数据
+     * @param receivableContract
+     * @param queryPage
+     * @return
+     */
     Result<IPage<ReceivableContractDTO>> selectPageList(ReceivableContract receivableContract, QueryPage queryPage);
 
     /**

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
+import com.ryuntech.saas.api.dto.FollowupRecordDTO;
 import com.ryuntech.saas.api.form.ContractRecordForm;
 import com.ryuntech.saas.api.form.FollowupRecordForm;
 import com.ryuntech.saas.api.model.FollowupRecord;
@@ -29,6 +30,14 @@ public interface IFollowupRecordService extends IBaseService<FollowupRecord> {
      * @return
      */
     Result<IPage<FollowupRecord>> pageList(FollowupRecord followupRecord, QueryPage queryPage);
+
+    /**
+     * 分页查询跟进信息
+     * @param followupRecordForm
+     * @param queryPage
+     * @return
+     */
+    Result<IPage<FollowupRecordDTO>> selectPageList(FollowupRecordForm followupRecordForm, QueryPage queryPage);
 
     /**
      * 合同跟进列表

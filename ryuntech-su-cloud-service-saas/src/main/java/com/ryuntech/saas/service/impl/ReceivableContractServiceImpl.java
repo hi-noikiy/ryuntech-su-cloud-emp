@@ -212,7 +212,7 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 baseDto.setT(followupRecordDTO);
                 CopyUtil.copyObject2(baseForm,baseDto);
                 QueryWrapper<FollowupRecordComment> queryWrapper =new QueryWrapper<>();
-                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId()).orderByDesc("followup_time");
+                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId()).orderByDesc("comment_time");
                 List<FollowupRecordComment> followupRecordCommentList = followupRecordCommentMapper.selectList(queryWrapper);
                 if(followupRecordCommentList != null && followupRecordCommentList.size() != 0) {
                     followupRecordDTO.setFollowupRecordComments(followupRecordCommentList);

@@ -8,14 +8,12 @@ import com.ryuntech.common.utils.CopyUtil;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
+import com.ryuntech.saas.api.dto.FollowupRecordDTO;
 import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.form.*;
 import com.ryuntech.saas.api.helper.constant.PlanConstant;
 import com.ryuntech.saas.api.model.*;
-import com.ryuntech.saas.api.service.IFollowupRecordCommentService;
-import com.ryuntech.saas.api.service.IFollowupRecordService;
-import com.ryuntech.saas.api.service.IReceivableCollectionPlanService;
-import com.ryuntech.saas.api.service.IReceivableContractService;
+import com.ryuntech.saas.api.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -46,6 +44,9 @@ public class MiniFollowUpController extends ModuleBaseController{
     private IFollowupRecordService followupRecordService;
 
     @Autowired
+    private IAttachmentService iAttachmentService;
+
+    @Autowired
     private IReceivableCollectionPlanService iReceivableCollectionPlanService;
 
     @Autowired
@@ -58,12 +59,12 @@ public class MiniFollowUpController extends ModuleBaseController{
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "followupRecord", value = "查询条件", required = true, dataType = "FollowupRecord", paramType = "body")
-    public Result<IPage<FollowupRecord>> list(@RequestBody FollowupRecord followupRecord,  QueryPage queryPage) {
-        log.info("followupRecord.getFollowupId()"+followupRecord.getFollowupId());
-        if (StringUtils.isBlank(followupRecord.getContractId())) {
+    public Result<IPage<FollowupRecordDTO>> list(@RequestBody FollowupRecordForm followupRecordForm, QueryPage queryPage) {
+        log.info("followupRecord.getFollowupId()"+followupRecordForm.getFollowupId());
+        if (StringUtils.isBlank(followupRecordForm.getContractId())) {
             return new Result<>(OPERATE_ERROR,"合同编号不能为空");
         } else {
-            return  followupRecordService.pageList(followupRecord, queryPage);
+            return  followupRecordService.selectPageList(followupRecordForm, queryPage);
         }
     }
 
@@ -104,6 +105,11 @@ public class MiniFollowUpController extends ModuleBaseController{
 
 //        总待跟进
         List<ContractRecordDTO> followupRecords = followupRecordService.contractRecordList(contractRecordForm);
+        for (ContractRecordDTO contractRecordDTO:followupRecords){
+            String attachmentCode = contractRecordDTO.getAttachmentCode();
+            List<Attachment> attachmentList = iAttachmentService.selectByAttachmentCode(attachmentCode);
+            contractRecordDTO.setAttachments(attachmentList);
+        }
 //       今天待跟进，获取提醒类型 type=1为今日到期
         ReceivableCollectionPlanForm receivableCollectionPlanForm = new ReceivableCollectionPlanForm();
         receivableCollectionPlanForm.setPlanTime(new Date());

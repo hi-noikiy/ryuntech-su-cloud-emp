@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -69,6 +70,23 @@ import java.util.Date;
      */
     @TableField("CONTRACT_ID")
     private String contractId;
+
+
+    /**
+     * 逾期日期
+     */
+    @TableField("OVERDUE_TIME")
+    private String overdue_time;
+
+    /**
+     * 是否逾期0否1是
+     */
+    private Boolean is_overdue;
+
+    /**
+     * 逾期天数
+     */
+    private Integer overdue_day;
 
     /**
      * 计划回款时间

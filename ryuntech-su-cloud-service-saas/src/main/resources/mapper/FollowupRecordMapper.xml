@@ -18,6 +18,25 @@
         <result column="created_at" property="createdAt" />
     </resultMap>
 
+
+    <resultMap id="BaseResultMap1" type="com.ryuntech.saas.api.dto.FollowupRecordDTO">
+        <id column="followup_id" property="followupId" />
+        <result column="content" property="content" />
+        <result column="staff_id" property="staffId" />
+        <result column="contract_id" property="contractId" />
+        <result column="contract_name" property="contractName" />
+        <result column="staff_name" property="staffName" />
+        <result column="estimate_amount" property="estimateAmount" />
+        <result column="estimate_time" property="estimateTime" />
+        <result column="attachment_code" property="attachmentCode" />
+        <result column="followup_time" property="followupTime" />
+        <result column="updated_at" property="updatedAt" />
+        <result column="created_at" property="createdAt" />
+        <collection   property="attachments" ofType="com.ryuntech.saas.api.model.Attachment">
+            <id column="attachmentCode" property="attachmentCode" />
+        </collection>
+    </resultMap>
+
     <resultMap id="BaseResultMap2" type="com.ryuntech.saas.api.dto.ContractRecordDTO">
         <id column="CONTRACT_ID" property="contractId" />
         <result column="CONTRACT_NAME" property="contractName" />
@@ -35,7 +54,6 @@
         <result column="STAFF_ID" property="staffId" />
         <result column="STAFF_NAME" property="staffName" />
         <result column="ATTACHMENT_CODE" property="attachmentCode" />
-
         <result column="FOLLOWUP_ID" property="followupId" />
         <result column="CONTENT" property="content" />
         <result column="CONTRACT_NAME" property="contractName" />
@@ -49,8 +67,21 @@
         followup_id, content, staff_id, staff_name, attachment_code, followup_time, updated_at, created_at,estimate_time,estimate_amount,contract_name
     </sql>
 
+    <select id="selectPageList" resultMap="BaseResultMap1" >
+        select
+            *
+        from
+            ryn_followup_record
+        <where>
+            <if test="followupRecordForm.followupId!=null and followupRecordForm.followupId!=''">
+                ryn_followup_record.followup_id like concat('%',#{followupRecordForm.followupId},'%')
+            </if>
+        </where>
 
-    <select id="contractRecordList" resultMap="BaseResultMap2" resultType="com.ryuntech.saas.api.dto.ContractRecordDTO">
+    </select>
+
+
+    <select id="contractRecordList" resultMap="BaseResultMap2">
         select
             contract.contract_id,
             contract.contract_name,

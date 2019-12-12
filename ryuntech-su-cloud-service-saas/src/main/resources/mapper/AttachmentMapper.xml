@@ -37,4 +37,17 @@
         </foreach>
     </insert>
 
+    <select id="selectByAttachmentCode" resultMap="BaseResultMap" >
+        select
+            *
+        from
+            ryn_attachment
+        <where>
+            <if test="attachmentCode!=null and attachmentCode!=''">
+                attachment_code like '%'||#{attachmentCode}||'%'
+            </if>
+        </where>
+    </select>
+
+
 </mapper>

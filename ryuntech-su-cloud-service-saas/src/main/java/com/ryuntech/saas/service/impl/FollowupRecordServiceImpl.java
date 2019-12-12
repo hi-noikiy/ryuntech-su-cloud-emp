@@ -8,16 +8,14 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
+import com.ryuntech.saas.api.dto.FollowupRecordDTO;
 import com.ryuntech.saas.api.form.ContractRecordForm;
 import com.ryuntech.saas.api.form.FollowupRecordForm;
 import com.ryuntech.saas.api.helper.constant.AttachmentConstants;
 import com.ryuntech.saas.api.mapper.AttachmentMapper;
 import com.ryuntech.saas.api.mapper.FollowupRecordCommentMapper;
 import com.ryuntech.saas.api.mapper.FollowupRecordMapper;
-import com.ryuntech.saas.api.model.Attachment;
-import com.ryuntech.saas.api.model.FinanceUserInfo;
-import com.ryuntech.saas.api.model.FollowupRecord;
-import com.ryuntech.saas.api.model.FollowupRecordComment;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.IFollowupRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,6 +56,12 @@ public class FollowupRecordServiceImpl extends BaseServiceImpl<FollowupRecordMap
             queryWrapper.eq("contract_id", followupRecord.getContractId());
         }
         return super.pageList(queryWrapper,page);
+    }
+
+    @Override
+    public Result<IPage<FollowupRecordDTO>> selectPageList(FollowupRecordForm followupRecordForm, QueryPage queryPage) {
+        Page<FollowupRecord> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
+        return new Result(m.selectPageList(page,followupRecordForm));
     }
 
     @Override

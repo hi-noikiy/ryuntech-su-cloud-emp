@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.service;
 
 
 import com.ryuntech.saas.api.model.Attachment;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -21,4 +22,12 @@ public interface IAttachmentService extends IBaseService<Attachment> {
      * @return
      */
     Boolean insertBatch(List<Attachment> attachments);
+
+
+    /**
+     * 根据文件编码查询
+     * @param attachmentCode
+     * @return
+     */
+    List<Attachment> selectByAttachmentCode( String attachmentCode);
 }

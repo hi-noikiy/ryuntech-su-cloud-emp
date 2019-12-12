@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
+import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.FollowupRecordComment;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -59,6 +60,14 @@ public class FollowupRecordDTO extends BaseModel {
      * 附件编码
      */
     private String attachmentCode;
+
+
+    private List<Attachment> attachments;
+
+    /**
+     *
+     */
+    private List<String> urls;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

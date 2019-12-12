@@ -24,4 +24,11 @@ public interface AttachmentMapper extends IBaseMapper<Attachment> {
      * @return
      */
     int insertBatch(List<Attachment> attachments);
+
+    /**
+     * 根据文件编码attachmentCode获取文件对象
+     * @param attachmentCode
+     * @return
+     */
+    List<Attachment> selectByAttachmentCode(@Param("attachmentCode") String attachmentCode);
 }

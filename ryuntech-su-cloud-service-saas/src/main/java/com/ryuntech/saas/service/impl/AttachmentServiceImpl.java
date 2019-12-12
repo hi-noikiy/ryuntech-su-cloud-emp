@@ -26,4 +26,9 @@ public class AttachmentServiceImpl extends BaseServiceImpl<AttachmentMapper, Att
         }
         return false;
     }
+
+    @Override
+    public List<Attachment> selectByAttachmentCode(String attachmentCode) {
+        return baseMapper.selectByAttachmentCode(attachmentCode);
+    }
 }

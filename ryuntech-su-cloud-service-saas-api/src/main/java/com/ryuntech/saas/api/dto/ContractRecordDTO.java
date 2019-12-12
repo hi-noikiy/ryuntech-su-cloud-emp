@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
+import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.FollowupRecordComment;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -53,6 +54,11 @@ public class ContractRecordDTO{
      * 附件编码
      */
     private String attachmentCode;
+
+    /**
+     * 图片文件集合
+     */
+    private List<Attachment> attachments;
 
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
