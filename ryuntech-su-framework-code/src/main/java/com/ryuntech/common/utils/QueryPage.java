@@ -15,8 +15,14 @@ import java.io.Serializable;
 @ToString
 public class QueryPage implements Serializable {
 
-    private int pageCode; //当前页
-    private int pageSize; //每页显示的记录数
+    /**
+     * 当前页
+     */
+    private int pageCode;
+    /**
+     * 每页显示的记录数
+     */
+    private int pageSize;
 
     public int getPageCode() {
         return pageCode;

@@ -1,5 +1,8 @@
 package com.ryuntech.saas.api.helper.constant;
 
+/**
+ * @author EDZ
+ */
 public class AttachmentConstants {
 
 //    附件状态(0未启用1已启用)

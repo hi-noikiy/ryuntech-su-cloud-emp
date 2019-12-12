@@ -6,6 +6,7 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
 import com.ryuntech.saas.api.form.ContractRecordForm;
+import com.ryuntech.saas.api.form.FollowupRecordForm;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.Partner;
 
@@ -35,5 +36,12 @@ public interface IFollowupRecordService extends IBaseService<FollowupRecord> {
      * @return
      */
     List<ContractRecordDTO> contractRecordList(ContractRecordForm contractRecordForm);
+
+    /**
+     * 添加跟进
+     * @param followupRecordForm
+     * @return
+     */
+    Boolean addFollowupRecord(FollowupRecordForm followupRecordForm);
 
 }

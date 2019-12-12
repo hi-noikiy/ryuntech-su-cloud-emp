@@ -224,8 +224,6 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
             receivableContractDTO.setFollowUpRecord(followupRecordDTO);
             receivableContractDTO.setFollowUpRecords(followupRecordDTOList);
         }
-
-
         return receivableContractDTO;
     }
 

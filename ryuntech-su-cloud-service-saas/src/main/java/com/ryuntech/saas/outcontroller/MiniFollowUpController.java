@@ -70,23 +70,20 @@ public class MiniFollowUpController extends ModuleBaseController{
     /**
      * 添加合同跟进信息
      *
-     * @param followupRecord
+     * @param followupRecordForm
      * @return
      */
     @PostMapping("/outadd")
     @ApiOperation(value = "添加跟进信息")
     @ApiImplicitParam(name = "followupRecord", value = "合同跟进信息", required = true, dataType = "FollowupRecord", paramType = "body")
-    public Result add(@RequestBody FollowupRecord followupRecord) {
-        if (StringUtils.isNotBlank(followupRecord.getContractId())){
+    public Result add(@RequestBody FollowupRecordForm followupRecordForm) {
+        if (StringUtils.isNotBlank(followupRecordForm.getContractId())){
 //            生成主键
             long followupId = generateId();
-            followupRecord.setFollowupId(String.valueOf(followupId));
-            followupRecord.setFollowupTime(new Date());
-            followupRecord.setUpdatedAt(new Date());
-            followupRecord.setCreatedAt(new Date());
-            boolean save = followupRecordService.saveOrUpdate(followupRecord);
+            followupRecordForm.setFollowupId(String.valueOf(followupId));
+            boolean save = followupRecordService.addFollowupRecord(followupRecordForm);
             if (save){
-                return new Result();
+                return new Result("添加成功");
             }else {
                 return new Result(OPERATE_ERROR);
             }

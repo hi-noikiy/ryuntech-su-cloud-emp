@@ -72,7 +72,7 @@ public class EmployeeController extends ModuleBaseController {
                 status,
                 keyWord,
                 Integer.parseInt(pageCode),
-                Integer.parseInt(pageSize),null,null);
+                Integer.parseInt(pageSize));
         try {
             return new Result(employeeService.getPager(employeeForm));
         } catch (Exception e) {

@@ -9,8 +9,12 @@ import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.saas.api.dto.ContractRecordDTO;
 import com.ryuntech.saas.api.form.ContractRecordForm;
+import com.ryuntech.saas.api.form.FollowupRecordForm;
+import com.ryuntech.saas.api.helper.constant.AttachmentConstants;
+import com.ryuntech.saas.api.mapper.AttachmentMapper;
 import com.ryuntech.saas.api.mapper.FollowupRecordCommentMapper;
 import com.ryuntech.saas.api.mapper.FollowupRecordMapper;
+import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.FinanceUserInfo;
 import com.ryuntech.saas.api.model.FollowupRecord;
 import com.ryuntech.saas.api.model.FollowupRecordComment;
@@ -18,7 +22,11 @@ import com.ryuntech.saas.api.service.IFollowupRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+
+import static com.ryuntech.common.constant.generator.UniqueIdGenerator.generateId;
 
 /**
  * <p>
@@ -33,6 +41,12 @@ public class FollowupRecordServiceImpl extends BaseServiceImpl<FollowupRecordMap
 
     @Autowired
     private FollowupRecordCommentMapper followupRecordCommentMapper;
+
+    @Autowired
+    private FollowupRecordMapper followupRecordMapper;
+
+    @Autowired
+    private AttachmentMapper attachmentMapper;
 
     @Override
     public Result<IPage<FollowupRecord>> pageList(FollowupRecord followupRecord, QueryPage queryPage) {
@@ -56,5 +70,47 @@ public class FollowupRecordServiceImpl extends BaseServiceImpl<FollowupRecordMap
             contractRecordDTO.setFollowupRecordComments(followupRecords);
         }
         return contractRecordDTOS;
+    }
+
+    @Override
+    public Boolean addFollowupRecord(FollowupRecordForm followupRecordForm) {
+        FollowupRecord followupRecord = new FollowupRecord();
+        followupRecord.setContractId(followupRecordForm.getContractId());
+        followupRecord.setFollowupId(followupRecordForm.getFollowupId());
+        followupRecord.setContent(followupRecordForm.getContent());
+        followupRecord.setEstimateAmount(followupRecordForm.getEstimateAmount());
+        followupRecord.setEstimateTime(followupRecordForm.getEstimateTime());
+        followupRecord.setStaffId(followupRecordForm.getStaffId());
+        followupRecord.setStaffName(followupRecordForm.getStaffName());
+        followupRecord.setFollowupTime(new Date());
+        followupRecord.setUpdatedAt(new Date());
+        followupRecord.setCreatedAt(new Date());
+        /**
+         * 开始插入图片数据
+         */
+        String[] upLoadImg = followupRecordForm.getUpLoadImg();
+        List<Attachment> attachmentList = new ArrayList<>();
+        if (null!=upLoadImg&&upLoadImg.length!=0){
+            String attachmentCode = String.valueOf(generateId());
+            for (String url:upLoadImg){
+                long attachmentId = generateId();
+                Attachment attachment = new Attachment();
+                attachment.setId(String.valueOf(attachmentId));
+                attachment.setAttachmentType(AttachmentConstants.TYPE1);
+                attachment.setStatus(AttachmentConstants.YES);
+                attachment.setAttachmentUrl(url);
+                attachment.setCreatedAt(new Date());
+                attachment.setUpdatedAt(new Date());
+                attachment.setAttachmentCode(attachmentCode);
+                attachmentList.add(attachment);
+            }
+            attachmentMapper.insertBatch(attachmentList);
+            followupRecord.setAttachmentCode(attachmentCode);
+        }
+        int insert = followupRecordMapper.insert(followupRecord);
+        if (insert>=0){
+            return true;
+        }
+        return false;
     }
 }
