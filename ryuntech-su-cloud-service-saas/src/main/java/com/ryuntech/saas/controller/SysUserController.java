@@ -202,7 +202,8 @@ public class SysUserController extends ModuleBaseController {
      * @return
      */
     @PostMapping("/login")
-    public Result login(String username, String password) {
+    public Result login(@RequestParam("username") String username,
+                        @RequestParam("password") String password) {
         if (!StringUtil.isMobile(username)) {
             return new Result(CommonEnums.LOGIN_ERROR.getMsg());
         }

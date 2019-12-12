@@ -24,7 +24,8 @@ public class ScheduledService {
 //    @Autowired
 //    private IPlanOverdueRemindService iPlanOverdueRemindService;
 //
-//    @Scheduled(cron = "0 30 8 * * *")
+//    @Scheduled(cron = "0 0 12 * * *")
+////    @Scheduled(cron = "0/5 * * * * *")
 //    public void scheduled(){
 //
 //        System.out.println("============应收计划到期提醒===============");
