@@ -112,6 +112,10 @@ public class ReceivableContractDTO extends BaseModel {
      * 附件编码
      */
     private String attachmentCode;
+    /**
+     * 附件数量
+     */
+    private Integer attachmentCodeSize;
 
     /**
      * 上传的文件路径

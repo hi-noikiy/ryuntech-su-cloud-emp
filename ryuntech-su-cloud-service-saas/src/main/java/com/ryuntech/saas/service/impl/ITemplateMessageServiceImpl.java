@@ -9,6 +9,7 @@ import com.ryuntech.saas.api.model.ApiPrroper;
 import com.ryuntech.saas.api.model.SendTemplateReq;
 import com.ryuntech.saas.api.model.SendTemplateResponse;
 import com.ryuntech.saas.api.service.ITemplateMessageService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -17,6 +18,7 @@ import java.util.HashMap;
 /**
  * @author EDZ
  */
+@Slf4j
 @Service
 public class ITemplateMessageServiceImpl implements ITemplateMessageService {
 
@@ -26,6 +28,7 @@ public class ITemplateMessageServiceImpl implements ITemplateMessageService {
         String url = new StringBuffer(HttpConstant.SERVICEHOST).append("/cgi-bin/message/template/send?access_token=")
                 .append(accessToken).toString();
         JSONObject jsonObject = packJsonMsg(weixinTemplate);
+        log.info("jsonObject=="+jsonObject.toJSONString());
         String content = HttpUtils.httpsRequest(url, "POST", jsonObject.toJSONString());
         return  new Gson().fromJson(content, SendTemplateResponse.class);
     }
@@ -66,6 +69,12 @@ public class ITemplateMessageServiceImpl implements ITemplateMessageService {
                 remark.put("value", weixinTemplate.getData().getRemake().getValue());
                 remark.put("color", "#173177");
                 json.put("remark", remark);
+            }
+            if (null!=weixinTemplate.getMiniprograms()){
+                JSONObject miniprograms = new JSONObject();
+                miniprograms.put("appid",weixinTemplate.getMiniprograms().get("appid"));
+                miniprograms.put("pagepath",weixinTemplate.getMiniprograms().get("pagepath"));
+                data.put("miniprograms", miniprograms);
             }
 
 

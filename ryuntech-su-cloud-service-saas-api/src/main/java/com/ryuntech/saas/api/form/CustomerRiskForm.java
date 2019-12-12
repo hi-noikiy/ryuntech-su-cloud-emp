@@ -34,4 +34,11 @@ public class CustomerRiskForm {
      * 查询月份
      */
     private String riskTime;
+
+
+
+    /**
+     * 风险详情发生时间
+     */
+    private String riskDetailTime;
 }

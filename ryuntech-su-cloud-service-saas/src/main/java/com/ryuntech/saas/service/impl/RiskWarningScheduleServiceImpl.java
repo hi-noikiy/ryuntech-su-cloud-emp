@@ -18,6 +18,7 @@ import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.RiskWarningScheduleService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -165,9 +166,11 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                     customerRisk.setRiskMType(RiskWarnConstants.TYPE1);
                                     //                                风险级别
                                     customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_1);
+                                    if (!result.getOperList().isEmpty()&&null!=result.getOperList().get(0)){
+                                        customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getOperList().get(0).getChangeDate()));
+                                    }
 //                                    标记
                                     customerRisk.setFalg("0");
-
                                     customerRiskMapper.insert(customerRisk);
                                 }
                             }
@@ -190,6 +193,10 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_2);
     //                                风险小类
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE3);
+
+                                if (!result.getPartnerList().isEmpty()&&null!=result.getPartnerList().get(0)){
+                                    customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPartnerList().get(0).getChangeDate()));
+                                }
                                 customerRiskMapper.insert(customerRisk);
                             }
                         }
@@ -471,6 +478,10 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE4);
 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_1);
+                                /**
+                                 * 风险详情发生时间
+                                 */
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getLiandate()));
 //                                标记
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
@@ -620,6 +631,10 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE5);
 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_1);
+                                /**
+                                 * 风险详情发生时间
+                                 */
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getLiandate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -643,6 +658,9 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE6);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_1);
+                                if (null!=result.getEquityFreezeDetail()&& StringUtils.isNotBlank(result.getEquityFreezeDetail().getFreezeStartDate())){
+                                    customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getEquityFreezeDetail().getFreezeStartDate()));
+                                }
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -665,6 +683,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE7);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPublishedDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -687,6 +707,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE8);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPublishDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -709,6 +731,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE9);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getLianDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -730,6 +754,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE10);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getActionRemark()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -752,6 +778,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE11);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getStartDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -774,6 +802,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE12);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPunishDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -796,6 +826,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE13);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPublicDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -818,6 +850,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE14);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_1);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getAddDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -840,6 +874,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE15);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPublishDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -862,6 +898,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE16);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getIllegalTime()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -884,6 +921,8 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE17);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getPublicDate()));
                                 customerRisk.setFalg("0");
                                 customerRiskMapper.insert(customerRisk);
                             }
@@ -906,6 +945,7 @@ public class RiskWarningScheduleServiceImpl implements RiskWarningScheduleServic
                                 customerRisk.setRiskMType(RiskWarnConstants.TYPE18);
                                 //                                风险级别
                                 customerRisk.setRiskLevel(RiskWarnConstants.RISKLEVEL_0);
+                                customerRisk.setRiskDetailTime(DateUtil.parseDate(result.getAddDate()));
                                 customerRisk.setFalg("0");
 
                                 customerRiskMapper.insert(customerRisk);

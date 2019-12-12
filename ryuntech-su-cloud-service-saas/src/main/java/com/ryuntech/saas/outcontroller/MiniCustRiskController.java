@@ -59,7 +59,6 @@ public class MiniCustRiskController {
         if (StringUtils.isBlank(EmployeeId)){
             return new Result("员工编号不能为空");
         }
-
         List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(customerRiskForm);
 
         if (customerRiskDTOS.isEmpty()){
@@ -71,7 +70,7 @@ public class MiniCustRiskController {
         for (CustomerRiskDTO customerRiskDTO :customerRiskDTOS){
             Date riskTime = customerRiskDTO.getRiskTime();
             List<CustomerRiskDTO> customerRiskD = iCustomerRiskService.selectGroupConcat(
-                    new CustomerRiskForm().setRiskTime(DateUtil.formatDate(riskTime)));
+                    new CustomerRiskForm().setRiskTime(DateUtil.formatDate(riskTime)).setRiskDetailTime(DateUtil.formatDate(riskTime)));
             if (customerRiskD.isEmpty()){
                 continue;
             }

@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.TreeMap;
+
 /**
  * @author EDZ
  */
@@ -29,6 +31,8 @@ public class SendTemplateReq {
      * 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
      */
     private String form_id;
+
+    private TreeMap<String,String> miniprograms;
     /**
      * 模板内容
      * 不填则下发空模板。具体格式请参考示例。

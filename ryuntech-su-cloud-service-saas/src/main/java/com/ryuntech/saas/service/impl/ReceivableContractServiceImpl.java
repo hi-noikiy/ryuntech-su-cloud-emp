@@ -148,13 +148,7 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                     }
                     receivableCollectionPlanDTO.setRemakes(receivableCollectionPlan.getRemakes());
                     receivableCollectionPlanDTO.setStatus(receivableCollectionPlan.getStatus());
-////                    查询已回款金额
-//                    ReceivableCollection receivableCollection = receivableCollectionMapper.selectOne(new QueryWrapper<ReceivableCollection>().eq("plan_id", receivableCollectionPlan.getPlanId()));
-//                    receivableCollectionPlanDTO.setBackAmount("0.00");
-//                    if (receivableCollection!=null){
-//                        String amount = receivableCollection.getAmount();
-//                        receivableCollectionPlanDTO.setBackAmount(amount);
-//                    }
+//                    查询已回款金额
                     receivableCollectionPlanDTOs.add(receivableCollectionPlanDTO);
                 }
 
@@ -162,7 +156,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
             //        合同对象
             ReceivableContract receivableContract = baseMapper.selectOne(new QueryWrapper<ReceivableContract>().eq("contract_id", receivableContractDTO.getContractId()));
             if (receivableContract!=null){
-                receivableContractDTO.setAttachmentCode(receivableContract.getAttachmentCode());
+                String attachmentCode = receivableContract.getAttachmentCode();
+                receivableContractDTO.setAttachmentCode(attachmentCode);
                 receivableContractDTO.setBalanceAmount(receivableContract.getBalanceAmount());
                 receivableContractDTO.setCollectionAmount(receivableContract.getCollectionAmount());
                 receivableContractDTO.setContacts(receivableContract.getContacts());
@@ -190,6 +185,13 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 receivableContractDTO.setContractAmount(receivableContract.getContractAmount());
 //                合同状态
                 receivableContractDTO.setStatus(receivableContract.getStatus());
+                /**
+                 * 附件长度
+                 */
+                List<Attachment> attachmentCodes = attachmentMapper.selectList(new QueryWrapper<Attachment>().eq("attachment_code", attachmentCode));
+                if (!attachmentCodes.isEmpty()){
+                    receivableContractDTO.setAttachmentCodeSize(attachmentCodes.size());
+                }
             }
         }
 
@@ -210,7 +212,7 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 baseDto.setT(followupRecordDTO);
                 CopyUtil.copyObject2(baseForm,baseDto);
                 QueryWrapper<FollowupRecordComment> queryWrapper =new QueryWrapper<>();
-                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId());
+                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId()).orderByDesc("followup_time");
                 List<FollowupRecordComment> followupRecordCommentList = followupRecordCommentMapper.selectList(queryWrapper);
                 if(followupRecordCommentList != null && followupRecordCommentList.size() != 0) {
                     followupRecordDTO.setFollowupRecordComments(followupRecordCommentList);
@@ -222,6 +224,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
             receivableContractDTO.setFollowUpRecord(followupRecordDTO);
             receivableContractDTO.setFollowUpRecords(followupRecordDTOList);
         }
+
+
         return receivableContractDTO;
     }
 

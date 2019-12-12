@@ -1,12 +1,17 @@
 package com.ryuntech.saas.outcontroller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.utils.DateUtil;
+import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.form.ReceivableCollectionForm;
 import com.ryuntech.saas.api.form.ReceivableCollectionPlanForm;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
 import com.ryuntech.saas.api.helper.constant.PlanConstant;
+import com.ryuntech.saas.api.helper.constant.ReceCollectionConstants;
 import com.ryuntech.saas.api.helper.constant.ReceivableContractConstants;
+import com.ryuntech.saas.api.model.CustomerMonitor;
 import com.ryuntech.saas.api.model.ReceivableCollection;
 import com.ryuntech.saas.api.model.ReceivableCollectionPlan;
 import com.ryuntech.saas.api.model.ReceivableContract;
@@ -37,7 +42,7 @@ import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 @Slf4j
 @RestController
 @RequestMapping("/minicollection")
-@Api(value = "MiniReceivableCollection", tags = {"小程序收款接口"})
+@Api(value = "MiniReceivableCollection", tags = {"小程序回款接口"})
 public class MiniRCollectionController extends ModuleBaseController{
 
 
@@ -49,6 +54,18 @@ public class MiniRCollectionController extends ModuleBaseController{
 
     @Autowired
     private IReceivableContractService iReceivableContractService;
+
+
+
+
+    @PostMapping("/outlist")
+    @ApiOperation(value = "分页、条件查询用户列表信息")
+    @ApiImplicitParam(name = "customerMonitor", value = "查询条件", required = true, dataType = "CustomerMonitor", paramType = "body")
+    public Result<IPage<ReceivableCollection>> list(@RequestBody ReceivableCollection receivableCollection, QueryPage queryPage) {
+        log.info("receivableCollection.getCollectionId()"+receivableCollection.getCollectionId());
+        return  iReceivableCollectionService.pageList(receivableCollection, queryPage);
+    }
+
 
     /**
      * 添加收款信息
@@ -74,6 +91,10 @@ public class MiniRCollectionController extends ModuleBaseController{
         receivableCollection.setCollectionId(collectionId);
 //        收款金额
         String amount = receivableCollection.getAmount();
+//        回款方式
+        if (StringUtils.isBlank(receivableCollection.getType())){
+            receivableCollection.setType(ReceCollectionConstants.TYPE_0);
+        }
         BigDecimal amountDe=new BigDecimal(amount);
         receivableCollection.setCreateTime(new Date());
 //        查询合同数据

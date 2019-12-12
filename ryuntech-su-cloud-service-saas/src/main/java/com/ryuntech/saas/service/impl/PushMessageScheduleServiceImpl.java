@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 
 import static com.ryuntech.saas.api.helper.HttpConstant.TOKEN;
 
@@ -113,8 +114,15 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
                 DoctorReplyMsgData doctorReplyMsgData = new DoctorReplyMsgData();
                 doctorReplyMsgData.setKeyword1(new KeyNote().setValue("您好，您监控的"+companySize+"家公司，共发生了"+riskSize+"条风险，请做好防范工作"));
                 doctorReplyMsgData.setKeyword2(new KeyNote().setValue(DateUtil.formatDate(new Date())));
+                TreeMap<String, String> miniprograms = new TreeMap<String, String>();
+                miniprograms.put("appid",WeChatConstants.MINIAPPID);
+                /**
+                 * 注意，这里是支持传参的！！！
+                 */
+                miniprograms.put("pagepath","pages/loading/index");
+                weixinTemplate.setMiniprograms(miniprograms);
                 weixinTemplate.setData(doctorReplyMsgData);
-                weixinTemplate.setUrl("https://www.baidu.com");
+                weixinTemplate.setUrl("http://mp.weixin.qq.com");
                 weixinTemplate.setJsonContent(JSON.toJSONString(doctorReplyMsgData));
                 String url = TOKEN+"&appid=" + WeChatConstants.WXGZHAPPID+"&secret="+ WeChatConstants.WXGZHAPPSECRET;
                 String content = HttpUtils.Get(url);

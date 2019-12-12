@@ -5,6 +5,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.util.HashMap;
+import java.util.TreeMap;
+
 /**
  * @author EDZ
  */
@@ -24,5 +27,8 @@ public class DoctorReplyMsgData {
     private KeyNote keyword4;
 
     private KeyNote keyword5;
+
+
+
     private KeyNote remake;
 }

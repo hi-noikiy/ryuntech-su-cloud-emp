@@ -8,6 +8,7 @@
         <result column="CUSTOMER_ID" property="customerId" />
         <result column="CUSTOMER_NAME" property="customerName" />
         <result column="RISK_TIME" property="riskTime" />
+        <result column="RISK_DETAIL_TIME" property="riskDetailTime" />
         <result column="CREATED" property="created" />
         <result column="UPDATED" property="updated" />
         <result column="RISK_CONTENT" property="riskContent" />
@@ -29,7 +30,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE,FALG,KEY_NO
+        RISK_ID, CUSTOMER_ID, CUSTOMER_NAME, RISK_TIME, CREATED, UPDATED, RISK_CONTENT, RISK_CODE, RISK_TYPE, RISK_MTYPE,FALG,KEY_NO,RISK_DETAIL_TIME
     </sql>
 
     <select id="selectGroupConcat" resultMap="BaseResultMap2"  resultType="com.ryuntech.saas.api.dto.CustomerRiskDTO">
@@ -48,6 +49,9 @@
 
             <if test="customerRiskForm.riskTime!=null">
                 date_format(risk_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskTime}, '%Y-%m-%d')
+            </if>
+            <if test="customerRiskForm.riskDetailTime!=null">
+                date_format(risk_detail_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskDetailTime}, '%Y-%m-%d')
             </if>
         </where>
 

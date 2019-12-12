@@ -40,6 +40,14 @@ public class CustomerRiskDTO {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date riskTime;
 
+
+    /**
+     * 风险详情发生时间
+     */
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    private Date riskDetailTime;
+
     /**
      * 创建时间
      */

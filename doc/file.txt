@@ -12,6 +12,7 @@ aliCha21QoTe
 
 jenkins
 http://wx.ryuntech.com:8080
+service jenkins start
 账号：root
 密码：ryuntech
 文件：0a02719676bb47db9d7c8006f8d5c739(路径/var/lib/jenkins/secrets/initialAdminPassword)
