@@ -14,13 +14,11 @@
         <result column="SURPLUS_AMOUNT" property="surplusAmount" />
 
         <result column="OVERDUE_TIME" property="overdueTime" />
-        <result column="IS_OVERDUE" property="isOverdue" />
-        <result column="OVERDUE_DAY" property="overdueDay" />
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        PLAN_ID, PLAN_AMOUNT, REMAKES, STATUS, CONTRACT_ID, PLAN_TIME, BACKED_AMOUNT, SURPLUS_AMOUNT,OVERDUE_TIME,IS_OVERDUE,OVERDUE_DAY
+        PLAN_ID, PLAN_AMOUNT, REMAKES, STATUS, CONTRACT_ID, PLAN_TIME, BACKED_AMOUNT, SURPLUS_AMOUNT,OVERDUE_TIME
     </sql>
 
     <select id="selectPageList" resultMap="BaseResultMap" resultType="com.ryuntech.saas.api.model.ReceivableCollectionPlan">

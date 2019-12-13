@@ -78,15 +78,6 @@ import java.util.Date;
     @TableField("OVERDUE_TIME")
     private String overdue_time;
 
-    /**
-     * 是否逾期0否1是
-     */
-    private Boolean is_overdue;
-
-    /**
-     * 逾期天数
-     */
-    private Integer overdue_day;
 
     /**
      * 计划回款时间
