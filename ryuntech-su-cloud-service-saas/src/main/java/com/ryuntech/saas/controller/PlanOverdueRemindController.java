@@ -3,9 +3,9 @@ package com.ryuntech.saas.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.ryuntech.common.utils.Result;
-import com.ryuntech.saas.api.model.Employee;
+import com.ryuntech.common.utils.SystemTool;
+import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.model.PlanOverdueRemind;
-import com.ryuntech.saas.api.model.SysUser;
 import com.ryuntech.saas.api.service.ICompanyService;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import com.ryuntech.saas.api.service.IPlanOverdueRemindService;
@@ -43,6 +43,9 @@ public class PlanOverdueRemindController extends ModuleBaseController {
     @Autowired
     private ICompanyService companyService;
 
+    @Autowired
+    private JedisUtil jedisUtil;
+
     /**
      * 获取配置信息
      * @return
@@ -50,19 +53,15 @@ public class PlanOverdueRemindController extends ModuleBaseController {
     @GetMapping("/getConfig")
     @ApiOperation(value = "获取计划逾期提醒配置")
     public Result getConfig() {
-        String username = getUserName();
-        SysUser user = sysUserService.findByName(username);
-        QueryWrapper<Employee> queryWrapper1 =new QueryWrapper<>();
-        queryWrapper1.eq("sys_user_id", user.getSysUserId());
-        Employee employee = iEmployeeService.getOne(queryWrapper1);
-        QueryWrapper<PlanOverdueRemind> queryWrapper2 =new QueryWrapper<>();
-        PlanOverdueRemind planOverdueRemind = iPlanOverdueRemindService.getOne(queryWrapper2.eq("company_id", employee.getCompanyId()));
+        String companyId = SystemTool.currentUser(jedisUtil).getCompanyId();
+        QueryWrapper<PlanOverdueRemind> queryWrapper =new QueryWrapper<>();
+        PlanOverdueRemind planOverdueRemind = iPlanOverdueRemindService.getOne(queryWrapper.eq("company_id", companyId));
         // 配置信息不存在则添加
         if(planOverdueRemind == null) {
             planOverdueRemind = new PlanOverdueRemind();
             String expireId = String.valueOf(generateId());
             planOverdueRemind.setOverdueId(expireId);
-            planOverdueRemind.setCompanyId(employee.getCompanyId());
+            planOverdueRemind.setCompanyId(companyId);
             planOverdueRemind.setFollowPerson("0");
             planOverdueRemind.setDepartHead("0");
             planOverdueRemind.setEmailType("0");

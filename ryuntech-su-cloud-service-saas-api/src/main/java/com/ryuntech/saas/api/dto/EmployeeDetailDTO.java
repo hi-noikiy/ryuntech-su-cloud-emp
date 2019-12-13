@@ -18,7 +18,7 @@ public class EmployeeDetailDTO {
 
     private String email;
 
-    private Integer dataType;
+    private String dataType;
 
     private String roleIds;
 }
