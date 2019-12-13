@@ -59,6 +59,7 @@ public class MiniCustRiskController {
         if (StringUtils.isBlank(EmployeeId)){
             return new Result("员工编号不能为空");
         }
+
         List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(customerRiskForm);
 
         if (customerRiskDTOS.isEmpty()){

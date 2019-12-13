@@ -68,6 +68,9 @@
             <if test="receivableContract.contractName!=null and receivableContract.contractName!=''">
                 and contract_name like concat('%',#{receivableContract.contractName},'%')
             </if>
+            <if test="receivableContract.staffId!=null and receivableContract.staffId!=''">
+                and staff_id like concat('%',#{receivableContract.staffId},'%')
+            </if>
 
             <if test="receivableContract.statusList!=null and receivableContract.statusList.size()>0">
                 and status in

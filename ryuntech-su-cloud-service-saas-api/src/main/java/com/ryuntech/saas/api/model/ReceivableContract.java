@@ -140,6 +140,7 @@ import java.util.List;
 
     @TableField(exist = false)
     private List<ReceivableCollectionPlan> receivableCollectionPlans;
+
     /**
      * 逾期计划
      */

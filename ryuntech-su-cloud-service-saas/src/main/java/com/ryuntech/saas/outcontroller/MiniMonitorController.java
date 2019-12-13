@@ -61,8 +61,14 @@ public class MiniMonitorController extends ModuleBaseController{
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询用户列表信息")
     @ApiImplicitParam(name = "customerMonitor", value = "查询条件", required = true, dataType = "CustomerMonitor", paramType = "body")
-    public Result<IPage<CustomerMonitor>> list(@RequestBody CustomerMonitor customerMonitor, QueryPage queryPage) {
+    public Result<IPage<CustomerMonitor>> list(@RequestHeader String EmployeeId,@RequestBody CustomerMonitor customerMonitor, QueryPage queryPage) {
         log.info("customerMonitor.getMonitorId()"+customerMonitor.getMonitorId());
+        log.info("EmployeeId"+EmployeeId);
+        if (StringUtils.isBlank(EmployeeId)){
+            return new Result("员工编号不能为空");
+        }
+        customerMonitor.setEmployeeId(EmployeeId);
+
         return  iCustomerMonitorService.pageList(customerMonitor, queryPage);
     }
 
@@ -87,7 +93,7 @@ public class MiniMonitorController extends ModuleBaseController{
     }
 
     @GetMapping("/outcancel")
-    @ApiOperation(value = "添加客户监控信息")
+    @ApiOperation(value = "取消监控信息")
     @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
     public Result cancel(CustomerMonitorForm customerMonitorForm) throws Exception {
         if (StringUtils.isBlank(customerMonitorForm.getMonitorId())){

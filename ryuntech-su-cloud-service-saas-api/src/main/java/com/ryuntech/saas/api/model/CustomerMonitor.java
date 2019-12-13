@@ -48,16 +48,31 @@ import java.util.Date;
     private String customerName;
 
 
-        @TableField("STAFF_ID")
+    /**
+     * 客户跟进人编号
+     */
+    @TableField("STAFF_ID")
     private String staffId;
 
+
+    /**
+     * 添加的员工编号
+     */
         @TableField("EMPLOYEE_ID")
     private String employeeId;
 
+
+    /**
+     * 添加的员工姓名
+     */
         @TableField("EMPLOYEE_NAME")
     private String employeeName;
 
 
+
+    /**
+     * 客户跟进人姓名
+     */
         @TableField("STAFF_NAME")
     private String staffName;
 
