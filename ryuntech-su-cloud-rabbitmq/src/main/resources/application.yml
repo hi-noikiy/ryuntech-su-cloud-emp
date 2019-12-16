@@ -1,12 +1,20 @@
+server:
+  port: 8899
 spring:
   application:
     name: ryuntech-su-cloud-rabbitmq
   rabbitmq:
-    host: 127.0.0.1
+    host: 192.168.30.104
     port: 5672
-    username: wqh
-    password: wqh
-
+    username: guest
+    password: guest
+    listener:
+      simple:
+        # 手动确认模式
+        acknowledge-mode: manual
+        # 并发控制
+        concurrency: 1
+        max-concurrency: 10
   profiles:
     active: dev
   cloud:
@@ -41,19 +49,19 @@ management:
         include: '*'
 
 #mybatis配置
-mybatis:
-  mapper-locations: classpath:/mapper/*Mapper.xml
-  type-aliases-package: com.ryuntech.saas.api.model
+#mybatis:
+#  mapper-locations: classpath:/mapper/*Mapper.xml
+#  type-aliases-package: com.ryuntech.saas.api.model
 
 
-mybatis-plus:
-    mapper-locations: classpath:/mapper/*Mapper.xml
+#mybatis-plus:
+#    mapper-locations: classpath:/mapper/*Mapper.xml
 
 #mybaatis分页插件pagehelper设置
-pagehelper:
-  helperDialect: mysql
-  reasonable: true
-  support-methods-arguments: true
+#pagehelper:
+#  helperDialect: mysql
+#  reasonable: true
+#  support-methods-arguments: true
 
 # 打印sql
 logging:

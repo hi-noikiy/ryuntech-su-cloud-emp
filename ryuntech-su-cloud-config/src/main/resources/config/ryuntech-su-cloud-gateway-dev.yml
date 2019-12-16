@@ -22,3 +22,7 @@ zuul:
 #      path: /api/eureka/**
 #      serviceId: ryuntech-su-cloud-eureka
 
+    ryuntech-su-cloud-rabbitmq:
+      path: /api/mq/**
+      serviceId: ryuntech-su-cloud-rabbitmq
+
