@@ -50,8 +50,8 @@ public class UploadController {
 //        String host = ip + ":" + port;
         try {
             //获取文件在服务器的储存位置
-            File path = new File(ResourceUtils.getURL("classpath:").getPath());
-            File filePath = new File(path.getAbsolutePath(), "static/upload/");
+            //获取文件在服务器的储存位置
+            File filePath = new File("/data/wwwroot/default/upload/");
             log.info("文件的保存路径：" + filePath.getAbsolutePath());
             if (!filePath.exists() && !filePath.isDirectory()) {
                 log.info("目录不存在，创建目录:" + filePath);

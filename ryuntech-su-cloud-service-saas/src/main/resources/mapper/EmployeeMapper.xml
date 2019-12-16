@@ -16,6 +16,8 @@
         <result column="COMPANY_NAME" property="companyName"/>
         <result column="UPDATED_AT" property="updatedAt"/>
         <result column="CREATED_AT" property="createdAt"/>
+        <result column="IS_WECHAT" property="isWeChat"/>
+        <result column="IS_EMAIL" property="isEmail"/>
     </resultMap>
 
     <!-- 部门负责人查询映射结果 -->
@@ -34,11 +36,14 @@
         <result column="DATA_DEPARTMENT_ID" property="dataDepartmentId"/>
         <result column="UPDATED_AT" property="updatedAt"/>
         <result column="CREATED_AT" property="createdAt"/>
+        <result column="IS_WECHAT" property="isWeChat"/>
+        <result column="IS_EMAIL" property="isEmail"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-         EMPLOYEE_ID, SYS_USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID, DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT
+         EMPLOYEE_ID, SYS_USER_ID, NAME, COMPANY_ID, DEPARTMENT_ID,
+            DEPARTMENT_NAME, MOBILE, EMAIL, STATUS, COMPANY_NAME, UPDATED_AT, CREATED_AT,IS_EMAIL,IS_WECHAT
     </sql>
     <update id="migrateToAnotherDept">
         update ryn_employee

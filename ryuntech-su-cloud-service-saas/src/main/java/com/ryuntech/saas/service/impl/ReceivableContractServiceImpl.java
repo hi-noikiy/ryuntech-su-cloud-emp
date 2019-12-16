@@ -191,6 +191,8 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 List<Attachment> attachmentCodes = attachmentMapper.selectList(new QueryWrapper<Attachment>().eq("attachment_code", attachmentCode));
                 if (!attachmentCodes.isEmpty()){
                     receivableContractDTO.setAttachmentCodeSize(attachmentCodes.size());
+                }else {
+                    receivableContractDTO.setAttachmentCodeSize(0);
                 }
             }
         }
@@ -198,7 +200,10 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
 //        计划
         receivableContractDTO.setReceivableCollectionPlanDTOs(receivableCollectionPlanDTOs);
 //        跟进记录
-        List<FollowupRecord> followupRecord2 = followupRecordMapper.selectList(new QueryWrapper<FollowupRecord>().eq("contract_id", receivableContractDTO.getContractId()));
+        List<FollowupRecord> followupRecord2 =
+                followupRecordMapper
+                        .selectList(new QueryWrapper<FollowupRecord>()
+                                .eq("contract_id", receivableContractDTO.getContractId()).orderByDesc("followup_time"));
         if (followupRecord2!=null&&followupRecord2.size()!=0){
             // 将followupRecord2中的跟进记录复制到followupRecordDTOList中用于输出到页面
             List<FollowupRecordDTO> followupRecordDTOList = new ArrayList<>();
@@ -212,7 +217,7 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 baseDto.setT(followupRecordDTO);
                 CopyUtil.copyObject2(baseForm,baseDto);
                 QueryWrapper<FollowupRecordComment> queryWrapper =new QueryWrapper<>();
-                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId()).orderByDesc("comment_time");
+                queryWrapper.eq("followup_id", followupRecordDTO.getFollowupId());
                 List<FollowupRecordComment> followupRecordCommentList = followupRecordCommentMapper.selectList(queryWrapper);
                 if(followupRecordCommentList != null && followupRecordCommentList.size() != 0) {
                     followupRecordDTO.setFollowupRecordComments(followupRecordCommentList);

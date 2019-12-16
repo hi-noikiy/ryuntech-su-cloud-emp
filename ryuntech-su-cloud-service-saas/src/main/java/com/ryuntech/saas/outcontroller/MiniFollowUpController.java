@@ -98,30 +98,31 @@ public class MiniFollowUpController extends ModuleBaseController{
     @PostMapping("/outcontractrlist")
     @ApiOperation(value = "合同跟进列表")
     @ApiImplicitParam(name = "contractRecordForm", value = "合同跟进信息", required = true, dataType = "ContractRecordForm", paramType = "body")
-    public Result<Map<String,Object>> contractRecordList(@RequestHeader String EmployeeId, @RequestBody ContractRecordForm contractRecordForm) {
-        log.info("EmployeeId=="+EmployeeId);
+    public Result<Map<String,Object>> contractRecordList( @RequestBody ContractRecordForm contractRecordForm) {
+        /*log.info("EmployeeId=="+EmployeeId);
         if(StringUtils.isBlank(EmployeeId)){
             return new Result(OPERATE_ERROR,"用户未登陆");
-        }
+        }*/
 //        总待跟进
-        contractRecordForm.setStaffId(EmployeeId);
-        List<ContractRecordDTO> contractFollowsDay = followupRecordService.contractRecordList(contractRecordForm);
-        for (ContractRecordDTO contractRecordDTO:contractFollowsDay){
+//        contractRecordForm.setStaffId(EmployeeId);
+        List<ContractRecordDTO> contractFollows = followupRecordService.contractRecordList(contractRecordForm);
+        for (ContractRecordDTO contractRecordDTO:contractFollows){
             String attachmentCode = contractRecordDTO.getAttachmentCode();
             List<Attachment> attachmentList = iAttachmentService.selectByAttachmentCode(attachmentCode);
             contractRecordDTO.setAttachments(attachmentList);
         }
 //       今天待跟进，获取提醒类型 type=1为今日到期
         ReceivableCollectionPlanForm receivableCollectionPlanForm = new ReceivableCollectionPlanForm();
-        receivableCollectionPlanForm.setPlanTime(new Date());
-        receivableCollectionPlanForm.setStatus(PlanConstant.OVERDUED);
+//        receivableCollectionPlanForm.setPlanTime(new Date());
+//        receivableCollectionPlanForm.setStatus(PlanConstant.OVERDUED);
         List<ReceivableCollectionPlan> receivableCollectionPlans = iReceivableCollectionPlanService.selectByPlan(receivableCollectionPlanForm);
 
         List<ReceivableContract> receivableContracts = new ArrayList<>();
 
         for (ReceivableCollectionPlan receivableCollectionPlan :receivableCollectionPlans){
             String contractId = receivableCollectionPlan.getContractId();
-            ReceivableContract byContract = iReceivableContractService.findByContract(new ReceivableContractForm().setContractId(contractId));
+            ReceivableContract byContract = iReceivableContractService.findByContract(
+                    new ReceivableContractForm().setContractId(contractId));
 //            去除重复的合同
             boolean contains = receivableContracts.contains(byContract);
             if (!contains&&byContract!=null){
@@ -129,8 +130,8 @@ public class MiniFollowUpController extends ModuleBaseController{
             }
         }
         Map<String,Object> resultMap = new HashMap<>();
-//        今日待跟进
-        resultMap.put("followupRecords",contractFollowsDay);
+//        跟进记录列表
+        resultMap.put("followupRecords",contractFollows);
 //        今日待跟进合同列表
         resultMap.put("receivableContracts",receivableContracts);
 

@@ -57,16 +57,16 @@ public class MiniContractController extends ModuleBaseController {
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询合同信息")
     @ApiImplicitParam(name = "receivableContract", value = "查询条件", required = true, dataType = "ReceivableContract", paramType = "body")
-    public Result<IPage<ReceivableContractDTO>> list(@RequestHeader String EmployeeId,@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
-        log.info("receivableContract.getContractId()"+receivableContract.getContractId());
+    public Result<IPage<ReceivableContractDTO>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
+       /* log.info("receivableContract.getContractId()"+receivableContract.getContractId());
         log.info("receivableContract.getStatus()"+receivableContract.getStatus());
         if(StringUtils.isBlank(EmployeeId)){
             return new Result(OPERATE_ERROR,"用户未登陆");
-        }
+        }*/
         if (StringUtils.isNotBlank(receivableContract.getStatus())){
             receivableContract.setStatusList(Arrays.asList(receivableContract.getStatus().split("_")));
         }
-        receivableContract.setStaffId(EmployeeId);
+//        receivableContract.setStaffId(EmployeeId);
         log.info("receivableContract.getStatusList()"+receivableContract.getStatusList());
         return  iReceivableContractService.selectPageList(receivableContract, queryPage);
     }

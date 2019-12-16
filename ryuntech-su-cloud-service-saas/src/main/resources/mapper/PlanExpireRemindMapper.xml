@@ -80,4 +80,28 @@
             AND <![CDATA[ rp.STATUS <> "1" AND re.EMAIL <> "" ]]>
             AND re.STATUS = 1
     </select>
+
+
+    <select id="queryPlanMessageRemindWx" resultMap="PlanMessageRemindResultMap">
+        SELECT
+            rc.CONTRACT_NAME, rc.CUSTOMER_NAME, rc.CONTRACT_AMOUNT, rc.COLLECTION_AMOUNT, rc.TOTAL_PLAN_PERIODES,
+            re.DEPARTMENT_ID, re.EMPLOYEE_ID, re.NAME, re.COMPANY_ID, re.EMAIL, re.IS_CHARGER,
+            rp.PLAN_AMOUNT, rp.BACKED_AMOUNT, rp.SURPLUS_AMOUNT, rp.PLAN_TIME, rp.PLAN_PERIODES, rd.DEPARTMENT_NAME
+        FROM
+            ryn_receivable_collection_plan rp,
+            ryn_receivable_contract rc,
+            ryn_employee re,
+            ryn_department rd
+        WHERE
+            rp.CONTRACT_ID = rc.CONTRACT_ID
+            AND rc.staff_id = re.EMPLOYEE_ID
+            AND re.DEPARTMENT_ID = rd.DEPARTMENT_ID
+            AND <![CDATA[ rp.STATUS <> "1" AND re.EMAIL <> "" ]]>
+            AND re.STATUS = 1
+            AND re.IS_WECHAT = 1
+    </select>
+
+
+
+
 </mapper>

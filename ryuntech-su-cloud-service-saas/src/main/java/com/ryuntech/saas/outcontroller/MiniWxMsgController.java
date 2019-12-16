@@ -74,6 +74,7 @@ public class MiniWxMsgController extends ModuleBaseController{
         return null;
     }
 
+
     /**
      * 微信token信息验证
      *

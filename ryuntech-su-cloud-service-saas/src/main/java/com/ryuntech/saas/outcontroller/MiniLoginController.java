@@ -62,6 +62,8 @@ public class MiniLoginController extends ModuleBaseController{
     @Autowired
     ISysParamsService iSysParamsService;
 
+
+
     /**
      * 注册第一步
      *
@@ -77,7 +79,7 @@ public class MiniLoginController extends ModuleBaseController{
 
 //        riskWarningScheduleService.riskWarning();
         try {
-            pushMessageScheduleService.riskMonitorPush();
+            pushMessageScheduleService.overdueRPush();
         } catch (Exception e) {
             e.printStackTrace();
         }
