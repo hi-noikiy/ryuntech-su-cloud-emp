@@ -17,6 +17,8 @@ import com.ryuntech.saas.api.mapper.FollowupRecordCommentMapper;
 import com.ryuntech.saas.api.mapper.FollowupRecordMapper;
 import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.IFollowupRecordService;
+import com.ryuntech.saas.api.service.IReceivableContractService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +47,9 @@ public class FollowupRecordServiceImpl extends BaseServiceImpl<FollowupRecordMap
 
     @Autowired
     private AttachmentMapper attachmentMapper;
+
+    @Autowired
+    private IReceivableContractService iReceivableContractService;
 
     @Override
     public Result<IPage<FollowupRecord>> pageList(FollowupRecord followupRecord, QueryPage queryPage) {
@@ -82,10 +87,17 @@ public class FollowupRecordServiceImpl extends BaseServiceImpl<FollowupRecordMap
         followupRecord.setContractId(followupRecordForm.getContractId());
         followupRecord.setFollowupId(followupRecordForm.getFollowupId());
         followupRecord.setContent(followupRecordForm.getContent());
+        followupRecord.setContractName(followupRecordForm.getContractName());
         followupRecord.setEstimateAmount(followupRecordForm.getEstimateAmount());
         followupRecord.setEstimateTime(followupRecordForm.getEstimateTime());
-        followupRecord.setStaffId(followupRecordForm.getStaffId());
-        followupRecord.setStaffName(followupRecordForm.getStaffName());
+        if (StringUtils.isBlank(followupRecordForm.getStaffId())){
+            ReceivableContract byId = iReceivableContractService.getById(followupRecordForm.getContractId());
+            followupRecord.setStaffId(byId.getStaffId());
+            followupRecord.setStaffName(byId.getStaffName());
+        }else {
+            followupRecord.setStaffId(followupRecordForm.getStaffId());
+            followupRecord.setStaffName(followupRecordForm.getStaffName());
+        }
         followupRecord.setFollowupTime(new Date());
         followupRecord.setUpdatedAt(new Date());
         followupRecord.setCreatedAt(new Date());

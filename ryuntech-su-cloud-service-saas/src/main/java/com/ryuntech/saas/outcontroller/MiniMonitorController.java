@@ -76,9 +76,14 @@ public class MiniMonitorController extends ModuleBaseController{
     @PostMapping("/outaddlist")
     @ApiOperation(value = "分页、条件查询客户列表信息")
     @ApiImplicitParam(name = "customerUserInfoForm", value = "查询条件", required = true, dataType = "CustomerUserInfoForm", paramType = "body")
-    public Result<IPage<CustomerUserInfo>> list(@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
+    public Result<IPage<CustomerUserInfo>> list(@RequestHeader String EmployeeId,@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
         log.info("customerUserInfoForm.getCustomerId()"+customerUserInfoForm.getCustomerId());
-//        查询非监控列表的数据
+
+        if(StringUtils.isBlank(EmployeeId)){
+            return new Result(OPERATE_ERROR,"用户未登陆");
+        }
+        //        查询非监控列表的数据
+        customerUserInfoForm.setStaffId(EmployeeId);
         customerUserInfoForm.setIsRisk(1);
         return  iCustomerUserInfoService.selectPageList(customerUserInfoForm, queryPage);
     }
@@ -125,7 +130,7 @@ public class MiniMonitorController extends ModuleBaseController{
     @PostMapping("/outadd")
     @ApiOperation(value = "添加客户监控信息")
     @ApiImplicitParam(name = "customerMonitorForm", value = "客户监控信息", required = true, dataType = "CustomerMonitorForm", paramType = "body")
-    public Result add(@RequestBody CustomerMonitorForm customerMonitorForm) throws YkControllerException {
+    public Result add(@RequestBody CustomerMonitorForm customerMonitorForm,@RequestHeader String EmployeeId) throws YkControllerException {
         if (null!=customerMonitorForm){
             List<String> customerIds = customerMonitorForm.getCustomerIds();
             for (String customerId:customerIds){
@@ -133,6 +138,11 @@ public class MiniMonitorController extends ModuleBaseController{
                 CustomerMonitor customerMonitor = iCustomerMonitorService.getOne(new QueryWrapper<CustomerMonitor>().eq("customer_id", customerId));
                 if (null!=customerMonitor){
                     log.info("该公司已经在监控列表中"+customerMonitor.getMonitorId());
+                    //修改状态
+                    if (customerMonitor.getStatus().equals("0")){
+                        customerMonitor.setStatus(true);
+                        iCustomerMonitorService.updateById(customerMonitor);
+                    }
                     continue;
                 }
 
@@ -165,6 +175,9 @@ public class MiniMonitorController extends ModuleBaseController{
                     if (status.equals("214")){
                         return new Result(OPERATE_ERROR,"您还未购买过该接口，请先购买");
                     }
+                    if (status.equals("112")){
+                        return new Result(OPERATE_ERROR,"您的账号剩余使用量已不足");
+                    }
                 }
 //                查询该客户对应的公司
                 Company company = iCompanyService.selectByCompany(new Company().setCompanyId(customerUserInfoDTO.getCompanyId()));
@@ -175,7 +188,7 @@ public class MiniMonitorController extends ModuleBaseController{
                 iCompanyService.saveOrUpdate(company);
 
 //                查询添加该监控的员工
-                Employee employee = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(customerMonitorForm.getEmployeeId()));
+                Employee employee = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(EmployeeId));
 
                 String  monitorId = String.valueOf(generateId());
                 CustomerMonitor customerM = new CustomerMonitor();

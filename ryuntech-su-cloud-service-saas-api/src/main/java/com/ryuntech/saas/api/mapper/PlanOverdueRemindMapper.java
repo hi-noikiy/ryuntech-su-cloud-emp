@@ -21,4 +21,10 @@ public interface PlanOverdueRemindMapper extends BaseMapper<PlanOverdueRemind> {
      * @return
      */
     List<ContractPlanRemindDTO> queryPlanMessageRemind();
+
+    /**
+     * 发送微信消息
+     * @return
+     */
+    List<ContractPlanRemindDTO> queryPlanMessageRemindWx();
 }

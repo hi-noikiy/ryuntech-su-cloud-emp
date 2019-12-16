@@ -63,6 +63,8 @@ public class FollowupRecordDTO extends BaseModel {
 
 
     private List<Attachment> attachments;
+    
+    private String stringAttachments;
 
     /**
      *

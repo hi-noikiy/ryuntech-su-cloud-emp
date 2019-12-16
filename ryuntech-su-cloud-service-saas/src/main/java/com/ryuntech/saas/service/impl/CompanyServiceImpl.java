@@ -76,6 +76,9 @@ public class CompanyServiceImpl extends BaseServiceImpl<CompanyMapper, Company> 
         if (StringUtils.isNotBlank(company.getName())) {
             queryWrapper.eq("name", company.getName());
         }
+        if (StringUtils.isNotBlank(company.getName())) {
+            queryWrapper.eq("company_id", company.getCompanyId());
+        }
         return baseMapper.selectOne(queryWrapper);
     }
 

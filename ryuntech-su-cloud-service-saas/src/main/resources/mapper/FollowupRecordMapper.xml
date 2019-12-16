@@ -32,6 +32,7 @@
         <result column="followup_time" property="followupTime" />
         <result column="updated_at" property="updatedAt" />
         <result column="created_at" property="createdAt" />
+        <result column="stringAttachments" property="stringAttachments" />
         <collection   property="attachments" ofType="com.ryuntech.saas.api.model.Attachment">
             <id column="attachmentCode" property="attachmentCode" />
         </collection>
@@ -69,7 +70,14 @@
 
     <select id="selectPageList" resultMap="BaseResultMap1" >
         select
-            *
+        ryn_followup_record.*,
+        (
+            select
+                group_concat(ryn_attachment.attachment_url)
+            from ryn_attachment
+                where
+            ryn_attachment.attachment_code = ryn_followup_record.attachment_code group by attachment_code
+        ) as stringAttachments
         from
             ryn_followup_record
         <where>

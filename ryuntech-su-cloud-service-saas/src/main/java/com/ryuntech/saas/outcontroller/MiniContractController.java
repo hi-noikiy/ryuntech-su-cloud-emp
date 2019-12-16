@@ -57,16 +57,16 @@ public class MiniContractController extends ModuleBaseController {
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询合同信息")
     @ApiImplicitParam(name = "receivableContract", value = "查询条件", required = true, dataType = "ReceivableContract", paramType = "body")
-    public Result<IPage<ReceivableContractDTO>> list(@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
-       /* log.info("receivableContract.getContractId()"+receivableContract.getContractId());
+    public Result<IPage<ReceivableContractDTO>> list(@RequestHeader String EmployeeId,@RequestBody ReceivableContract receivableContract, QueryPage queryPage) {
+        log.info("receivableContract.getContractId()"+receivableContract.getContractId());
         log.info("receivableContract.getStatus()"+receivableContract.getStatus());
         if(StringUtils.isBlank(EmployeeId)){
             return new Result(OPERATE_ERROR,"用户未登陆");
-        }*/
+        }
         if (StringUtils.isNotBlank(receivableContract.getStatus())){
             receivableContract.setStatusList(Arrays.asList(receivableContract.getStatus().split("_")));
         }
-//        receivableContract.setStaffId(EmployeeId);
+        receivableContract.setStaffId(EmployeeId);
         log.info("receivableContract.getStatusList()"+receivableContract.getStatusList());
         return  iReceivableContractService.selectPageList(receivableContract, queryPage);
     }
@@ -177,19 +177,16 @@ public class MiniContractController extends ModuleBaseController {
             }
         }
 
-        List<AttachmentFile> attachmentFiles = receivableContractFrom.getFiles();
+        List<ReceivableContractForm.URL> attachmentFiles = receivableContractFrom.getUpLoadImg();
         List<Attachment> attachments = new ArrayList<>();
         if (attachmentFiles!=null&&attachmentFiles.size()!=0){
             //                附件编码
             String attachmentCode = String.valueOf(generateId());
             receivableContract.setAttachmentCode(attachmentCode);
-            for (AttachmentFile attachmentFile :attachmentFiles){
+            for (ReceivableContractForm.URL attachmentFile :attachmentFiles){
                 //                文件编号
                 Attachment attachment = new Attachment();
-                String attachmentId=null;
-                if (StringUtils.isBlank(attachmentFile.getId())){
-                    attachmentId= String.valueOf(generateId());
-                }
+                String attachmentId=String.valueOf(generateId());
                 attachment.setId(attachmentId);
                 attachment.setAttachmentType(AttachmentConstants.TYPE1);
                 attachment.setAttachmentCode(attachmentCode);
@@ -228,6 +225,9 @@ public class MiniContractController extends ModuleBaseController {
         if (StringUtils.isBlank(receivableContractFrom.getContractName())){
             return new Result(PARAM_ERROR,"合同名不能为空");
         }
+       /* if (upLoadImg.length!=0){
+            receivableContractFrom.setUpLoadImg(upLoadImg);
+        }*/
 //        if (StringUtils.isBlank(receivableContractDTO.getStaffId())) {
 //            return new Result(PARAM_ERROR,"负责员工不能为空");
 //        }
@@ -261,11 +261,6 @@ public class MiniContractController extends ModuleBaseController {
         receivableContract.setStaffId(receivableContractFrom.getStaffId());
         //        负责人姓名
         receivableContract.setStaffName(receivableContractFrom.getStaffName());
-//
-//        if (StringUtils.isNotBlank(staffId)){
-//            SysUser sysUser = sysUserService.getById(staffId);
-//            receivableContract.setStaffName(sysUser.getUsername());
-//        }
 
         String customerId = receivableContractFrom.getCustomerId();
         if (StringUtils.isNotBlank(customerId)){
@@ -294,13 +289,13 @@ public class MiniContractController extends ModuleBaseController {
             }
         }
 
-        List<AttachmentFile> attachmentFiles = receivableContractFrom.getFiles();
+        List<ReceivableContractForm.URL> attachmentFiles = receivableContractFrom.getUpLoadImg();
         List<Attachment> attachments = new ArrayList<>();
         if (attachmentFiles!=null&&attachmentFiles.size()!=0){
             //                附件编码
             String attachmentCode = String.valueOf(generateId());
             receivableContract.setAttachmentCode(attachmentCode);
-            for (AttachmentFile attachmentFile :attachmentFiles){
+            for (ReceivableContractForm.URL attachmentFile :attachmentFiles){
                 //                文件编号
                 String attachmentId = String.valueOf(generateId());
                 Attachment attachment = new Attachment();

@@ -1,5 +1,6 @@
 package com.ryuntech.saas.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -26,6 +27,7 @@ public class CustomerMonitorServiceImpl extends BaseServiceImpl<CustomerMonitorM
     @Override
     public Result<IPage<CustomerMonitor>> pageList(CustomerMonitor customerMonitor, QueryPage queryPage) {
         Page<CustomerMonitor> page = new Page<>(queryPage.getPageCode(), queryPage.getPageSize());
+        queryWrapper = new QueryWrapper<>();
         if (customerMonitor.getCustomerId()!=null) {
             queryWrapper.eq("customer_id", customerMonitor.getCustomerId());
         }
@@ -35,7 +37,7 @@ public class CustomerMonitorServiceImpl extends BaseServiceImpl<CustomerMonitorM
         if (customerMonitor.getEmployeeId()!=null) {
             queryWrapper.eq("employee_id", customerMonitor.getEmployeeId());
         }
-        queryWrapper.eq("status",true);
+        queryWrapper.eq("status",'1');
         return super.pageList(queryWrapper,page);
     }
 }

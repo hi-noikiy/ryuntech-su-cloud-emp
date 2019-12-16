@@ -36,9 +36,12 @@
                 and customer_name like concat('%',#{customerUserInfoForm.customerName},'%')
             </if>
 
+            <if test="customerUserInfoForm.staffId!=null and customerUserInfoForm.staffId!=''">
+                and staff_id like concat('%',#{customerUserInfoForm.staffId},'%')
+            </if>
 
             <if test="customerUserInfoForm.isRisk!=null and customerUserInfoForm.isRisk==1">
-                and customer_id not in ( select customer_id from ryn_customer_monitor)
+                and customer_id not in ( select customer_id from ryn_customer_monitor where ryn_customer_monitor.status='1')
             </if>
 
         </where>

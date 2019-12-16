@@ -2,9 +2,11 @@ package com.ryuntech.saas.outcontroller;
 
 import com.ryuntech.common.constant.enums.CommonEnums;
 import com.ryuntech.common.utils.Result;
+import com.ryuntech.saas.api.service.ISysParamsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,6 +38,9 @@ public class MiniUploadController {
 
     private final String ip = DEBUG_URL;
 
+    @Autowired
+    ISysParamsService iSysParamsService;
+
     /**
      * 文件上传
      *
@@ -50,13 +55,22 @@ public class MiniUploadController {
 //        String host = ip + ":" + port;
         try {
             //获取文件在服务器的储存位置
-            File filePath = new File("/data/wwwroot/default/upload/");
+            String valueByInnerName = iSysParamsService.getValueByInnerName("upload.flag");
+            File path = null;
+            File filePath = null;
+
+            if (valueByInnerName.equals("0")){
+                path = new File(ResourceUtils.getURL("classpath:").getPath());
+                filePath = new File(path.getAbsolutePath(), "static/upload/");
+            }else {
+                filePath = new File("/data/wwwroot/default/upload/");
+            }
+
             log.info("文件的保存路径：" + filePath.getAbsolutePath());
             if (!filePath.exists() && !filePath.isDirectory()) {
                 log.info("目录不存在，创建目录:" + filePath);
                 filePath.mkdir();
             }
-
             //获取原始文件名称(包含格式)
             String originalFileName = file.getOriginalFilename();
             log.info("原始文件名称：" + originalFileName);

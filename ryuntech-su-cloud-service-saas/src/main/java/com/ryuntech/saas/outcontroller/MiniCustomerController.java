@@ -1,5 +1,6 @@
 package com.ryuntech.saas.outcontroller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.ryuntech.common.model.BaseDto;
 import com.ryuntech.common.model.BaseForm;
@@ -24,6 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.ryuntech.common.constant.enums.CommonEnums.OPERATE_ERROR;
 
@@ -54,6 +57,20 @@ public class MiniCustomerController extends ModuleBaseController{
 //            return new Result<>(OPERATE_ERROR);
 //        }
         return  customerUserInfoService.selectPageList(customerUserInfoForm, queryPage);
+    }
+
+    @PostMapping("/outalllist")
+    @ApiOperation(value = "分页、条件查询客户列表信息")
+    @ApiImplicitParam(name = "customerUserInfo", value = "查询条件", required = true, dataType = "CustomerUserInfo", paramType = "body")
+    public Result<List<CustomerUserInfo>> allList(@RequestHeader String EmployeeId,@RequestBody CustomerUserInfoForm customerUserInfoForm, QueryPage queryPage) {
+        log.info("customerUserInfoForm.getCustomerId()"+customerUserInfoForm.getCustomerId());
+//        if (StringUtils.isBlank(customerUserInfo.getCustomerId())){
+//            return new Result<>(OPERATE_ERROR);
+//        }
+        if (StringUtils.isBlank(EmployeeId)){
+            return new Result(OPERATE_ERROR,"员工编号为空，不能查询");
+        }
+        return  new Result(customerUserInfoService.list(new QueryWrapper<CustomerUserInfo>().eq("staff_id",EmployeeId)));
     }
 
     /**
@@ -132,15 +149,14 @@ public class MiniCustomerController extends ModuleBaseController{
      * @param employeeForm
      * @return
      */
-    @GetMapping("/outupdateyee")
+    @PostMapping("/outupdateyee")
     @ApiOperation(value = "更新员工信息", notes = "employeeId存在")
     @ApiImplicitParam(name = "employeeForm", value = "员工对象", required = true, dataType = "String")
-    public Result findById(EmployeeForm employeeForm) {
-        String employeeId = employeeForm.getEmployeeId();
-        if (StringUtils.isBlank(employeeId)){
+    public Result findById(@RequestHeader String EmployeeId,Employee employeeForm) {
+        if (StringUtils.isBlank(EmployeeId)){
             return new Result<>(OPERATE_ERROR,"员工编号为空");
         }
-        Employee employeeUp = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(employeeId));
+        Employee employeeUp = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(EmployeeId));
         if (null!=employeeUp){
             employeeUp.setEmail(employeeForm.getEmail());
             boolean b = iEmployeeService.updateById(employeeUp);

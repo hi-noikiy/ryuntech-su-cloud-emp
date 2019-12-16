@@ -63,17 +63,17 @@
             ryn_customer_user_info on ryn_receivable_contract.customer_id = ryn_customer_user_info.customer_id
         <where>
             <if test="receivableContract.contractId!=null and receivableContract.contractId!=''">
-                contract_id like concat('%',#{receivableContract.contractId},'%')
+                ryn_receivable_contract.contract_id like concat('%',#{receivableContract.contractId},'%')
             </if>
             <if test="receivableContract.contractName!=null and receivableContract.contractName!=''">
-                and contract_name like concat('%',#{receivableContract.contractName},'%')
+                and ryn_receivable_contract.contract_name like concat('%',#{receivableContract.contractName},'%')
             </if>
             <if test="receivableContract.staffId!=null and receivableContract.staffId!=''">
-                and staff_id like concat('%',#{receivableContract.staffId},'%')
+                and ryn_receivable_contract.staff_id like concat('%',#{receivableContract.staffId},'%')
             </if>
 
             <if test="receivableContract.statusList!=null and receivableContract.statusList.size()>0">
-                and status in
+                and ryn_receivable_contract.status in
                 <foreach collection="receivableContract.statusList" item="status" index="index" open="(" close=")" separator=",">
                     #{status}
                 </foreach>

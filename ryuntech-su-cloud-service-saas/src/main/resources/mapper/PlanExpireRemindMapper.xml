@@ -96,12 +96,9 @@
             rp.CONTRACT_ID = rc.CONTRACT_ID
             AND rc.staff_id = re.EMPLOYEE_ID
             AND re.DEPARTMENT_ID = rd.DEPARTMENT_ID
-            AND <![CDATA[ rp.STATUS <> "1" AND re.EMAIL <> "" ]]>
+            AND <![CDATA[ rp.STATUS <> "1" AND re.IS_WECHAT = 1]]>
             AND re.STATUS = 1
-            AND re.IS_WECHAT = 1
     </select>
-
-
 
 
 </mapper>

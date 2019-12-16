@@ -222,6 +222,17 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 if(followupRecordCommentList != null && followupRecordCommentList.size() != 0) {
                     followupRecordDTO.setFollowupRecordComments(followupRecordCommentList);
                 }
+                //插入图片数据
+                String attachmentCode = followupRecord.getAttachmentCode();
+                List<Attachment> attachmentList = attachmentMapper.selectList(new QueryWrapper<Attachment>().eq("attachment_code", attachmentCode));
+                if (!attachmentList.isEmpty()){
+                    ArrayList<String> strings = new ArrayList<>();
+                    for (Attachment attachment :attachmentList){
+                        String attachmentUrl = attachment.getAttachmentUrl();
+                        strings.add(attachmentUrl);
+                    }
+                    followupRecordDTO.setUrls(strings);
+                }
                 followupRecordDTOList.add(followupRecordDTO);
             }
 

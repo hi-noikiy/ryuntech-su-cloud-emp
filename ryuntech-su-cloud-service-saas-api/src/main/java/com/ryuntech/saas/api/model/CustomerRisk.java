@@ -60,8 +60,7 @@ import java.util.Date;
     /**
      * 风险详情发生时间
      */
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+    @TableField("RISK_DETAIL_TIME")
     private Date riskDetailTime;
 
             /**

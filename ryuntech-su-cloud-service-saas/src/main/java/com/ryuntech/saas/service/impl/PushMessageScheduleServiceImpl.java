@@ -256,7 +256,7 @@ public class PushMessageScheduleServiceImpl implements PushMessageScheduleServic
     @Override
     public void overdueRPush() {
         // 查询所有有回款计划且未还的相关信息
-        List<ContractPlanRemindDTO> contractPlanRemindDTOS = planOverdueRemindMapper.queryPlanMessageRemind();
+        List<ContractPlanRemindDTO> contractPlanRemindDTOS = planOverdueRemindMapper.queryPlanMessageRemindWx();
         if (contractPlanRemindDTOS == null || contractPlanRemindDTOS.size() == 0) {
             return;
         }

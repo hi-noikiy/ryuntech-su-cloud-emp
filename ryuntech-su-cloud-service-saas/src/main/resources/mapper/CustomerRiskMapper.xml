@@ -48,10 +48,10 @@
             </if>
 
             <if test="customerRiskForm.riskTime!=null">
-                date_format(risk_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskTime}, '%Y-%m-%d')
+                and date_format(risk_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskTime}, '%Y-%m-%d')
             </if>
             <if test="customerRiskForm.riskDetailTime!=null">
-                date_format(risk_detail_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskDetailTime}, '%Y-%m-%d')
+                and date_format(risk_detail_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskDetailTime}, '%Y-%m-%d')
             </if>
         </where>
 

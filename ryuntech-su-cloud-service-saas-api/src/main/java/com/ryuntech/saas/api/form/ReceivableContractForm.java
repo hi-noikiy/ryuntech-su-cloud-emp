@@ -120,4 +120,14 @@ public class ReceivableContractForm extends BaseModel  {
      * 跟进的第一个信息
      */
     FollowupRecord followupRecord;
+
+    /**
+     * 编辑合同的图片路径
+     */
+    private List<URL> upLoadImg;
+
+    @Data
+    public static class URL{
+        private String url;
+    }
 }
