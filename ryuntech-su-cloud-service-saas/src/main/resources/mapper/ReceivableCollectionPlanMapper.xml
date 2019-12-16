@@ -75,4 +75,337 @@
         </where>
     </select>
 
+    <select id="repayPlanByContractList" resultType="com.ryuntech.saas.api.dto.RepayPlanByContractDTO">
+         SELECT
+          rcc.`CONTRACT_NAME` contractName,
+          rcc.`CUSTOMER_NAME` customerName,
+          rrcp.`PLAN_TIME` planTime,
+          rrcp.`PLAN_AMOUNT` planAmount,
+          rrcp.`BACKED_AMOUNT` backedAmount,
+          rrcp.`SURPLUS_AMOUNT` surplusAmount,
+          rrcp.`STATUS` status,
+          rrcp.`PLAN_PERIODES` planPeriodes,
+          re.`NAME` employeeName,
+          rd.`DEPARTMENT_NAME` departmentName
+        FROM
+          `ryn_department` rd,
+          `ryn_employee` re,
+          `ryn_receivable_contract` rcc,
+          `ryn_receivable_collection_plan` rrcp
+        WHERE rcc.`CONTRACT_ID` = rrcp.`CONTRACT_ID`
+          AND re.`EMPLOYEE_ID` = rcc.`STAFF_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND re.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+          </foreach>
+          <if test="status != null and status != ''">
+            AND rrcp.`STATUS` = #{status}
+          </if>
+          <if test="beginTime != null and beginTime != ''">
+            AND date(rrcp.`PLAN_TIME`) <![CDATA[ >= ]]> #{beginTime}
+          </if>
+          <if test="endTime != null and endTime != ''">
+            AND date(rrcp.`PLAN_TIME`) <![CDATA[ <= ]]> #{endTime}
+          </if>
+    </select>
+
+    <select id="repayPlanByDepartmentList" resultType="com.ryuntech.saas.api.dto.RepayPlanByDepartmentDTO">
+        SELECT
+            rd.`DEPARTMENT_NAME` departmentName,
+            rrcp.`PLAN_AMOUNT` planAmount,
+            rrcp.`BACKED_AMOUNT` backedAmount,
+            rrcp.`SURPLUS_AMOUNT` surplusAmount,
+            (CASE rrcp.`STATUS`
+              WHEN 0  THEN rrcp.`SURPLUS_AMOUNT`
+              ELSE '0.00'
+              END) overdueAmount
+        FROM
+        `ryn_department` rd,
+        `ryn_employee` re,
+        `ryn_receivable_contract` rrc,
+        `ryn_receivable_collection_plan` rrcp
+        WHERE rrc.`CONTRACT_ID` = rrcp.`CONTRACT_ID`
+            AND re.`EMPLOYEE_ID` = rrc.`STAFF_ID`
+            AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+            AND re.`DEPARTMENT_ID` IN
+            <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+              #{departmentId}
+            </foreach>
+            <if test="status != null and status != ''">
+              AND rrcp.`STATUS` = #{status}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+              AND date(rrcp.`PLAN_TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+              AND date(rrcp.`PLAN_TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+    </select>
+
+    <select id="repayPlanByCustomerList" resultType="com.ryuntech.saas.api.dto.RepayPlanByCustomerDTO">
+        SELECT
+          rrc.`CUSTOMER_ID` customerId,
+          rrc.`CUSTOMER_NAME` customerName,
+          SUM(rrcp.`PLAN_AMOUNT`) planAmount,
+          SUM(rrcp.`BACKED_AMOUNT`) backedAmount,
+          SUM(rrcp.`SURPLUS_AMOUNT`) surplusAmount,
+          SUM(rrcp.overdueAmount) overdueAmount,
+          COUNT(rrc.`CONTRACT_ID`) contractNum
+        FROM
+          `ryn_department` rd,
+          `ryn_employee` re,
+          `ryn_receivable_contract` rrc,
+          (SELECT
+            t.`CONTRACT_ID`,
+            SUM(t.`PLAN_AMOUNT`) PLAN_AMOUNT,
+            SUM(t.`BACKED_AMOUNT`) BACKED_AMOUNT,
+            SUM(t.`SURPLUS_AMOUNT`) SURPLUS_AMOUNT,
+            SUM(
+              (
+                CASE
+                  t.`STATUS`
+                  WHEN 0
+                  THEN t.`SURPLUS_AMOUNT`
+                  ELSE '0.00'
+                END
+              )
+            ) overdueAmount
+          FROM
+            `ryn_receivable_collection_plan` t
+        <where>
+            <if test="status != null and status != ''">
+                AND t.`STATUS` = #{status}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND date(t.`PLAN_TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date(t.`PLAN_TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </where>
+          GROUP BY t.`CONTRACT_ID`) rrcp
+        WHERE rrc.`CONTRACT_ID` = rrcp.`CONTRACT_ID`
+          AND re.`EMPLOYEE_ID` = rrc.`STAFF_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND re.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+          </foreach>
+        GROUP BY rrc.`CUSTOMER_ID`;
+    </select>
+
+    <select id="repayPlanByCustomerDetail" resultType="com.ryuntech.saas.api.dto.RepayPlanByCustomerDetailDTO">
+         SELECT
+          rcc.`CONTRACT_NAME` contractName,
+          rrcp.`PLAN_TIME` planTime,
+          rrcp.`PLAN_AMOUNT` planAmount,
+          rrcp.`BACKED_AMOUNT` backedAmount,
+          rrcp.`SURPLUS_AMOUNT` surplusAmount,
+          rrcp.`STATUS` status,
+          rrcp.`PLAN_PERIODES` planPeriodes,
+          re.`NAME` employeeName,
+          rd.`DEPARTMENT_NAME` departmentName
+        FROM
+          `ryn_department` rd,
+          `ryn_employee` re,
+          `ryn_receivable_contract` rcc,
+          `ryn_receivable_collection_plan` rrcp
+        WHERE rcc.`CONTRACT_ID` = rrcp.`CONTRACT_ID`
+          AND re.`EMPLOYEE_ID` = rcc.`STAFF_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND rcc.`CUSTOMER_ID` = #{customerId}
+          AND re.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+          </foreach>
+          <if test="status != null and status != ''">
+            AND rrcp.`STATUS` = #{status}
+          </if>
+          <if test="beginTime != null and beginTime != ''">
+            AND date(rrcp.`PLAN_TIME`) <![CDATA[ >= ]]> #{beginTime}
+          </if>
+          <if test="endTime != null and endTime != ''">
+            AND date(rrcp.`PLAN_TIME`) <![CDATA[ <= ]]> #{endTime}
+          </if>
+    </select>
+
+    <select id="repayPlanByEmployeeList" resultType="com.ryuntech.saas.api.dto.RepayPlanByEmployeeDTO">
+        SELECT
+          re.`EMPLOYEE_ID` employeeId,
+          re.`NAME` employeeName,
+          SUM(rrcp.`PLAN_AMOUNT`) planAmount,
+          SUM(rrcp.`BACKED_AMOUNT`) backedAmount,
+          SUM(rrcp.`SURPLUS_AMOUNT`) surplusAmount,
+          SUM(rrcp.overdueAmount) overdueAmount,
+          COUNT(rrc.`CONTRACT_ID`) contractNum
+        FROM
+          `ryn_department` rd,
+          `ryn_employee` re,
+          `ryn_receivable_contract` rrc,
+          (SELECT
+            t.`CONTRACT_ID`,
+            SUM(t.`PLAN_AMOUNT`) PLAN_AMOUNT,
+            SUM(t.`BACKED_AMOUNT`) BACKED_AMOUNT,
+            SUM(t.`SURPLUS_AMOUNT`) SURPLUS_AMOUNT,
+            SUM(
+              (
+                CASE
+                  t.`STATUS`
+                  WHEN 0
+                  THEN t.`SURPLUS_AMOUNT`
+                  ELSE '0.00'
+                END
+              )
+            ) overdueAmount
+          FROM
+            `ryn_receivable_collection_plan` t
+        <where>
+            <if test="status != null and status != ''">
+                AND t.`STATUS` = #{status}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                AND date(t.`PLAN_TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date(t.`PLAN_TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+        </where>
+          GROUP BY t.`CONTRACT_ID`) rrcp
+        WHERE rrc.`CONTRACT_ID` = rrcp.`CONTRACT_ID`
+          AND re.`EMPLOYEE_ID` = rrc.`STAFF_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND re.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+          </foreach>
+        GROUP BY rrc.`STAFF_ID`;
+    </select>
+
+    <select id="repayPlanByEmployeeDetail" resultType="com.ryuntech.saas.api.dto.RepayPlanByEmployeeDetailDTO">
+         SELECT
+          rcc.`CONTRACT_NAME` contractName,
+          rrcp.`PLAN_TIME` planTime,
+          rrcp.`PLAN_AMOUNT` planAmount,
+          rrcp.`BACKED_AMOUNT` backedAmount,
+          rrcp.`SURPLUS_AMOUNT` surplusAmount,
+          rrcp.`STATUS` status,
+          rrcp.`PLAN_PERIODES` planPeriodes
+        FROM
+          `ryn_department` rd,
+          `ryn_employee` re,
+          `ryn_receivable_contract` rcc,
+          `ryn_receivable_collection_plan` rrcp
+        WHERE rcc.`CONTRACT_ID` = rrcp.`CONTRACT_ID`
+          AND re.`EMPLOYEE_ID` = rcc.`STAFF_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND re.`EMPLOYEE_ID` = #{employeeId}
+          AND re.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+          </foreach>
+          <if test="status != null and status != ''">
+            AND rrcp.`STATUS` = #{status}
+          </if>
+          <if test="beginTime != null and beginTime != ''">
+            AND date(rrcp.`PLAN_TIME`) <![CDATA[ >= ]]> #{beginTime}
+          </if>
+          <if test="endTime != null and endTime != ''">
+            AND date(rrcp.`PLAN_TIME`) <![CDATA[ <= ]]> #{endTime}
+          </if>
+    </select>
+
+    <select id="overdueByContractList" resultType="com.ryuntech.saas.api.dto.OverdueByContractDTO">
+        SELECT
+          rrc.`CONTRACT_ID` contractId,
+          rrc.`CONTRACT_NAME` contractName,
+          rrc.`CUSTOMER_NAME` customerName,
+          t.`overdueAmount` overdueAmount,
+          t.`maxOverdueDay` maxOverdueDay,
+          re.`NAME` employeeName,
+          rd.`DEPARTMENT_NAME` departmentName
+        FROM
+          `ryn_receivable_contract` rrc,
+          `ryn_employee` re,
+          `ryn_department` rd,
+          (SELECT
+            rrcp.`CONTRACT_ID`,
+            SUM(rrcp.`SURPLUS_AMOUNT`) overdueAmount,
+            MAX(
+              DATEDIFF(NOW(), rrcp.`OVERDUE_TIME`)
+            ) maxOverdueDay
+          FROM
+            `ryn_receivable_collection_plan` rrcp
+          WHERE rrcp.`STATUS` = 0
+          GROUP BY rrcp.`CONTRACT_ID`) t
+        WHERE rrc.`CONTRACT_ID` = t.`CONTRACT_ID`
+          AND rrc.`STAFF_ID` = re.`EMPLOYEE_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND rd.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+              #{departmentId}
+          </foreach>
+    </select>
+
+    <select id="overdueByCustomerList" resultType="com.ryuntech.saas.api.dto.OverdueByCustomerDTO">
+        SELECT
+        rrc.`CUSTOMER_NAME` customerName,
+        SUM(t.`overdueAmount`) overdueAmount,
+        MAX(t.`maxOverdueDay`) maxOverdueDay,
+        COUNT(rrc.`CONTRACT_ID`) overdueContractNum
+        FROM
+        `ryn_receivable_contract` rrc,
+        `ryn_employee` re,
+        `ryn_department` rd,
+        (SELECT
+        rrcp.`CONTRACT_ID`,
+        SUM(rrcp.`SURPLUS_AMOUNT`) overdueAmount,
+        MAX(
+        DATEDIFF(NOW(), rrcp.`OVERDUE_TIME`)
+        ) maxOverdueDay
+        FROM
+        `ryn_receivable_collection_plan` rrcp
+        WHERE rrcp.`STATUS` = 0
+        GROUP BY rrcp.`CONTRACT_ID`) t
+        WHERE rrc.`CONTRACT_ID` = t.`CONTRACT_ID`
+        AND rrc.`STAFF_ID` = re.`EMPLOYEE_ID`
+        AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+        AND rd.`DEPARTMENT_ID` IN
+        <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+        </foreach>
+        GROUP BY rrc.`CUSTOMER_ID`
+    </select>
+
+    <select id="overdueByEmployeeList" resultType="com.ryuntech.saas.api.dto.OverdueByEmployeeDTO">
+        SELECT
+          re.`NAME` employeeName,
+          rd.`DEPARTMENT_NAME` departmentName,
+          SUM(t.`overdueAmount`) overdueAmount,
+          MAX(t.`maxOverdueDay`) maxOverdueDay,
+          COUNT(rrc.`CONTRACT_ID`) overdueContractNum
+        FROM
+          `ryn_receivable_contract` rrc,
+          `ryn_employee` re,
+          `ryn_department` rd,
+          (SELECT
+            rrcp.`CONTRACT_ID`,
+            SUM(rrcp.`SURPLUS_AMOUNT`) overdueAmount,
+            MAX(
+              DATEDIFF(NOW(), rrcp.`OVERDUE_TIME`)
+            ) maxOverdueDay
+          FROM
+            `ryn_receivable_collection_plan` rrcp
+          WHERE rrcp.`STATUS` = 0
+          GROUP BY rrcp.`CONTRACT_ID`) t
+        WHERE rrc.`CONTRACT_ID` = t.`CONTRACT_ID`
+          AND rrc.`STAFF_ID` = re.`EMPLOYEE_ID`
+          AND re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID`
+          AND rd.`DEPARTMENT_ID` IN
+          <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+              #{departmentId}
+          </foreach>
+        GROUP BY rrc.`CONTRACT_ID`;
+    </select>
 </mapper>
+

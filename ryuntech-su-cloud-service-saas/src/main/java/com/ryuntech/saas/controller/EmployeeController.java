@@ -59,7 +59,7 @@ public class EmployeeController extends ModuleBaseController {
         }
 
         if (!StringUtil.isNumber(pageCode)) {
-            pageCode = Global.PAGE;
+            pageCode = Global.PAGE_CODE;
         }
 
         if (!StringUtil.isNumber(pageSize)) {

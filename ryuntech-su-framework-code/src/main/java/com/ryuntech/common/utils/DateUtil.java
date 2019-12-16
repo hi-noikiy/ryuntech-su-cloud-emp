@@ -22,13 +22,14 @@ public class DateUtil {
     private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     private static ThreadLocal<Map<String, DateFormat>> dateFormatThreadLocal = new ThreadLocal<Map<String, DateFormat>>();
+
     private static DateFormat getDateFormat(String pattern) {
-        if (pattern==null || pattern.trim().length()==0) {
+        if (pattern == null || pattern.trim().length() == 0) {
             throw new IllegalArgumentException("pattern cannot be empty.");
         }
 
         Map<String, DateFormat> dateFormatMap = dateFormatThreadLocal.get();
-        if(dateFormatMap!=null && dateFormatMap.containsKey(pattern)){
+        if (dateFormatMap != null && dateFormatMap.containsKey(pattern)) {
             return dateFormatMap.get(pattern);
         }
 
@@ -84,7 +85,7 @@ public class DateUtil {
      * @return
      * @throws ParseException
      */
-    public static Date parseDate(String dateString){
+    public static Date parseDate(String dateString) {
         return parse(dateString, DATE_FORMAT);
     }
 
@@ -144,10 +145,11 @@ public class DateUtil {
 
     /**
      * 获取本月的第一天
+     *
      * @return
      */
-    public static String firstDay(){
-        Calendar cale =  Calendar.getInstance();
+    public static String firstDay() {
+        Calendar cale = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         cale = Calendar.getInstance();
         cale.add(Calendar.MONTH, 0);
@@ -157,10 +159,11 @@ public class DateUtil {
 
     /**
      * 获取本月的最后一天
+     *
      * @return
      */
-    public static String lastDay(){
-        Calendar cale =  Calendar.getInstance();
+    public static String lastDay() {
+        Calendar cale = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         cale = Calendar.getInstance();
         cale.add(Calendar.MONTH, 1);
@@ -196,6 +199,7 @@ public class DateUtil {
 
 
     private final static SimpleDateFormat sdfDay = new SimpleDateFormat("yyyy-MM-dd");
+
     /**
      * 获取YYYY-MM-DD格式
      *
@@ -248,6 +252,30 @@ public class DateUtil {
     public static int differentDaysByDate(Date date1, Date date2) {
         int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
         return days;
+    }
+
+    public static boolean after(String date1, String date2, String pattern) {
+        Date d1 = parse(date1, pattern);
+        Date d2 = parse(date2, pattern);
+        return after(d1, d2);
+    }
+
+    public static boolean after(Date date1, Date date2) {
+        return date1.after(date2);
+    }
+
+    public static boolean after(String date1, String date2) {
+        Date d1 = toDate(date1);
+        Date d2 = toDate(date2);
+        return after(d1, d2);
+    }
+
+    public static Date toDate(String date) {
+        return parse(date, "yyyy-MM-dd HH:mm:ss");
+    }
+
+    public static Date toDate(String date, String pattern) {
+        return parse(date, pattern);
     }
 
 }

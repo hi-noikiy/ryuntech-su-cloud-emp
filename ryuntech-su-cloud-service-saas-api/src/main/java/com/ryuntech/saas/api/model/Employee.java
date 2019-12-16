@@ -84,7 +84,7 @@ public class Employee extends BaseModel {
     private String email;
 
 
-    @TableField("IS_EMALL")
+    @TableField("IS_EMAIL")
     private Boolean isEmail;
 
     @TableField("IS_WECHAT")

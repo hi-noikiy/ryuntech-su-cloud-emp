@@ -14,7 +14,6 @@ import com.ryuntech.common.service.impl.BaseServiceImpl;
 import com.ryuntech.common.utils.QueryPage;
 import com.ryuntech.common.utils.Result;
 import com.ryuntech.common.utils.StringUtil;
-import com.ryuntech.common.utils.redis.JedisUtil;
 import com.ryuntech.saas.api.dto.EmployeeDTO;
 import com.ryuntech.saas.api.dto.EmployeeDetailDTO;
 import com.ryuntech.saas.api.form.EmployeeEditForm;
@@ -154,10 +153,6 @@ public class EmployeeServiceImpl extends BaseServiceImpl<EmployeeMapper, Employe
         }
         return super.pageList(queryWrapper, page);
     }
-
-
-    @Autowired
-    private JedisUtil jedisUtil;
 
     @Override
     public Result<IPage<EmployeeDTO>> getPager(EmployeeForm employeeForm) {

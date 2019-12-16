@@ -19,3 +19,6 @@ public class CurrentUser {
     private Set<String> uris;
     private Set<String> keys;
 }
+
+//#TODO 修改员工的数据权限信息，刷新这个对象
+

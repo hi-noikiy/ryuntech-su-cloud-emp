@@ -3,7 +3,7 @@ package com.ryuntech.common.constant;
 
 public class Global {
     // 默认第几页
-    public static final String PAGE = "1";
+    public static final String PAGE_CODE = "1";
 
     // 列表每页显示多少
     public static final String PAGE_SIZE = "10";

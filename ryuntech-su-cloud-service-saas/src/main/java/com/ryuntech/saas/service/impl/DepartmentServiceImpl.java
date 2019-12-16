@@ -302,7 +302,7 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
     }
 
     @Override
-    public List<String> getDataTypeDepartments() throws Exception {
+    public List<String> getCurrentUserDepartments() throws Exception {
         CurrentUser currentUser = SystemTool.currentUser(jedisUtil);
         List<String> rs = new ArrayList<>();
         int dataType = currentUser.getDataType();
@@ -341,6 +341,13 @@ public class DepartmentServiceImpl extends BaseServiceImpl<DepartmentMapper, Dep
             }
         }
         rsList.addAll(list.stream().map(d -> d.getDeptId()).collect(Collectors.toList()));
+    }
+
+    @Override
+    public List<String> getChilrensDepartments(String rootDepartmentId) {
+        List<String> rs = new ArrayList<>();
+        getChildrenDepartmentIds(rs, SystemTool.currentUser(jedisUtil).getCompanyId(), rootDepartmentId);
+        return rs;
     }
 
 }

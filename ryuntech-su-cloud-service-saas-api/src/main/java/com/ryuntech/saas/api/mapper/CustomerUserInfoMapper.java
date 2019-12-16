@@ -6,6 +6,7 @@ import com.ryuntech.common.mapper.IBaseMapper;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.model.CustomerUserInfo;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.Map;
  * @author antu
  * @since 2019-09-29
  */
+@Component
 public interface CustomerUserInfoMapper extends IBaseMapper<CustomerUserInfo> {
 
     /**

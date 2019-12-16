@@ -75,5 +75,7 @@ public interface IDepartmentService extends IBaseService<Department> {
 
     Result getDataTypeDepartmentTree() throws Exception;
 
-    List<String> getDataTypeDepartments() throws Exception;
+    List<String> getCurrentUserDepartments() throws Exception;
+
+    List<String> getChilrensDepartments(String rootDepartmentId);
 }

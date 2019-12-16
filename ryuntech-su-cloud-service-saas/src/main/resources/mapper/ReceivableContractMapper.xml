@@ -82,6 +82,135 @@
         </where>
     </select>
 
+    <select id="getDepartmentsContractAmounts" resultType="java.lang.String">
+         SELECT
+          IFNULL(sum(rrc.`CONTRACT_AMOUNT`), '0.00') saleAmount
+         FROM
+          `ryn_department` rd,
+          `ryn_receivable_contract` rrc,
+          `ryn_employee` re
+         WHERE
+              rd.`DEPARTMENT_ID` = re.`DEPARTMENT_ID`
+          AND re.`EMPLOYEE_ID` = rrc.`STAFF_ID`
+          AND rd.`DEPARTMENT_ID` IN
+            <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+                #{departmentId}
+            </foreach>
+            <if test="beginTime != null and beginTime != ''">
+                AND date(rrc.`CONTRACT_TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date(rrc.`CONTRACT_TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+    </select>
 
+    <select id="getDepartmentsRepayAmounts" resultType="java.lang.String">
+        SELECT
+          IFNULL(sum(r2.`AMOUNT`), '0.00') repayAmount
+        FROM
+          `ryn_employee` re,
+          `ryn_receivable_contract` r1,
+          `ryn_receivable_collection` r2
+        WHERE r1.`CONTRACT_ID` = r2.`CONTRACT_ID`
+          AND re.`EMPLOYEE_ID` = r1.`STAFF_ID`
+          AND r2.`STATUS` = 1
+          AND re.`DEPARTMENT_ID` IN
+            <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+                #{departmentId}
+            </foreach>
+          <if test="beginTime != null and beginTime != ''">
+              AND date(r2.`TIME`) <![CDATA[ >= ]]> #{beginTime}
+          </if>
+          <if test="endTime != null and endTime != ''">
+              AND date(r2.`TIME`) <![CDATA[ <= ]]> #{endTime}
+          </if>
+    </select>
+
+    <select id="getEmployeesContractAmounts" resultType="com.ryuntech.saas.api.dto.ReceiveBalanceContractAmount">
+        SELECT
+          re.`EMPLOYEE_ID` employeeId,
+          IFNULL(sum(r1.`CONTRACT_AMOUNT`), '0.00') saleAmount
+        FROM
+          `ryn_employee` re
+          LEFT JOIN `ryn_receivable_contract` r1 ON re.`EMPLOYEE_ID` = r1.`STAFF_ID`
+            <if test="beginTime != null and beginTime != ''">
+                AND date(r1.`CONTRACT_TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date(r1.`CONTRACT_TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+          WHERE re.`DEPARTMENT_ID` IN
+            <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+                #{departmentId}
+            </foreach>
+        GROUP BY re.`EMPLOYEE_ID`;
+    </select>
+
+    <select id="getEmployeesRepayAmounts" resultType="com.ryuntech.saas.api.dto.ReceiveBalanceRepayAmount">
+        SELECT
+          re.`EMPLOYEE_ID` employeeId,
+          IFNULL(sum(r2.`AMOUNT`), '0.00') repayAmount
+        FROM
+          `ryn_employee` re
+        LEFT JOIN `ryn_receivable_contract` r1 ON re.`EMPLOYEE_ID` = r1.`STAFF_ID`
+        LEFT JOIN `ryn_receivable_collection` r2 ON r1.`CONTRACT_ID` = r2.`CONTRACT_ID` AND r2.`STATUS` = 1
+        <if test="beginTime != null and beginTime != ''">
+            AND date(r2.`TIME`) <![CDATA[ >= ]]> #{beginTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND date(r2.`TIME`) <![CDATA[ <= ]]> #{endTime}
+        </if>
+        WHERE re.`DEPARTMENT_ID` IN
+            <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+                #{departmentId}
+            </foreach>
+        GROUP BY re.`EMPLOYEE_ID`
+    </select>
+
+    <select id="getCustomersContractAmounts" resultType="com.ryuntech.saas.api.dto.ReceiveBalanceContractAmount">
+        SELECT
+          rcui.`CUSTOMER_ID` customerId,
+          IFNULL(sum(r1.`CONTRACT_AMOUNT`), '0.00') saleAmount
+        FROM
+          `ryn_customer_user_info` rcui,
+          `ryn_receivable_contract` r1,
+          `ryn_employee` re
+        WHERE r1.`CUSTOMER_ID` = rcui.`CUSTOMER_ID` AND re.`EMPLOYEE_ID` = r1.`STAFF_ID`
+            AND re.`DEPARTMENT_ID` IN
+            <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+                #{departmentId}
+            </foreach>
+            <if test="beginTime != null and beginTime != ''">
+                AND date(r1.`CONTRACT_TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date(r1.`CONTRACT_TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+        GROUP BY rcui.`CUSTOMER_ID`;
+    </select>
+
+    <select id="getCustomersRepayAmounts" resultType="com.ryuntech.saas.api.dto.ReceiveBalanceRepayAmount">
+        SELECT
+          rcui.`CUSTOMER_ID` customerId,
+          IFNULL(sum(r2.`AMOUNT`), '0.00') repayAmount
+        FROM
+            `ryn_customer_user_info` rcui,
+            `ryn_employee` re,
+            `ryn_receivable_contract` r1
+        LEFT JOIN `ryn_receivable_collection` r2  ON r1.`CONTRACT_ID` = r2.`CONTRACT_ID` AND r2.`STATUS` = 1
+            <if test="beginTime != null and beginTime != ''">
+                AND date(r2.`TIME`) <![CDATA[ >= ]]> #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                AND date(r2.`TIME`) <![CDATA[ <= ]]> #{endTime}
+            </if>
+        WHERE rcui.`CUSTOMER_ID` = r1.`CUSTOMER_ID`
+        and re.`EMPLOYEE_ID` = r1.`STAFF_ID`
+        and re.`DEPARTMENT_ID` IN
+        <foreach collection="departmentIds" item="departmentId"  open="(" separator="," close=")">
+            #{departmentId}
+        </foreach>
+        GROUP BY rcui.`CUSTOMER_ID`;
+    </select>
 
 </mapper>
