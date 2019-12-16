@@ -24,7 +24,10 @@ public class DemoController {
 
     //region 直连模式
     /**
-     * 直连模式 发送到直连交换机及指定队列
+     * 直连模式 发送到直连交换机及指定队列 <br>
+     *
+     * 生产者通过指定 "交换机名", 指定消息要发送到哪个交换机下的所有队列. <br>
+     * 消费者通过"队列名"获取消息
      */
     @GetMapping("/sendDx")
     @ResponseBody
@@ -39,9 +42,13 @@ public class DemoController {
     @RabbitListener(queues = QUEUE_D1)
     public void dqConsumer1(Message message, Channel channel) throws Exception {
         try {
+            // 尝试消费消息, 执行业务操作
             System.out.println(">>>>>>>>111111111" + Thread.currentThread() + "dqConsumer1 收到消息:" +message);
+
+            // 确认消费
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), true);
         } catch (IOException e) {
+            // 消费消息出现异常, 取消消费
             channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, true);
         }
     }
@@ -59,7 +66,10 @@ public class DemoController {
 
     //region 订阅模式消
     /**
-     * 订阅模式 发送到扇形交换机, 不指定路由键, 交换机下所有队列都能收到消息
+     * 订阅模式 发送到扇形交换机, 不指定路由键, 交换机下所有队列都能收到消息 <br>
+     *
+     * 生产者通过指定 "交换机名", 指定消息要发送到哪个交换机下的所有队列. <br>
+     * 消费者通过"队列名"获取消息
      */
     @GetMapping("/sendFx")
     @ResponseBody
@@ -97,6 +107,9 @@ public class DemoController {
     //region 匹配(主题)模式
     /**
      * 匹配(主题)模式 发送到扇形交换机, 根据路由键的匹配情况分发消息
+     *
+     * 消息生产者通过指定 "交换机名+路由key", 指定消息要发送到哪个队列. <br>
+     * 消息消费者通过"队列名"获取消息
      */
     @GetMapping("/sendTp")
     @ResponseBody
