@@ -173,11 +173,11 @@
           LEFT JOIN
           (SELECT
           s1.`EMPLOYEE_ID`,
-          CONCAT(s2.`RID`, ',') roleIds
+          GROUP_CONCAT(s2.`RID`, ',') roleIds
         FROM
           `sys_user_role` s1,
           `sys_role` s2
-        WHERE s1.`ROLE_ID` = s1.`ROLE_ID`
+        WHERE s1.`ROLE_ID` = s2.`RID`
         GROUP BY s1.`EMPLOYEE_ID`) t ON re.`EMPLOYEE_ID` = t.`EMPLOYEE_ID`
         <where>
             re.`DEPARTMENT_ID` = rd.`DEPARTMENT_ID` AND su.`SYS_USER_ID` = re.`SYS_USER_ID` AND su.`STATUS` = 1

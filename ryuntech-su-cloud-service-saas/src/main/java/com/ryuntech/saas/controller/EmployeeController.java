@@ -136,7 +136,7 @@ public class EmployeeController extends ModuleBaseController {
         }
 
         if (employeeId == null) {
-            if (StringUtil.isMobile(mobile)) {
+            if (!StringUtil.isMobile(mobile)) {
                 return new Result(CommonEnums.PARAM_ERROR, "手机号码不合法");
             }
         }
