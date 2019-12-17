@@ -2,6 +2,7 @@ package com.ryuntech.saas.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ryuntech.common.model.BaseModel;
+import com.ryuntech.saas.api.model.Attachment;
 import com.ryuntech.saas.api.model.AttachmentFile;
 import com.ryuntech.saas.api.model.ReceivableContract;
 import lombok.Data;
@@ -116,6 +117,7 @@ public class ReceivableContractDTO extends BaseModel {
      * 附件数量
      */
     private Integer attachmentCodeSize;
+    private List<Attachment> attachments;
 
     /**
      * 上传的文件路径

@@ -22,10 +22,8 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @author EDZ
@@ -60,7 +58,7 @@ public class MiniCustRiskController {
             return new Result("员工编号不能为空");
         }
 
-        List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(customerRiskForm);
+        List<String> customerRiskDTOS = iCustomerRiskService.selectGroupConcatByTime(customerRiskForm);
 
         if (customerRiskDTOS.isEmpty()){
             return new Result();
@@ -68,15 +66,14 @@ public class MiniCustRiskController {
 
         List<CustomerRiskListDTO> customerRiskList = new ArrayList<>();
         Integer totalFlagLength=0;
-        for (CustomerRiskDTO customerRiskDTO :customerRiskDTOS){
-            Date riskTime = customerRiskDTO.getRiskTime();
+        for (String riskTime :customerRiskDTOS){
             List<CustomerRiskDTO> customerRiskD = iCustomerRiskService.selectGroupConcat(
-                    new CustomerRiskForm().setRiskTime(DateUtil.formatDate(riskTime)).setRiskDetailTime(DateUtil.formatDate(riskTime)));
+                    new CustomerRiskForm().setRiskTime(riskTime).setRiskDetailTime(riskTime));
             if (customerRiskD.isEmpty()){
                 continue;
             }
             CustomerRiskListDTO customerRiskListDTO = new CustomerRiskListDTO();
-            customerRiskListDTO.setRiskTime(DateUtil.formatDate(riskTime));
+            customerRiskListDTO.setRiskTime(riskTime);
             List< CustomerRiskListDTO.OnCompany> onCompanyList = new ArrayList<>();
             customerRiskListDTO.setRiskLength(customerRiskD.size()+"");
             Integer flagLength=0;
@@ -163,6 +160,67 @@ public class MiniCustRiskController {
     @ApiImplicitParam(name = "customerRiskForm", value = "查询条件", required = true, dataType = "CustomerRiskForm", paramType ="body")
     public Result detailList(@RequestBody CustomerRiskForm customerRiskForm) {
         log.info("detailList");
+        //判断查询类型
+        List<String> riskMTypes= customerRiskForm.getRiskMTypes();
+        log.info("riskMTypes"+riskMTypes);
+        /**
+         * 工商变更全部：businessAll 法律诉讼全部：legalAll 经营风险全部：manageAll
+         */
+        if (riskMTypes.contains("businessAll")){
+            riskMTypes.remove("businessAll");
+            riskMTypes.add(RiskWarnConstants.TYPE1);
+            riskMTypes.add(RiskWarnConstants.TYPE2);
+            riskMTypes.add(RiskWarnConstants.TYPE3);
+        }
+        if (riskMTypes.contains("legalAll")){
+            riskMTypes.add(RiskWarnConstants.TYPE4);
+            riskMTypes.add(RiskWarnConstants.TYPE5);
+            riskMTypes.add(RiskWarnConstants.TYPE6);
+            riskMTypes.add(RiskWarnConstants.TYPE7);
+            riskMTypes.add(RiskWarnConstants.TYPE8);
+            riskMTypes.add(RiskWarnConstants.TYPE9);
+        }
+        if (riskMTypes.contains("manageAll")){
+            riskMTypes.add(RiskWarnConstants.TYPE10);
+            riskMTypes.add(RiskWarnConstants.TYPE11);
+            riskMTypes.add(RiskWarnConstants.TYPE12);
+            riskMTypes.add(RiskWarnConstants.TYPE13);
+            riskMTypes.add(RiskWarnConstants.TYPE14);
+            riskMTypes.add(RiskWarnConstants.TYPE15);
+            riskMTypes.add(RiskWarnConstants.TYPE16);
+            riskMTypes.add(RiskWarnConstants.TYPE17);
+            riskMTypes.add(RiskWarnConstants.TYPE18);
+        }
+        //开始解析时间
+        String riskTimeType = customerRiskForm.getRiskTimeType();
+        //查询月份 0 本月 1上个月 2本周 3上周 4自定义
+        if (riskTimeType.equals("0")){
+            String monthFirstDay = DateUtil.getMonthFirstDay(new Date());
+            String monthLastDay = DateUtil.getMonthLastDay(new Date());
+            customerRiskForm.setRiskStartTime(monthFirstDay);
+            customerRiskForm.setRiskEndTime(monthLastDay);
+        }else if (riskTimeType.equals("1")){
+            String lastMonth = DateUtil.getLastMonth(new Date());
+            String monthFirstDay = DateUtil.getMonthFirstDay(DateUtil.parseDateTime(lastMonth));
+            String monthLastDay = DateUtil.getMonthLastDay(DateUtil.parseDateTime(lastMonth));
+            customerRiskForm.setRiskStartTime(monthFirstDay);
+            customerRiskForm.setRiskEndTime(monthLastDay);
+        }else if (riskTimeType.equals("2")){
+            String lastWe = DateUtil.getLastWe(new Date());
+            customerRiskForm.setRiskStartTime(lastWe);
+            customerRiskForm.setRiskEndTime(DateUtil.formatDateTime(new Date()));
+        }else if (riskTimeType.equals("3")){
+            String lastWe = DateUtil.getLastWe(new Date());
+            Date date = DateUtil.parseDateTime(lastWe);
+            customerRiskForm.setRiskStartTime(DateUtil.formatDateTime(date));
+            customerRiskForm.setRiskEndTime(lastWe);
+        }else if (riskTimeType.equals("4")){
+            //自定义时间
+        }
+
+        //获取部门编号
+        customerRiskForm.getDepartmentId();
+
         List<CustomerRiskDTO> customerRiskDTOS = iCustomerRiskService.selectGroupConcat(customerRiskForm);
         List<CustomerRiskDetailListDTO> customerRiskDetailListDTOS = new ArrayList<>();
         Integer totleDynamicSize= 0;
@@ -192,9 +250,9 @@ public class MiniCustRiskController {
             for (CustomerRisk customerRisk:customerRisks){
                 CustomerRiskDetailListDTO.RiskListDetail riskListDetail = new CustomerRiskDetailListDTO.RiskListDetail();
 //                风险类型
-                String riskMType = customerRisk.getRiskMType();
-                riskListDetail.setRiskType(riskMType);
-                switch (riskMType){
+                String riskMType2 = customerRisk.getRiskMType();
+                riskListDetail.setRiskType(riskMType2);
+                switch (riskMType2){
                     case RiskWarnConstants.TYPE1:
                         riskListDetail.setRiskName("法人变更");
                         break;
@@ -208,7 +266,7 @@ public class MiniCustRiskController {
                         riskListDetail.setRiskName("失信被执行人");
                         break;
                     case RiskWarnConstants.TYPE5:
-                        riskListDetail.setRiskName("失信执行人");
+                        riskListDetail.setRiskName("执行人");
                         break;
                     case RiskWarnConstants.TYPE6:
                         riskListDetail.setRiskName("股权冻结");
@@ -252,7 +310,7 @@ public class MiniCustRiskController {
 //                查询当前客户当前风险类型的条数
                 List<CustomerRisk> list = iCustomerRiskService.list(
                         new QueryWrapper<CustomerRisk>()
-                                .eq("customer_id", customerId).eq("risk_mtype", riskMType));
+                                .eq("customer_id", customerId).eq("risk_mtype", riskMType2));
                 riskListDetail.setRiskSize(String.valueOf(list.size()));
 
                 ArrayList<CustomerRiskDetailListDTO.RiskListDetail.RiskListDetail2> riskListDetail2s = new ArrayList<>();

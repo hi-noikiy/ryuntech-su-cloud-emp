@@ -191,6 +191,7 @@ public class ReceivableContractServiceImpl extends BaseServiceImpl<ReceivableCon
                 List<Attachment> attachmentCodes = attachmentMapper.selectList(new QueryWrapper<Attachment>().eq("attachment_code", attachmentCode));
                 if (!attachmentCodes.isEmpty()){
                     receivableContractDTO.setAttachmentCodeSize(attachmentCodes.size());
+                    receivableContractDTO.setAttachments(attachmentCodes);
                 }else {
                     receivableContractDTO.setAttachmentCodeSize(0);
                 }

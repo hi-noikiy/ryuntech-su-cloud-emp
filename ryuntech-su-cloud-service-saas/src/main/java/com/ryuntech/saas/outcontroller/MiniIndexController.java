@@ -85,8 +85,8 @@ public class MiniIndexController extends ModuleBaseController{
             // 获取当月第一天和最后一天
             String firstDay = DateUtil.firstDay();
             String lastDay = DateUtil.lastDay();
-            weChatIndexDTO.setStartDate(firstDay);
-            weChatIndexDTO.setEndDate(lastDay);
+            weChatIndexDTO.setPlanStartDate(firstDay);
+            weChatIndexDTO.setPlanEndDate(lastDay);
             //            本月新增应收
 //            设置状态为未开始
             weChatIndexDTO.setStatus(PlanConstant.NOTSTARTED);
@@ -108,9 +108,9 @@ public class MiniIndexController extends ModuleBaseController{
             weChatIndex.setOverdueSum(overdueSum);
 
             //获取当前时间
-            weChatIndexDTO.setStartDate(DateUtil.formatDate(new Date()));
+            weChatIndexDTO.setPlanStartDate(DateUtil.formatDate(new Date()));
             //获取7天后的时间
-            weChatIndexDTO.setEndDate(DateUtil.formatDate(DateUtil.addDays(new Date(),7)));
+            weChatIndexDTO.setPlanEndDate(DateUtil.formatDate(DateUtil.addDays(new Date(),7)));
 //            状态为进行中
             weChatIndexDTO.setStatus(PlanConstant.NOTSTARTED);
 //            七天内到期的数量
@@ -124,11 +124,11 @@ public class MiniIndexController extends ModuleBaseController{
 //            设置状态为进行中
             weChatIndexDTO.setStatus(PlanConstant.NOTSTARTED);
 //            设置时间为本月第一天和最后一天
-            weChatIndexDTO.setStartDate(firstDay);
-            weChatIndexDTO.setEndDate(lastDay);
+            weChatIndexDTO.setPlanStartDate(firstDay);
+            weChatIndexDTO.setPlanEndDate(lastDay);
             Integer monthNumber = indexService.selectExpireNumber(weChatIndexDTO);
             weChatIndex.setMonthNumber(monthNumber);
-            //            七天内到期的收款金额
+            //            本月到期的收款金额
             String monthSum = indexService.selectExpireSum(weChatIndexDTO);
             weChatIndex.setMonthSum(monthSum);
 
@@ -253,6 +253,9 @@ public class MiniIndexController extends ModuleBaseController{
                 weChatIndexDTO.setPlanStartDate(monthFirstDay);
                 weChatIndexDTO.setPlanEndDate(monthLastDay);
                 weChatIndexDTO.setStatus(PlanConstant.STARTING);
+                ArrayList<String> objects = new ArrayList<>();
+                objects.add(PlanConstant.STARTING);
+                objects.add(PlanConstant.NOTSTARTED);
                 weChatIndexDetailDTO = getWeChatIndexDetailDTO(weChatIndexDTO,weChatIndexDetailDTO);
                 return new Result<>(weChatIndexDetailDTO);
             }else if (type.equals("7")){

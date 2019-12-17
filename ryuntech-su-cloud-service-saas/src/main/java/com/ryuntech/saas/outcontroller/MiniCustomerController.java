@@ -12,11 +12,9 @@ import com.ryuntech.saas.api.dto.ReceivableContractDTO;
 import com.ryuntech.saas.api.form.CustomerUserInfoForm;
 import com.ryuntech.saas.api.form.EmployeeForm;
 import com.ryuntech.saas.api.form.ReceivableContractForm;
-import com.ryuntech.saas.api.model.CustomerUserInfo;
-import com.ryuntech.saas.api.model.Employee;
-import com.ryuntech.saas.api.model.FollowupRecord;
-import com.ryuntech.saas.api.model.ReceivableContract;
+import com.ryuntech.saas.api.model.*;
 import com.ryuntech.saas.api.service.ICustomerUserInfoService;
+import com.ryuntech.saas.api.service.IDepartmentService;
 import com.ryuntech.saas.api.service.IEmployeeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -47,6 +45,10 @@ public class MiniCustomerController extends ModuleBaseController{
 
     @Autowired
     private IEmployeeService iEmployeeService;
+
+
+    @Autowired
+    private IDepartmentService iDepartmentService;
 
     @PostMapping("/outlist")
     @ApiOperation(value = "分页、条件查询客户列表信息")
@@ -167,6 +169,20 @@ public class MiniCustomerController extends ModuleBaseController{
             }
         }
         return new Result("更新成功");
+    }
+
+
+    @PostMapping("/outdeparlist")
+    @ApiOperation(value = "查看所有部门信息", notes = "employeeId存在")
+    @ApiImplicitParam(name = "employeeForm", value = "员工对象", required = true, dataType = "String")
+    public Result findPartment(@RequestHeader String EmployeeId,Employee employeeForm) {
+        if (StringUtils.isBlank(EmployeeId)){
+            return new Result<>(OPERATE_ERROR,"员工编号为空");
+        }
+        Employee employeeUp = iEmployeeService.selectByEmployee(new Employee().setEmployeeId(EmployeeId));
+        String departmentId = employeeUp.getDepartmentId();
+        List<Department> byDepartment = iDepartmentService.findByDepartment(new Department().setDepartmentId(departmentId));
+        return new Result(byDepartment);
     }
 
 

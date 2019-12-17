@@ -3,6 +3,7 @@ package com.ryuntech.saas.api.model;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -57,9 +58,11 @@ public class Department implements Serializable {
     private String pid;
 
     @TableField("updated_at")
+    @JsonIgnore
     private Date updatedAt;
 
     @TableField("created_at")
+    @JsonIgnore
     private Date createdAt;
 
 

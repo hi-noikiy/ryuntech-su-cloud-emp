@@ -114,7 +114,7 @@ public class RiskWarnConstants {
      */
     public static final String TYPE7 ="7";
     /**
-     * 立案消息
+     * 裁判文书
      */
     public static final String TYPE8 ="8";
     /**

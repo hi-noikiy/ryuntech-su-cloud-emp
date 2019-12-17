@@ -225,12 +225,7 @@ public class MiniContractController extends ModuleBaseController {
         if (StringUtils.isBlank(receivableContractFrom.getContractName())){
             return new Result(PARAM_ERROR,"合同名不能为空");
         }
-       /* if (upLoadImg.length!=0){
-            receivableContractFrom.setUpLoadImg(upLoadImg);
-        }*/
-//        if (StringUtils.isBlank(receivableContractDTO.getStaffId())) {
-//            return new Result(PARAM_ERROR,"负责员工不能为空");
-//        }
+
         ReceivableContract receivableContract = new ReceivableContract();
 //        合同编号
         String contractId = String.valueOf(generateId());
@@ -269,7 +264,11 @@ public class MiniContractController extends ModuleBaseController {
             receivableContract.setCustomerId(customerId);
         }
 //        合同状态
-        receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
+
+//       如果当前时间大于合同时间，则合同已开始
+
+            receivableContract.setStatus(ReceivableContractConstants.NOTSTARTED);
+
 
         List<ReceivableCollectionPlan> receivableCollectionPlans = new ArrayList<>();
         List<ReceivableCollectionPlanDTO> receivableCollectionPlanDTOs = receivableContractFrom.getReceivableCollectionPlanDTOs();
@@ -281,7 +280,18 @@ public class MiniContractController extends ModuleBaseController {
                 String planId = String.valueOf(generateId());
                 receivableCollectionPlan.setPlanId(planId);
 //                状态
-                receivableCollectionPlan.setStatus(PlanConstant.NOTSTARTED);
+                if (DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()).equals(new Date())){
+                    receivableCollectionPlan.setStatus(PlanConstant.STARTING);
+                }else {
+                    boolean after = DateUtil.after(DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()), new Date());
+                    if (after){
+                        //计划时间在当前时间后面
+                        receivableCollectionPlan.setStatus(PlanConstant.NOTSTARTED);
+                    }else {
+                        //计划时间在当前时间前面
+                        receivableCollectionPlan.setStatus(PlanConstant.OVERDUED);
+                    }
+                }
                 receivableCollectionPlan.setPlanAmount(receivableCollectionPlanDTO.getPlanAmount());
                 receivableCollectionPlan.setRemakes(receivableCollectionPlanDTO.getRemakes());
                 receivableCollectionPlan.setPlanTime(DateUtil.parseDate(receivableCollectionPlanDTO.getPlanTime()));

@@ -53,15 +53,39 @@
             <if test="customerRiskForm.riskDetailTime!=null">
                 and date_format(risk_detail_time, '%Y-%m-%d' ) = date_format(#{customerRiskForm.riskDetailTime}, '%Y-%m-%d')
             </if>
+            <if test="customerRiskForm.riskType!=null">
+                and risk_type like '%'||#{customerRiskForm.riskType}||'%'
+            </if>
+
+            <if test="customerRiskForm.riskMTypes!=null and customerRiskForm.riskMTypes.size()>0">
+                and risk_mtype in
+                <foreach collection="customerRiskForm.riskMTypes" item="riskMType" index="index" open="(" close=")" separator=",">
+                    #{riskMType}
+                </foreach>
+            </if>
+
+            <if test="customerRiskForm.customerIds!=null and customerRiskForm.customerIds.size()>0">
+                and customer_id in
+                <foreach collection="customerRiskForm.customerIds" item="customerId" index="index" open="(" close=")" separator=",">
+                    #{customerId}
+                </foreach>
+            </if>
+
+            <if test="customerRiskForm.riskStartTime!=null and customerRiskForm.riskEndTime!=null">
+                <![CDATA[
+                    and date_format(risk_time, '%Y-%m-%d' ) <= date_format(#{customerRiskForm.riskEndTime}, '%Y-%m-%d')
+                    and date_format(risk_time, '%Y-%m-%d' ) >= date_format(#{customerRiskForm.riskStartTime}, '%Y-%m-%d')
+                ]]>
+            </if>
         </where>
 
         GROUP BY
             customer_name
     </select>
 
-    <select id="selectGroupConcatByTime" resultMap="BaseResultMap2"  resultType="com.ryuntech.saas.api.dto.CustomerRiskDTO">
+    <select id="selectGroupConcatByTime"   resultType="java.lang.String">
         SELECT
-            risk_time
+            date_format(risk_time, '%Y-%m-%d' ) as risk_time
         FROM
             ryn_customer_risk
         <where>

@@ -139,7 +139,7 @@ public class MiniMonitorController extends ModuleBaseController{
                 if (null!=customerMonitor){
                     log.info("该公司已经在监控列表中"+customerMonitor.getMonitorId());
                     //修改状态
-                    if (customerMonitor.getStatus().equals("0")){
+                    if (!customerMonitor.getStatus()){
                         customerMonitor.setStatus(true);
                         iCustomerMonitorService.updateById(customerMonitor);
                     }

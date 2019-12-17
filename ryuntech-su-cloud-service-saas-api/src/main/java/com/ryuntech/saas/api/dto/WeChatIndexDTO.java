@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -24,6 +25,7 @@ public class WeChatIndexDTO extends BaseModel {
      * 计划状态
      */
     private String status;
+    private List<String> statusList;
     /**
      * 合同状态
      */

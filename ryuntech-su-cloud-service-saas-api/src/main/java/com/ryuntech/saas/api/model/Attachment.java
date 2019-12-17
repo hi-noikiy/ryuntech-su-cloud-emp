@@ -35,6 +35,7 @@ import java.util.Date;
             * 附件主键
             */
             @TableId("ID")
+            @JsonIgnore
     private String id;
 
             /**

@@ -278,4 +278,32 @@ public class DateUtil {
         return parse(date, pattern);
     }
 
+    /**
+     * 获取上个月时间
+     * @param date
+     * @return
+     */
+    public static String getLastMonth(Date date){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MONTH, -1);
+        Date m = c.getTime();
+        return format.format(m);
+    }
+
+    /**
+     * 获取上周时间
+     * @param date
+     * @return
+     */
+    public static String getLastWe(Date date){
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DATE, - 7);
+        Date d = c.getTime();
+        System.out.println("过去七天："+format.format(d));
+        return format.format(d);
+    }
 }
