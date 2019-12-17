@@ -20,5 +20,7 @@ public class EmployeeDetailDTO {
 
     private String dataType;
 
+    private String dataDepartmentId;
+
     private String roleIds;
 }

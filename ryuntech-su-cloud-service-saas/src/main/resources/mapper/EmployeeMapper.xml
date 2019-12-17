@@ -164,6 +164,7 @@
             re.`IS_CHARGER` isCharger,
             re.`EMAIL` email,
             re.`DATA_TYPE` dataType,
+            re.`DATA_DEPARTMENT_ID` dataDepartmentId,
             t.`roleIds`
         FROM
           `ryn_department` rd ,
