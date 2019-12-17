@@ -173,7 +173,7 @@
           LEFT JOIN
           (SELECT
           s1.`EMPLOYEE_ID`,
-          GROUP_CONCAT(s2.`RID`, ',') roleIds
+          GROUP_CONCAT(s2.`RID`) roleIds
         FROM
           `sys_user_role` s1,
           `sys_role` s2
