@@ -55,4 +55,10 @@ public class ReceivableCollectionPlanServiceImpl extends BaseServiceImpl<Receiva
         List<ReceivableCollectionPlan> receivableCollectionPlans = baseMapper.selectByPlan(receivableCollectionPlanForm);
         return receivableCollectionPlans;
     }
+
+    @Override
+    public List<ReceivableCollectionPlan> selectOverdueRemind(ReceivableCollectionPlanForm receivableCollectionPlanForm) {
+
+        return baseMapper.selectOverdueRemind(receivableCollectionPlanForm);
+    }
 }

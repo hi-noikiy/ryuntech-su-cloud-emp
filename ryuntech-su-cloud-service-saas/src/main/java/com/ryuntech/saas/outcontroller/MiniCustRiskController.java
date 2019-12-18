@@ -166,56 +166,62 @@ public class MiniCustRiskController {
         /**
          * 工商变更全部：businessAll 法律诉讼全部：legalAll 经营风险全部：manageAll
          */
-        if (riskMTypes.contains("businessAll")){
-            riskMTypes.remove("businessAll");
-            riskMTypes.add(RiskWarnConstants.TYPE1);
-            riskMTypes.add(RiskWarnConstants.TYPE2);
-            riskMTypes.add(RiskWarnConstants.TYPE3);
-        }
-        if (riskMTypes.contains("legalAll")){
-            riskMTypes.add(RiskWarnConstants.TYPE4);
-            riskMTypes.add(RiskWarnConstants.TYPE5);
-            riskMTypes.add(RiskWarnConstants.TYPE6);
-            riskMTypes.add(RiskWarnConstants.TYPE7);
-            riskMTypes.add(RiskWarnConstants.TYPE8);
-            riskMTypes.add(RiskWarnConstants.TYPE9);
-        }
-        if (riskMTypes.contains("manageAll")){
-            riskMTypes.add(RiskWarnConstants.TYPE10);
-            riskMTypes.add(RiskWarnConstants.TYPE11);
-            riskMTypes.add(RiskWarnConstants.TYPE12);
-            riskMTypes.add(RiskWarnConstants.TYPE13);
-            riskMTypes.add(RiskWarnConstants.TYPE14);
-            riskMTypes.add(RiskWarnConstants.TYPE15);
-            riskMTypes.add(RiskWarnConstants.TYPE16);
-            riskMTypes.add(RiskWarnConstants.TYPE17);
-            riskMTypes.add(RiskWarnConstants.TYPE18);
+        if (null!=riskMTypes&&!riskMTypes.isEmpty()){
+            if (riskMTypes.contains("businessAll")){
+                riskMTypes.remove("businessAll");
+                riskMTypes.add(RiskWarnConstants.TYPE1);
+                riskMTypes.add(RiskWarnConstants.TYPE2);
+                riskMTypes.add(RiskWarnConstants.TYPE3);
+            }
+            if (riskMTypes.contains("legalAll")){
+                riskMTypes.remove("legalAll");
+                riskMTypes.add(RiskWarnConstants.TYPE4);
+                riskMTypes.add(RiskWarnConstants.TYPE5);
+                riskMTypes.add(RiskWarnConstants.TYPE6);
+                riskMTypes.add(RiskWarnConstants.TYPE7);
+                riskMTypes.add(RiskWarnConstants.TYPE8);
+                riskMTypes.add(RiskWarnConstants.TYPE9);
+            }
+            if (riskMTypes.contains("manageAll")){
+                riskMTypes.remove("manageAll");
+                riskMTypes.add(RiskWarnConstants.TYPE10);
+                riskMTypes.add(RiskWarnConstants.TYPE11);
+                riskMTypes.add(RiskWarnConstants.TYPE12);
+                riskMTypes.add(RiskWarnConstants.TYPE13);
+                riskMTypes.add(RiskWarnConstants.TYPE14);
+                riskMTypes.add(RiskWarnConstants.TYPE15);
+                riskMTypes.add(RiskWarnConstants.TYPE16);
+                riskMTypes.add(RiskWarnConstants.TYPE17);
+                riskMTypes.add(RiskWarnConstants.TYPE18);
+            }
         }
         //开始解析时间
         String riskTimeType = customerRiskForm.getRiskTimeType();
+        if (StringUtils.isNotBlank(riskTimeType)){
         //查询月份 0 本月 1上个月 2本周 3上周 4自定义
-        if (riskTimeType.equals("0")){
-            String monthFirstDay = DateUtil.getMonthFirstDay(new Date());
-            String monthLastDay = DateUtil.getMonthLastDay(new Date());
-            customerRiskForm.setRiskStartTime(monthFirstDay);
-            customerRiskForm.setRiskEndTime(monthLastDay);
-        }else if (riskTimeType.equals("1")){
-            String lastMonth = DateUtil.getLastMonth(new Date());
-            String monthFirstDay = DateUtil.getMonthFirstDay(DateUtil.parseDateTime(lastMonth));
-            String monthLastDay = DateUtil.getMonthLastDay(DateUtil.parseDateTime(lastMonth));
-            customerRiskForm.setRiskStartTime(monthFirstDay);
-            customerRiskForm.setRiskEndTime(monthLastDay);
-        }else if (riskTimeType.equals("2")){
-            String lastWe = DateUtil.getLastWe(new Date());
-            customerRiskForm.setRiskStartTime(lastWe);
-            customerRiskForm.setRiskEndTime(DateUtil.formatDateTime(new Date()));
-        }else if (riskTimeType.equals("3")){
-            String lastWe = DateUtil.getLastWe(new Date());
-            Date date = DateUtil.parseDateTime(lastWe);
-            customerRiskForm.setRiskStartTime(DateUtil.formatDateTime(date));
-            customerRiskForm.setRiskEndTime(lastWe);
-        }else if (riskTimeType.equals("4")){
-            //自定义时间
+            if (riskTimeType.equals("0")){
+                String monthFirstDay = DateUtil.getMonthFirstDay(new Date());
+                String monthLastDay = DateUtil.getMonthLastDay(new Date());
+                customerRiskForm.setRiskStartTime(monthFirstDay);
+                customerRiskForm.setRiskEndTime(monthLastDay);
+            }else if (riskTimeType.equals("1")){
+                String lastMonth = DateUtil.getLastMonth(new Date());
+                String monthFirstDay = DateUtil.getMonthFirstDay(DateUtil.parseDate(lastMonth));
+                String monthLastDay = DateUtil.getMonthLastDay(DateUtil.parseDate(lastMonth));
+                customerRiskForm.setRiskStartTime(monthFirstDay);
+                customerRiskForm.setRiskEndTime(monthLastDay);
+            }else if (riskTimeType.equals("2")){
+                String lastWe = DateUtil.getLastWe(new Date());
+                customerRiskForm.setRiskStartTime(lastWe);
+                customerRiskForm.setRiskEndTime(DateUtil.formatDate(new Date()));
+            }else if (riskTimeType.equals("3")){
+                String lastWe = DateUtil.getLastWe(new Date());
+                Date date = DateUtil.parseDateTime(lastWe);
+                customerRiskForm.setRiskStartTime(DateUtil.formatDate(date));
+                customerRiskForm.setRiskEndTime(lastWe);
+            }else if (riskTimeType.equals("4")){
+                //自定义时间
+            }
         }
 
         //获取部门编号

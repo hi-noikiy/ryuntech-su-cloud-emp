@@ -367,9 +367,9 @@
                     ]]>
             </if>
 
-            <if test="customerRiskForm.statusList!=null and customerRiskForm.statusList.size()>0">
+            <if test="weChatIndexDTO.statusList!=null and weChatIndexDTO.statusList.size()>0">
                 and status in
-                <foreach collection="customerRiskForm.statusList" item="status" index="index" open="(" close=")" separator=",">
+                <foreach collection="weChatIndexDTO.statusList" item="status" index="index" open="(" close=")" separator=",">
                     #{status}
                 </foreach>
             </if>

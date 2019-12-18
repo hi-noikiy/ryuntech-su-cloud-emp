@@ -24,10 +24,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -76,7 +73,7 @@ public class MiniRCollectionController extends ModuleBaseController{
     @PostMapping("/outadd")
     @ApiOperation(value = "添加收款信息")
     @ApiImplicitParam(name = "receivableCollection", value = "收款信息", required = true, dataType = "receivableCollection", paramType = "body")
-    public Result add(@RequestBody ReceivableCollection receivableCollection) {
+    public Result add(@RequestHeader String EmployeeId, @RequestBody ReceivableCollection receivableCollection) {
 //            生成客户编号
         log.info("receivableCollection.getCollectionId()"+receivableCollection.getCollectionId());
         if (StringUtils.isBlank(receivableCollection.getAmount())){
@@ -125,6 +122,9 @@ public class MiniRCollectionController extends ModuleBaseController{
                 BigDecimal balanceAmountDe = new BigDecimal(byContract.getBalanceAmount());
 //                查询已还款金额
                 BigDecimal collectionAmountDe = new BigDecimal(byContract.getCollectionAmount());
+                //                    插入一条还款记录，只有合同编号，没有计划
+                receivableCollection.setCreateBy(EmployeeId);
+                receivableCollection.setTime(new Date());
                 if (amountDe.compareTo(balanceAmountDe)==-1){
 //                    设置状态还款中
                     byContract.setStatus(ReceivableContractConstants.NOTSTARTED);
@@ -132,10 +132,6 @@ public class MiniRCollectionController extends ModuleBaseController{
                     byContract.setCollectionAmount(collectionAmountDe.add(amountDe).toString());
 //                    设置待还款金额
                     byContract.setBalanceAmount(balanceAmountDe.subtract(amountDe).toString());
-//                    插入一条还款记录，只有合同编号，没有计划
-                    receivableCollection.setCreateBy(DateUtil.formatDate(new Date()));
-                    receivableCollection.setTime(new Date());
-
                 }
             }else {
                 for (ReceivableCollectionPlan rPlan:rCollectionPlans){

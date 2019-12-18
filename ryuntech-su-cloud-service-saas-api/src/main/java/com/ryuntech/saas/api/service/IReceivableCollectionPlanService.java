@@ -52,4 +52,11 @@ public interface IReceivableCollectionPlanService extends IBaseService<Receivabl
      * @return
      */
     List<ReceivableCollectionPlan> selectByPlan(ReceivableCollectionPlanForm receivableCollectionPlanForm);
+
+    /**
+     * 定时查询逾期计划
+     * @param receivableCollectionPlanForm
+     * @return
+     */
+    List<ReceivableCollectionPlan> selectOverdueRemind(ReceivableCollectionPlanForm receivableCollectionPlanForm);
 }

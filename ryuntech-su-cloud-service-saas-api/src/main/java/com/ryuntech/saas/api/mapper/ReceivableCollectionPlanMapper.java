@@ -64,4 +64,11 @@ public interface ReceivableCollectionPlanMapper extends IBaseMapper<ReceivableCo
     List<OverdueByCustomerDTO> overdueByCustomerList(@Param("departmentIds") List<String> currentUserDepartments);
 
     List<OverdueByEmployeeDTO> overdueByEmployeeList(@Param("departmentIds") List<String> currentUserDepartments);
+
+    /**
+     * 轮询逾期计划
+     * @param receivableCollectionPlanForm
+     * @return
+     */
+    List<ReceivableCollectionPlan> selectOverdueRemind(ReceivableCollectionPlanForm receivableCollectionPlanForm);
 }

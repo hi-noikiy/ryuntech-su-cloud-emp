@@ -122,10 +122,13 @@ public class MiniIndexController extends ModuleBaseController{
 
 //            本月预计回款
 //            设置状态为进行中
-            weChatIndexDTO.setStatus(PlanConstant.NOTSTARTED);
+            ArrayList<String> objects = new ArrayList<>();
+            objects.add(PlanConstant.NOTSTARTED);
+            objects.add(PlanConstant.STARTING);
 //            设置时间为本月第一天和最后一天
             weChatIndexDTO.setPlanStartDate(firstDay);
             weChatIndexDTO.setPlanEndDate(lastDay);
+            weChatIndexDTO.setStatusList(objects);
             Integer monthNumber = indexService.selectExpireNumber(weChatIndexDTO);
             weChatIndex.setMonthNumber(monthNumber);
             //            本月到期的收款金额
